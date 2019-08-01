@@ -6,9 +6,7 @@
     "start": "node index.js"
   },
   "dependencies": {
-    "@json-editor/json-editor": "^1.2.1",
     "express": "^4.16.4",
-    "express-basic-auth": "^1.1.6",
     "express-useragent": "^1.0.12",
     "socket.io": "^2.1.1"
   },
