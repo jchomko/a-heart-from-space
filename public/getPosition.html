@@ -118,6 +118,7 @@
         }
       };
 
+
       //Geolocation stuff
       var browserGeolocationSuccess = function(position) {
       //alert("Browser geolocation success!\n\nlat = " + position.coords.latitude + "\nlng = " + position.coords.longitude);
@@ -127,16 +128,18 @@
          currLong = position.coords.longitude;
 
           //update google map with position
-          map = new google.maps.Map(document.getElementById('map'), {
-          zoom: 18,
-          center: myLatLng
-          });
+          // map = new google.maps.Map(document.getElementById('map'), {
+          // zoom: 18,
+          // center: myLatLng
+          // });
 
           marker = new google.maps.Marker({
-          position: myLatLng,
-          map: map,
-          title: 'Your Position!'
+            position: myLatLng,
+            map: map,
+            title: 'Your Position!'
           });
+
+
 
 
       };
@@ -157,7 +160,7 @@
       };
 
      //get device orientation events
-    window.addEventListener("deviceorientation", onHeadingChange, true);
+    // window.addEventListener("deviceorientation", onHeadingChange, true);
 
     </script>
     <script async defer
