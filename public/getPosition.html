@@ -35,7 +35,7 @@
       var currLat = 0;
       var currLong = 0;
       var map;
-      var target;
+      var marker;
 
       //Function called by async script call at bottom
       function initMap() {
@@ -46,17 +46,12 @@
           center: myLatLng
         });
 
-        var home = new google.maps.Marker({
-          position: myLatLng,
-          map: map,
-          title: 'CurrLoc!'
-        });
-
-        target = new google.maps.Marker({
+        marker = new google.maps.Marker({
           position: myLatLng,
           map: map,
           title: 'Target!'
         });
+
       }
 
       var xhttp = new XMLHttpRequest();
@@ -128,17 +123,17 @@
          currLong = position.coords.longitude;
 
           //update google map with position
-          // map = new google.maps.Map(document.getElementById('map'), {
-          // zoom: 18,
-          // center: myLatLng
-          // });
+
+          map.panTo(myLatLng)
+
+          marker.setMap(null)
 
           marker = new google.maps.Marker({
             position: myLatLng,
-            map: map,
             title: 'Your Position!'
           });
 
+          marker.setMap(map)
 
 
 
