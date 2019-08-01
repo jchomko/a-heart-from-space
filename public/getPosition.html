@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+
+  <body>
+    <div id="map"></div>
+    <script>
+
+      //var positionHng = document.getElementById("position-hng");
+      var output = document.querySelector('.output');
+      var arr = document.getElementById("arrow");
+
+      var minDist = 0.006;
+      var coordinates = [];
+      var coordinateIndex = 0;
+
+      var bearing = 0;
+      var currLat = 0;
+      var currLong = 0;
+      var map;
+      var target;
+
+      //Function called by async script call at bottom
+      function initMap() {
+        var myLatLng = {lat: -25.363, lng: 131.044};
+
+         map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 4,
+          center: myLatLng
+        });
+
+        var home = new google.maps.Marker({
+          position: myLatLng,
+          map: map,
+          title: 'CurrLoc!'
+        });
+
+        target = new google.maps.Marker({
+          position: myLatLng,
+          map: map,
+          title: 'Target!'
+        });
+      }
+
+      var xhttp = new XMLHttpRequest();
+
+      xhttp.onreadystatechange = function() {
+          if (this.readyState == 4 && this.status == 200) {
+              processXML(this);
+          }
+      };
+
+      //process variable from drop down
+      function changeInput (objDropDown)
+      {
+          var obj = document.getElementById("dropdown");
+          obj.value = objDropDown.value;
+          console.log(obj.value);
+
+          //open one of the xml files with coordinates
+          xhttp.open("GET", obj.value, true);
+          // xhttp.open("GET", "coordinates1.xml", true);
+          xhttp.send();
+
+
+          // coordinates.splice(0);
+          // coordinates.length = 0;
+          // coordinates = [];
+          //  while(coordinates.length > 0) {
+
+          //   coordinates.pop();
+          //   console.log("pop");
+
+          // }
+      }
+
+      var coordIndex = 0;
+
+      function processXML(xml) {
+
+          var xmlDoc = xml.responseXML;
+          var temp = "";
+          // coordinates.clear();
+          // coordinates.length = 0;
+          // coordinates = [];
+           coordinates.splice(0);
+           coordIndex = 0;
+
+          var tempCoords = xmlDoc.getElementsByTagName("coordinates")[0].childNodes[0].nodeValue;
+
+          for(var i = 0; i < tempCoords.length; i ++){
+
+            if(tempCoords[i] === ','){
+
+              coordinates.push([]);
+              coordinates[coordIndex] = temp;
+              coordIndex ++;
+
+              console.log(temp);
+              //console.log(tempCoords[i]);
+              temp = "";
+
+            }else{
+              temp = "" + temp + tempCoords[i];
+
+              // coordinates[coordIndex].concat(tempCoords[i]);
+            }
+          }
+          //document.getElementById("demo").innerHTML = coordinates;
+      }
+
+      //Get location of device  - navigator is just an html5 access for the browser
+      var tryGeolocation = function() {
+        if (navigator.geolocation) {
+
+            navigator.geolocation.watchPosition(
+            browserGeolocationSuccess,
+            browserGeolocationFail, { enableHighAccuracy: true, timeout: 5000, maximumAge: 0});
+          //  {maximumAge: 0, timeout: 5000, enableHighAccuracy: false});
+        }
+      };
+
+      //Geolocation stuff
+      var browserGeolocationSuccess = function(position) {
+      //alert("Browser geolocation success!\n\nlat = " + position.coords.latitude + "\nlng = " + position.coords.longitude);
+         var myLatLng = {lat: position.coords.latitude, lng: position.coords.longitude};
+
+         currLat = position.coords.latitude;
+         currLong = position.coords.longitude;
+
+          //update google map with position
+         /* map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 18,
+          center: myLatLng
+          });
+
+           marker = new google.maps.Marker({
+          position: myLatLng,
+          map: map,
+          title: 'Hello Jonathan!'
+          });
+
+           target = new google.maps.Marker({
+          position: myLatLng,
+          map: map,
+          title: 'Target!'
+        });
+    */
+          // bearing = getBearing(position.coords.latitude, position.coords.longitude, 45.5254289,-73.6062115);
+      };
+
+      //Process errors for geoloc
+      var browserGeolocationFail = function(error) {
+        switch (error.code) {
+          case error.TIMEOUT:
+            alert("Browser geolocation error !\n\nTimeout.");
+            break;
+          case error.PERMISSION_DENIED:
+            alert("Permission Denied");
+            break;
+          case error.POSITION_UNAVAILABLE:
+            alert("Browser geolocation error !\n\nPosition unavailable AGAIN");
+            break;
+        }
+      };
+
+    //Function to get bearing from to coordinates
+     function getBearing(lat1,lng1,lat2,lng2) {
+        var dLon = (lng2-lng1);
+        var y = Math.sin(dLon) * Math.cos(lat2);
+        var x = Math.cos(lat1)*Math.sin(lat2) - Math.sin(lat1)*Math.cos(lat2)*Math.cos(dLon);
+        var brng = toDeg(Math.atan2(y, x));
+        return brng;
+
+        //return 360 - ((brng + 360) % 360);
+
+        // var y = Math.sin(λ2-λ1) * Math.cos(φ2);
+        // var x = Math.cos(φ1)*Math.sin(φ2) -  Math.sin(φ1)*Math.cos(φ2)*Math.cos(λ2-λ1);
+        // var brng = Math.atan2(y, x).toDegrees();
+
+    };
+
+    //Helper function for getBearing
+    function toDeg (rad) {
+        return rad * 180 / Math.PI;
+    };
+
+    function updateMinDist(){
+      minDist = document.myform.number1.value;
+      console.log(minDist);
+
+    }
+
+    function incrementIndex(){
+
+      coordinateIndex += 2;
+      // var targLL = {lat: coordinates[coordinateIndex+1], lng: coordinates[coordinateIndex]};
+      //target.setPosition( targLL );
+      //method to update google map location marker
+     // target.setPosition( new google.maps.LatLng( coordinates[coordinateIndex+1],  coordinates[coordinateIndex] ) );
+      // target.setPosition( new google.maps.LatLng( coordinates[coordinateIndex+1],  coordinates[coordinateIndex] ) );
+      // var marker = new google.maps.Marker({
+      //     position: targLL,
+      //     map: map,
+      //     title: 'Target'
+      //     });
+    }
+
+
+    //receives updates from browser about heading events
+     function onHeadingChange(event) {
+        var z = "";
+        var x = event.beta;  // In degree in the range [-180,180]
+        var y = event.gamma; // In degree in the range [-90,90]
+
+
+        //bearing = getBearing(currLat, currLong, 45.5254289,-73.6062115);
+
+        bearing = bearingInitial(coordinates[coordinateIndex+1],coordinates[coordinateIndex],currLat, currLong);
+
+        //var dist = getDistanceFromLatLonInKm(currLat, currLong, 45.5254289,-73.6062115);
+
+        var dist = getDistanceFromLatLonInKm(currLat, currLong, coordinates[coordinateIndex+1],coordinates[coordinateIndex]);
+
+        if( dist < minDist){ // was 0.05
+
+          coordinateIndex += 2;
+
+
+        }
+
+        if(coordinateIndex > coordinates.length-2){
+          coordinateIndex = 0;
+        }
+
+        if (typeof event.webkitCompassHeading !== "undefined") {
+            z = 360 - event.webkitCompassHeading; //iOS non-standard
+        } else{
+            z = event.alpha;  // In degree in the range [-180,180]
+        }
+
+        var b = (bearing + z  )%360;
+       // b += 180;
+
+       var arrowBearing = (z+bearing)% 360;
+
+      // arrowBearing = (arrowBearing - 180) % 360;
+
+        if (typeof arr.style.transform !== "undefined") {
+
+            arr.style.transform = "rotateZ(" + arrowBearing + "deg)";
+
+            } else if (typeof arr.style.webkitTransform !== "undefined") {
+
+            arr.style.webkitTransform = "rotateZ(" + arrowBearing + "deg)";
+
+        }
+
+        output.innerHTML  = "alpha : " + z + "\n";
+        // output.innerHTML += "beta : " + x + "\n";
+        // output.innerHTML += "gamma: " + y + "\n";
+        output.innerHTML += "coordinateIndex " + coordinateIndex + "\n";
+        var t = coordinateIndex + 1;
+        output.innerHTML += "coordinateIndex +1 " + t + "\n";
+
+        output.innerHTML += "bearing : " + bearing + "\n";
+        output.innerHTML += "heading to target: " + b + "\n";
+        output.innerHTML += "lat  " + currLat + "\n";
+        output.innerHTML += "long : " + currLong + "\n";
+
+        output.innerHTML += "coordinates length  : " + coordinates.length + "\n";
+
+        output.innerHTML += "targ lat  " + coordinates[coordinateIndex+1] + "\n";
+        output.innerHTML += "targ long : " + coordinates[coordinateIndex] + "\n";
+        output.innerHTML += "dist : " + dist + "\n";
+
+
+
+    };
+
+
+    function bearingInitial (lat1, long1, lat2, long2)
+    {
+      return (bearingDegrees(lat1, long1, lat2, long2) + 360) % 360;
+    }
+
+    function bearingFinal(lat1, long1, lat2, long2) {
+      return (bearingDegrees(lat2, long2, lat1, long1) + 180) % 360;
+    }
+
+    function bearingDegrees (lat1, long1, lat2, long2)
+    {
+    var degToRad= Math.PI/180.0;
+
+    var phi1= lat1 * degToRad;
+    var phi2= lat2 * degToRad;
+    var lam1= long1 * degToRad;
+    var lam2= long2 * degToRad;
+
+    return Math.atan2(Math.sin(lam2-lam1) * Math.cos(phi2),
+        Math.cos(phi1)*Math.sin(phi2) - Math.sin(phi1)*Math.cos(phi2)*Math.cos(lam2-lam1)
+    ) * 180/Math.PI;
+
+}
+    function getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) {
+        var R = 6371; // Radius of the earth in km
+        var dLat = deg2rad(lat2-lat1);  // deg2rad below
+        var dLon = deg2rad(lon2-lon1);
+        var a =
+          Math.sin(dLat/2) * Math.sin(dLat/2) +
+          Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+          Math.sin(dLon/2) * Math.sin(dLon/2)
+          ;
+        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        var d = R * c; // Distance in km
+        return d;
+    }
+
+    function deg2rad(deg) {
+      return deg * (Math.PI/180)
+    }
+
+
+      //get getloc
+    tryGeolocation();
+
+     //get device orientation events
+    window.addEventListener("deviceorientation", onHeadingChange, true);
+
+    </script>
+    <!-- Open google maps
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDOkPz6eU_-nO5OKT_Yhv1Rkxu-gOEwKwU&callback=initMap">
+    -->
+    </script>
+
+
+  </body>
+</html>

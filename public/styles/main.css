@@ -1,0 +1,805 @@
+html, body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  background-color: black;
+   /* background-color: red; /* same colour of container */
+}
+
+*, *:before, *:after {
+  box-sizing: border-box;
+}
+
+#debuginfo{
+  /* color: white; */
+}
+
+#desktop{
+  height: 100%;
+  width: 100%;
+  background-color: rgb(255,158,113);
+}
+
+.elementToFadeInAndOut {
+    /* width:200px;
+    height: 200px;
+    background: red; */
+    -webkit-animation: fadeinout 2.5s linear forwards;
+    animation: fadeinout 2.5s linear forwards;
+}
+
+
+@-webkit-keyframes fadeinout {
+  0%,100% { opacity: 0; }
+  4% { opacity: 1; }
+  60% { opacity: 1; }
+}
+
+@keyframes fadeinout {
+  0%,100% { opacity: 0; }
+  4% { opacity: 1; }
+  60% { opacity: 1; }
+
+}
+
+#visualization-wrapper{
+  /* background-color: rgb(255,158,113); */
+  background-color: #7A70F9;
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+
+}
+
+/* animation: fadeIt 5s ease-in-out;  */
+/*
+@keyframes fadeGreenToPurple {
+  0%   { background-color: #FFFFFF;}
+  100% { background-color: #FFFFFF;}
+} */
+
+
+.visualization{
+  height: 100%;
+}
+
+#countdown{
+  position: absolute;
+  visibility: hidden;
+  /* transform: translate(-50%, -50%); */
+  top: 5px;
+  left: 5px;
+  z-index: 3;
+  font-family: Helvetica,sans-serif;
+  font-size: 20pt;
+  /* position: relative; */
+}
+
+#score{
+  visibility: hidden;
+  position: absolute;
+  /* transform: translate(-50%, -50%); */
+  top: 5px;
+  right: 5px;
+  z-index: 3;
+  font-family: Helvetica,sans-serif;
+  font-size: 20pt;
+  /* position: relative; */
+}
+
+#batteryinfo{
+  position: absolute;
+  z-index: 3;
+  font-family: Helvetica,sans-serif;
+  font-size: 10pt;
+  color: #ffffff;
+  left: 4px;
+  top: 4px;
+}
+
+#debug{
+  position: relative;
+  z-index: 3;
+  width:auto;
+  height:auto;
+  font-family: Helvetica,sans-serif;
+  font-size: 12pt;
+  visibility: hidden;
+}
+
+#instruction{
+  position: absolute;
+  width: 100%;
+  z-index: 4;
+  top: 12%;
+  text-align:center;
+  padding-left:7%;
+  padding-right:7%;
+  font-family: Helvetica,sans-serif;
+  color: #fff;
+  font-size: 16pt;
+  line-height:22pt;
+
+}
+
+#instruction-fr{
+  position: absolute;
+  z-index: 4;
+  top: 12%;
+  text-align:center;
+  padding-left:7%;
+  padding-right:7%;
+  font-family: Helvetica,sans-serif;
+  color: #fff;
+  font-size: 16pt;
+  line-height:22pt;
+}
+
+#walkinstruction{
+
+  position: absolute;
+  transform: translate(-50%, -50%);
+  z-index: 4;
+  top: 48%;
+  left: 50%;
+  width: 100%;
+  padding-left:7%;
+  padding-right:7%;
+  font-family: Helvetica,sans-serif;
+  color:#fff;
+  font-size: 26pt;
+  line-height: 32pt;
+  text-align: center;
+
+  /* -webkit-animation: fadeinout 1s linear forwards;
+  animation: fadeinout 3s linear forwards; */
+
+}
+
+#instruction-image{
+  position: absolute;
+  top: 52%;
+  /* left: 15%; */
+  /* width: 100%; */
+  height: 55%;
+  transform: translate(-50%, -50%);
+}
+
+#instruction-image-holder{
+  display: none;
+}
+
+
+#introbutton{
+  display: none;
+  position: absolute;
+  transform: translate(-50%, -50%);
+  top: 80%;
+  left: 50%;
+  width: 82%;
+  background-color: #7A70F9; /* Green */
+  border: 2px solid white;
+  color: white;
+  padding: 30px 30px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16pt;
+  /* visibility: show; */
+}
+
+#introbutton:focus, #engbutton:focus, #frbutton:focus{
+  outline: none;
+  outline: none;
+}
+
+#introbutton:active, #engbutton:active, #frbutton:active{
+  background-color: #665edb;
+}
+
+#engbutton{
+  visibility: visible;
+  position: absolute;
+  transform: translate(-50%, -50%);
+  top: 40%;
+  left: 50%;
+  width: 82%;
+  background-color: #7A70F9; /* Green */
+  border: 2px solid white;
+  z-index: 4;
+  color: white;
+  padding: 30px 30px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16pt;
+  /* visibility: show; */
+}
+
+#frbutton{
+  visibility: visible;
+  position: absolute;
+  transform: translate(-50%, -50%);
+  z-index: 4;
+  top: 60%;
+  left: 50%;
+  width: 82%;
+  background-color: #7A70F9;
+  border: 2px solid white;
+  color: white;
+  padding: 30px 30px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16pt;
+  /* visibility: show; */
+}
+
+#skipbutton{
+  visibility: visible;
+  position: absolute;
+  z-index: 4;
+  right: 0%;
+  top: 0%;
+  background-color: #7A70F9;
+
+  color: white;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 10pt;
+}
+
+#debug_button{
+  position: absolute;
+  z-index: 3;
+  bottom: 0;
+  left: 0;
+  display: none;
+  /* visibility: show; */
+}
+
+#resetbutton{
+  position: relative;
+  z-index: 3;
+  visibility: show;
+}
+
+.flashit{
+  height: 100%;
+  width: 100%;
+  opacity: 0;
+  /* color:#f2f; */
+  background-color: rgb(255, 218, 196);
+	-webkit-animation: flash linear 0.5s 1;
+	animation: flash linear 0.5s 1;
+
+}
+
+@-webkit-keyframes flash {
+	0% { opacity: 0; }
+	10% { opacity: 1; }
+	100% { opacity: 0; }
+}
+@keyframes flash {
+	0% { opacity: 0; }
+	10% { opacity: 1; }
+	100% { opacity: 0; }
+}
+
+
+/* 1. RotateTowardsHeadingVis */
+#RotateTowardsHeadingVis #currentHeading{
+  position: absolute;
+  transform: translate(-50%, -50%);
+  top: 50%;
+  left: 50%;
+  /* width: 7px;
+  height: 150px;
+  background-color: black; */
+  height: 150px;
+  width: 150px;
+  background: url("../images/innerringslot.svg") no-repeat;
+  background-size: 150px 150px;
+}
+
+#RotateTowardsHeadingVis #targetHeading{
+  position: absolute;
+  transform: translate(-50%, -50%);
+  top: 50%;
+  left: 50%;
+
+  /* width: 17px;
+  height: 5000px;
+
+  border-left: 1px solid black;
+  border-right: 1px solid black; */
+
+  height: 150px ;
+  width: 150px ;
+
+  background: url("../images/outerring1slot1.svg") no-repeat;
+  background-size: 150px 150px ;
+}
+
+
+
+
+/* 2. Walk WalkTowardsHeadingVis */
+#WalkTowardsHeadingVis #currentHeading{
+  position: absolute;
+  transform: translate(-50%, -50%);
+  top: 50%;
+  left: 50%;
+
+  height: 150px;
+  width: 150px;
+
+  background: url("../images/innerringslot.svg") no-repeat;
+  background-size: 150px 150px;
+}
+
+#WalkTowardsHeadingVis #targetHeading{
+  position: absolute;
+  transform: translate(-50%, -50%);
+  top: 50%;
+  left: 50%;
+
+  height: 256px;
+  width: 256px;
+
+  background: url("../images/outerringwalk1.svg") no-repeat;
+  background-size: 256px 256px;
+}
+
+#WalkTowardsHeadingVis #stopHeading{
+  display: none;
+
+  position: absolute;
+  transform: translate(-50%, -50%);
+  top: 50%;
+  left: 50%;
+
+  /* width: 7px;
+  height: 150px;
+
+  background-color: black; */
+
+  height: 150px;
+  width: 150px;
+
+  background: url("../images/cross.svg") no-repeat;
+  background-size: 150px 150px;
+}
+
+/* 3. PanZ  */
+/* These are the leo version - lines */
+/* #PanZVis #currentHeadingX{
+  position: absolute;
+  transform: translate(-50%, -50%);
+  top: 50%;
+  left: 50%;
+
+  width: 7px;
+  height: 150px;
+
+  background-color: black;
+} */
+
+/* #PanZVis #targetHeading{
+  position: absolute;
+  top: 0;
+
+  width: 17px;
+  height: 5000px;
+
+  border-left: 1px solid black;
+  border-right: 1px solid black;
+} */
+
+/* This version rotates */
+
+#PanZVis{
+  display: none;
+}
+
+#PanZVis #currentHeadingZ{
+  position: absolute;
+
+  transform-origin: center;
+  transform: translate(-50%, -50%);
+
+  top: 90%;
+  left: 50%;
+
+  height: 2000px;
+  width: 2000px;
+  /* was outcross.svg */
+  background: url("../images/turnerRpurple.svg") no-repeat;
+  background-size: 2000px 2000px;
+
+}
+
+
+#PanZVis #targetHeadingZ{
+  position: absolute;
+
+  transform-origin: center ;
+  transform: translate(-50%, -50%);
+
+  top: 90%;
+  left: 50%;
+
+  height: 2000px;
+  width: 2000px;
+
+  /* was outcross.svg */
+  background: url("../images/turnerLpurple.svg") no-repeat;
+  background-size: 2000px 2000px;
+
+}
+
+#PanZVis #arrivalCover{
+  position: absolute;
+  opacity: 0;
+  /* transform-origin: center ;
+  transform: translate(-50%, -50%); */
+  /* z-index: 3; */
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background-color: rgb(112,231,162);
+  /* transition: opacity 1s; */
+
+}
+
+
+/* 4. PanX  */
+#PanXVis{
+  display: none;
+}
+
+#PanXVis #topBlockMovingDown{
+
+  position: absolute;
+  transform-origin: bottom ;
+  transform: translate(-50%, -50%);
+
+  /* top: 50%; */
+  left: 50%;
+
+  height: 1000px;
+  width: 1000px;
+  /* width: 100%; */
+
+  /* was outcross.svg */
+  /* background: url("../images/horizTchevronDown.svg") no-repeat; */
+  background: url("../images/horizTcurveDownpurple.svg") no-repeat;
+
+  background-size: 1000px 1000px;
+
+}
+
+#PanXVis #bottomBlockMovingDown{
+  position: absolute;
+  transform-origin: center;
+  transform: translate(-50%, -50%);
+
+  /* top: 50%; */
+  left: 50%;
+
+  height: 1000px;
+  width: 1000px;
+  /* width: 100%; */
+
+  /* was outcross.svg */
+  /* background: url("../images/horizBchevronDown.svg") no-repeat; */
+  background: url("../images/horizBcurveDownpurple.svg") no-repeat;
+
+  background-size: 1000px 1000px;
+}
+
+#PanXVis #topBlockMovingUp{
+
+  position: absolute;
+  transform-origin: bottom ;
+  transform: translate(-50%, -50%);
+
+  /* top: 50%; */
+  left: 50%;
+
+  height: 1000px;
+  width: 1000px;
+
+  /* background: url("../images/horizTchevronUp.svg") no-repeat; */
+  background: url("../images/horizTcurveUppurple.svg") no-repeat;
+
+  background-size: 1000px 1000px;
+
+}
+
+#PanXVis #bottomBlockMovingUp{
+  position: absolute;
+  transform-origin: center;
+  transform: translate(-50%, -50%);
+
+  /* top: 50%; */
+  left: 50%;
+
+  height: 1000px;
+  width: 1000px;
+
+  /* was outcross.svg */
+  /* background: url("../images/horizBchevronUp.svg") no-repeat; */
+  background: url("../images/horizBcurveUppurple.svg") no-repeat;
+  background-size: 1000px 1000px;
+}
+
+
+#PanXVis #arrivalCover{
+  position: absolute;
+  opacity: 0;
+
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+
+  background-color: rgb(112,231,162);
+  /* transition: opacity 1s; */
+
+}
+
+
+/* 5. PanXZ  */
+#PanXZVis #targetHeadingXZ{
+  position: absolute;
+  display: none;
+  /* transform: translate(-50%, -50%); */
+  /* top: 50%; */
+  /* left: 50%; */
+
+  /* z-index: 3; */
+
+  height: 150px;
+  width: 150px;
+ /* was outcross.svg */
+  background: url("../images/outerring1.svg") no-repeat;
+  background-size: 150px 150px;
+
+}
+
+
+#PanXZVis #currentHeadingZ{
+  position: absolute;
+  transform: translate(-50%, -50%);
+  top: 80%;
+  left: 50%;
+
+  width: 30px;
+  height: 150px;
+
+  border: 5px solid orange;
+  /* border-right: 1px solid black; */
+  background-color: blue;
+}
+
+
+#PanXZVis #targetHeadingZ{
+  position: absolute;
+  transform-origin: bottom center;
+  top: 80%;
+  left: 50%;
+  z-index: 3;
+
+
+  width: 20px;
+  height: 140px;
+
+  background-color: orange;
+
+}
+
+
+#PanXZVis #currentHeadingX{
+  position: absolute;
+  transform: translate(-50%, -50%);
+  top: 50%;
+  left: 50%;
+
+  width: 150px;
+  height: 30px;
+
+  border: 5px solid pink;
+  /* border-right: 1px solid black; */
+  /* background-color: blue; */
+}
+
+#PanXZVis #targetHeadingX{
+  position: absolute;
+  transform: translate(-50%, -50%);
+  left: 50%;
+  z-index: 3;
+
+  /* height: 150px; */
+  /* width: 150px; */
+ /* was outcross.svg */
+  /* background: url("../images/outerring1.svg") no-repeat; */
+  /* background-size: 150px 150px; */
+
+  height: 20px;
+  width: 150px;
+
+  /* border: 1px solid black;
+  border-bottom: 1px solid black;
+  */
+  background-color: pink;
+
+}
+
+/*
+#PanXZVis #targetHeadingX{
+  position: absolute;
+  top: 0;
+  display: none;
+
+  height: 1px;
+  width: 5000px;
+
+  border: 1px solid black;
+  border-bottom: 1px solid black;
+}
+#PanXZVis #targetHeadingZ{
+  position: absolute;
+  top: 0;
+  display: none;
+
+  width: 1px;
+  height: 5000px;
+
+  border: 1px solid black;
+  border-right: 1px solid black;
+}
+*/
+
+/* X Game Vis  */
+#PanXGameVis #ball{
+  position: absolute;
+  /* top: 50%; */
+
+  z-index: 3;
+  width: 20px;
+  height: 20px;
+  border: 1px solid black;
+  background-color: red;
+}
+
+#PanXGameVis #wall{
+  position: absolute;
+  top: 0;
+  right:0;
+  z-index: 2;
+  width: 20px;
+  height: 1200px;
+  /* border: 1px solid black; */
+  background-color: green;
+}
+
+#PanXGameVis #hole{
+  position: absolute;
+  top: 0;
+  right:0;
+  z-index: 2;
+  width: 20px;
+  height: 40px;
+  /* border: 1px top bottom black; */
+  background-color: blue;
+}
+
+
+
+/* Z Game Vis  */
+
+#PanZGameVis #track{
+  position: absolute;
+  transform-origin: bottom;
+  /* transform: translateX(-50%, -50%) ; */
+  bottom: 50%;
+  right: 50%;
+  z-index: 2;
+  width: 20px;
+  height: 275px;
+  /* border: 1px solid black; */
+  /* background-color: blue; */
+}
+
+
+#PanZGameVis #ball{
+  position: relative;
+  /* top: 50%; */
+
+  z-index: 3;
+  width: 20px;
+  height: 20px;
+  border: 1px solid black;
+  background-color: red;
+}
+
+#PanZGameVis #hole{
+  position: absolute;
+  transform-origin: center;
+  transform: translate(-50%, -50%);
+  width: 200px;
+  height: 200px;
+  top: 50%;
+  left: 50%;
+  z-index: 2;
+  background: url("../images/innerringslot.svg") no-repeat;
+  background-size: 200px 200px;
+  /* border: 1px top bottom black; */
+  /* background-color: yellow; */
+}
+
+
+
+#PanZGameVis #wall{
+  position: absolute;
+  top: 0;
+  right:0;
+  z-index: 2;
+  /* width: 20px;
+  height: 1200px; */
+  /* border: 1px solid black; */
+  background-color: green;
+}
+
+
+
+/* Empty Viz */
+
+#EmptyVis div{
+  position: absolute;
+  transform: translate(-50%, -50%);
+  top: 50%;
+  left: 50%;
+}
+
+#InstructionVis{
+  display: none;
+  position: absolute;
+  transform: translate(-50%, -50%);
+  top: 50%;
+  left: 50%;
+}
+
+#text-instruction{
+  position: absolute;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  top: 50%;
+  left: 50%;
+  font-family: Helvetica,sans-serif;
+  font-size: 30pt;
+  width: 90%;
+
+}
+
+
+#targetCountDown{
+  visibility: hidden;
+  position: absolute;
+  visibility: hidden;
+  transform: translate(-50%, -50%);
+  top: 50%;
+  left: 50%;
+  z-index: 3;
+  font-family: Helvetica,sans-serif;
+  font-size: 20pt;
+  color: white;
+}
