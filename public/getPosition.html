@@ -20,8 +20,10 @@
         padding: 0;
       }
     </style>
+    <script src="/socket.io/socket.io.js"></script>
 
     <script>
+      var socket = io()
 
       //var positionHng = document.getElementById("position-hng");
       var output = document.querySelector('.output');
@@ -36,6 +38,7 @@
       var currLong = 0;
       var map;
       var marker;
+      var otherPeople = [];
 
       //Function called by async script call at bottom
       function initMap() {
@@ -132,12 +135,13 @@
 
           marker = new google.maps.Marker({
             position: myLatLng,
-            title: 'Your Position!'
+            title: 'Your Position!',
+            icon:"/images/dot_marker_blue.png"
           });
 
           marker.setMap(map)
 
-
+          socket.emit("update-coordinates", myLatLng)
 
       };
 
@@ -156,13 +160,68 @@
         }
       };
 
-     //get device orientation events
-    // window.addEventListener("deviceorientation", onHeadingChange, true);
+
+      socket.on('connect', function() {
+          socket.emit('new-client', 'mobile')
+          console.log('check 2', socket.connected);
+      })
+
+
+      socket.on("receive-other-coordinates", function(coords){
+
+        var sID = this.id
+        var formattedCoords = JSON.stringify(coords)
+        console.log(formattedCoords + ", " + sID)
+
+        //If we don't have this ID already
+        var exists = false
+        for( var i=0; i < otherPeople.length; i ++){
+
+          //if we find a match
+          if(otherPeople[i].id === this.id){
+              otherPeople[i].marker.setMap(null)
+
+              //update coordinates of marker
+              otherPeople[i].marker =  new google.maps.Marker({
+                position: coords,
+                title: 'Position of ' + this.id,
+                icon:"/images/dot_marker_gray.png"
+
+              });
+
+              otherPeople[i].marker.setMap(map)
+
+              otherPeople[i].lat = coords.lat
+              otherPeople[i].lng = coords.lng
+              exists = true
+              console.log("updating marker")
+          }
+        }
+
+        if(exists == false){
+
+          var person = {id:this.id, lat:coords.lat, lng:coords.lng, marker:null}
+          person.marker = new google.maps.Marker({
+            position: coords,
+            title: 'Position of ' + this.id,
+            icon:"/images/dot_marker_gray.png"
+          });
+          person.marker.setMap(map)
+          console.log("adding new marker")
+          otherPeople.push(person)
+        }
+    })
+
+
+
+      // socket.emit('reset-sequence')
+
 
     </script>
     <script async defer
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDOkPz6eU_-nO5OKT_Yhv1Rkxu-gOEwKwU&callback=initMap">
     </script>
+
 
 
   </body>
