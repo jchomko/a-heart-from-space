@@ -39,14 +39,15 @@
       var map;
       var marker;
       var otherPeople = [];
+      var heartOverlay;
 
       //Function called by async script call at bottom
       function initMap() {
         var myLatLng = {lat: -25.363, lng: 131.044};
 
          map = new google.maps.Map(document.getElementById('map'), {
-          zoom: 4,
-          center: myLatLng
+           zoom: 13,
+           center: {lat: 45.536384, lng: -73.628949}
         });
 
         marker = new google.maps.Marker({
@@ -54,6 +55,26 @@
           map: map,
           title: 'Target!'
         });
+
+        var imageBounds = {
+          north:45.536384,
+          south:45.535557,
+          west: -73.628949,
+          east: -73.628002
+        }
+        //
+        // heartOverlay = new google.maps.GroundOverlay( '/images/red_heart.png', imageBounds )
+        // heartOverlay.setMap(map);
+
+        // var imageBounds = {
+        //   north: 40.773941,
+        //   south: 40.712216,
+        //   east: -74.12544,
+        //   west: -74.22655
+        // };
+
+        heartOverlay = new google.maps.GroundOverlay('/images/red_heart.png',imageBounds);
+        heartOverlay.setMap(map);
 
       }
 
