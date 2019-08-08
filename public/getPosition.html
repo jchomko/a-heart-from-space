@@ -40,6 +40,7 @@
       var marker;
       var otherPeople = [];
       var heartOverlay;
+      var polyLine;
 
       //Function called by async script call at bottom
       function initMap() {
@@ -56,12 +57,31 @@
           title: 'Target!'
         });
 
+        polyLine = new google.maps.Polyline({
+          strokeColor:'#f70000',
+          strokeOpacity: 1.0,
+          strokeWeight: 5
+        });
+
+        polyLine.setMap(map);
+        var path = polyLine.getPath();
+        // var simpleLatLng = new google.maps.LatLng(-34, 151)
+        //  // = {lat: -25.363, lng: 131.044};
+        //
+        // path.push(simpleLatLng);
+
+
         var imageBounds = {
           north:45.536384,
           south:45.535557,
           west: -73.629249,
           east: -73.628002
         }
+
+
+         map.addListener('click', addLatLng);
+
+
         //
         // heartOverlay = new google.maps.GroundOverlay( '/images/red_heart.png', imageBounds )
         // heartOverlay.setMap(map);
@@ -78,55 +98,16 @@
 
       }
 
-      var xhttp = new XMLHttpRequest();
-      xhttp.onreadystatechange = function() {
-          if (this.readyState == 4 && this.status == 200) {
-              processXML(this);
-          }
-      };
 
-      //process variable from drop down
-      function changeInput (objDropDown)
-      {
-          var obj = document.getElementById("dropdown");
-          obj.value = objDropDown.value;
-          console.log(obj.value);
+      function addLatLng(event){
 
-          //open one of the xml files with coordinates
-          xhttp.open("GET", obj.value, true);
-          xhttp.send();
+        console.log(event.latLng);
+        console.log(event.latLng.lat);
+
+        var path = polyLine.getPath();
+        path.push(event.latLng);
 
       }
-
-      var coordIndex = 0;
-
-      function processXML(xml) {
-
-          var xmlDoc = xml.responseXML;
-          var temp = "";
-          coordinates.splice(0);
-          coordIndex = 0;
-
-          var tempCoords = xmlDoc.getElementsByTagName("coordinates")[0].childNodes[0].nodeValue;
-
-          for(var i = 0; i < tempCoords.length; i ++){
-
-            if(tempCoords[i] === ','){
-
-              coordinates.push([]);
-              coordinates[coordIndex] = temp;
-              coordIndex ++;
-
-              console.log(temp);
-              //console.log(tempCoords[i]);
-              temp = "";
-
-            }else{
-              temp = "" + temp + tempCoords[i];
-            }
-          }
-      }
-
       //Get location of device  - navigator is just an html5 access for the browser
       var tryGeolocation = function() {
         if (navigator.geolocation) {
@@ -189,6 +170,9 @@
 
 
       socket.on("receive-other-coordinates", function(coords){
+        //this should be done on the Server
+        //this function should just receive a list of coordinates, and draw a line of them
+        //
 
         var sID = this.id
         var formattedCoords = JSON.stringify(coords)
@@ -220,7 +204,6 @@
         }
 
         if(exists == false){
-
           var person = {id:this.id, lat:coords.lat, lng:coords.lng, marker:null}
           person.marker = new google.maps.Marker({
             position: coords,
@@ -231,6 +214,23 @@
           console.log("adding new marker")
           otherPeople.push(person)
         }
+
+        var path = polyLine.getPath();
+        // path.clear()
+
+        for(var i=0; i<otherPeople.length; i ++){
+          // var simpleLatLng = new google.maps.LatLng(-34, 151)
+          //  // = {lat: -25.363, lng: 131.044};
+          //
+          // path.push(simpleLatLng);
+           var ll =  new google.maps.LatLng(otherPeople[i].lat,otherPeople[i].lng);
+           console.log(ll);
+           path.push(ll);
+        }
+
+        //every time this is updated re-draw the polyline from scratch
+
+
     })
 
 
