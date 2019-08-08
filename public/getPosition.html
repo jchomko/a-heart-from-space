@@ -64,7 +64,8 @@
         });
 
         polyLine.setMap(map);
-        var path = polyLine.getPath();
+
+        // var path = polyLine.getPath();
         // var simpleLatLng = new google.maps.LatLng(-34, 151)
         //  // = {lat: -25.363, lng: 131.044};
         //
@@ -216,15 +217,11 @@
         }
 
         var path = polyLine.getPath();
-        // path.clear()
+        path.clear()
 
         for(var i=0; i<otherPeople.length; i ++){
-          // var simpleLatLng = new google.maps.LatLng(-34, 151)
-          //  // = {lat: -25.363, lng: 131.044};
-          //
-          // path.push(simpleLatLng);
            var ll =  new google.maps.LatLng(otherPeople[i].lat,otherPeople[i].lng);
-           console.log(ll);
+           console.log("adding new coordinate");
            path.push(ll);
         }
 
