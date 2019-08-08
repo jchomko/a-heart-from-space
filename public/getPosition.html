@@ -219,6 +219,11 @@
         var path = polyLine.getPath();
         path.clear()
 
+
+        var currll =  new google.maps.LatLng(currLat, currLong);
+        path.push(currll);
+
+
         for(var i=0; i<otherPeople.length; i ++){
            var ll =  new google.maps.LatLng(otherPeople[i].lat,otherPeople[i].lng);
            console.log("adding new coordinate");
