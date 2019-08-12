@@ -38,9 +38,10 @@
       var currLong = 0;
       var map;
       var marker;
-      var otherPeople = [];
       var heartOverlay;
       var polyLine;
+      var groupMarkers = [];
+      var sessionID;
 
       //Function called by async script call at bottom
       function initMap() {
@@ -276,16 +277,6 @@
       }
 
 
-      // function addLatLng(event){
-      //
-      //   console.log(event.latLng);
-      //   console.log(event.latLng.lat);
-      //
-      //   var path = polyLine.getPath();
-      //   path.push(event.latLng);
-      //
-      // }
-
       //Get location of device  - navigator is just an html5 access for the browser
       var tryGeolocation = function() {
         if (navigator.geolocation) {
@@ -306,29 +297,27 @@
          currLong = position.coords.longitude;
 
           //update google map with position
-
           map.panTo(myLatLng)
-          map.setZoom(18)
+          // map.setZoom(18)
 
-
-          marker.setMap(null)
-          var image = {
-              url: "/images/dot_marker_blue.png",
-              size: new google.maps.Size(60,60),
-              origin: new google.maps.Point(0,0),
-              anchor: new google.maps.Point(30,30)
-          };
-
-          marker = new google.maps.Marker({
-            position: myLatLng,
-            title: 'Your Position!',
-            icon:image
-          });
-
-          marker.setMap(map)
-
+          // marker.setMap(null)
+          //
+          // var image = {
+          //     url: "/images/dot_marker_blue.png",
+          //     size: new google.maps.Size(60,60),
+          //     origin: new google.maps.Point(0,0),
+          //     anchor: new google.maps.Point(30,30)
+          // };
+          //
+          // marker = new google.maps.Marker({
+          //   position: myLatLng,
+          //   title: 'Your Position!',
+          //   icon:image
+          // });
+          //
+          // marker.setMap(map)
+          
           socket.emit("update-coordinates", myLatLng)
-
       };
 
       //Process errors for geoloc
@@ -349,85 +338,71 @@
 
       socket.on('connect', function() {
           socket.emit('new-client', 'mobile')
+          sessionID = socket.id;
           console.log('check 2', socket.connected);
+
       })
 
 
-      socket.on("receive-other-coordinates", function(coords){
-        //this should be done on the Server
-        //this function should just receive a list of coordinates, and draw a line of them
-        //
+      socket.on("receive-group-coordinates", function(groupCoords){
 
-        var sID = this.id
-        var formattedCoords = JSON.stringify(coords)
-        console.log(formattedCoords + ", " + sID)
+        //Clear Old Markers:
+        for (var i=0; i < groupMarkers.length; i ++){
+          groupMarkers[i].setMap(null);
+        }
 
-        //If we don't have this ID already
-        var exists = false
-        for( var i=0; i < otherPeople.length; i ++){
+        //Draw Markers:
+        for( var i=0; i < groupCoords.length; i ++){
 
-          //if we find a match
-          if(otherPeople[i].id === this.id){
-              otherPeople[i].marker.setMap(null)
+            var image;
 
-              //update coordinates of marker
-              var image = {
-                  url: "/images/dot_marker_gray.png",
+            if(groupCoords[i].id === sessionID){
+              image = {
+                  url: "/images/dot_marker_blue.png",
                   size: new google.maps.Size(60,60),
                   origin: new google.maps.Point(0,0),
                   anchor: new google.maps.Point(30,30)
-              };
+              }
+            }else{
+            //update coordinates of marker
+              image = {
+                url: "/images/dot_marker_gray.png",
+                size: new google.maps.Size(60,60),
+                origin: new google.maps.Point(0,0),
+                anchor: new google.maps.Point(30,30)
+            }
+            }
 
-              otherPeople[i].marker =  new google.maps.Marker({
-                position: coords,
-                title: 'Position of ' + this.id,
-                icon:image
-              });
+            console.log(groupCoords)
+            var lat = groupCoords[i].lat
+            var lng = groupCoords[i].lng
 
+            groupMarkers[i] = new google.maps.Marker({
+              position: {lat:lat,lng:lng},
+              title: 'Position of ' + this.id,
+              icon:image
+            });
 
-              otherPeople[i].marker.setMap(map)
-
-              otherPeople[i].lat = coords.lat
-              otherPeople[i].lng = coords.lng
-              exists = true
-              console.log("updating marker")
-          }
+            groupMarkers[i].setMap(map)
         }
 
-        if(exists == false){
-          var person = {id:this.id, lat:coords.lat, lng:coords.lng, marker:null}
 
-          var image = {
-              url: "/images/dot_marker_gray.png",
-              size: new google.maps.Size(60,60),
-              origin: new google.maps.Point(0,0),
-              anchor: new google.maps.Point(30,30)
-          };
-
-          person.marker = new google.maps.Marker({
-            position: coords,
-            title: 'Position of ' + this.id,
-            icon:image
-          });
-          person.marker.setMap(map)
-          console.log("adding new marker")
-          otherPeople.push(person)
-        }
-
+        //Draw line
         var path = polyLine.getPath();
         path.clear()
 
-
+        //Draw users current position
         var currll =  new google.maps.LatLng(currLat, currLong);
         path.push(currll);
 
-
-        for(var i=0; i<otherPeople.length; i ++){
-           var ll =  new google.maps.LatLng(otherPeople[i].lat,otherPeople[i].lng);
+        //Add positions of other people
+        for(var i=0; i<groupCoords.length; i ++){
+           var ll =  new google.maps.LatLng(groupCoords[i].lat,groupCoords[i].lng);
            console.log("adding new coordinate");
            path.push(ll);
         }
 
+        //Close line by bringing it back to current position
         path.push(currll);
 
         //every time this is updated re-draw the polyline from scratch

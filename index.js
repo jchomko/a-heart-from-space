@@ -8,6 +8,7 @@ var socketIo = require('socket.io')
 var io = null
 var usersList = []
 var debugList = []
+var groupCoords = [];
 
 app.use(useragent.express())
 
@@ -93,35 +94,33 @@ io.on('connection', function(socket){
 
 
   socket.on("update-coordinates", function(coords){
+
     var sID = this.id
     var formattedCoords = JSON.stringify(coords)
     console.log(formattedCoords + ", " + sID)
-    socket.broadcast.emit("receive-other-coordinates", coords)
 
-  })
+    //If we don't have this ID already
+    var exists = false
 
-  socket.on('reset-sequence', function(){
-    sequenceIndex = 0
-    clearTimeout(sequenceTimeout)
-    executeSequenceLoop()
-    console.log("sequence reset")
-  })
+    for( var i=0; i < groupCoords.length; i ++){
 
+      //if we find a match
+      if(groupCoords[i].id === this.id){
 
-
-
-  socket.on('save-json', function(d, filename){
-      //set data to equal data
-      data = d
-
-      var jsonString = JSON.stringify(data, null, 1)
-      fs.writeFile( "./sequences/"+filename, jsonString, (err) => {
-      if (err) {
-          console.error(err)
-          return
+          groupCoords[i].lat = coords.lat
+          groupCoords[i].lng = coords.lng
+          exists = true
       }
-      console.log("File has been created")
-      })
-  })
+    }
 
+    //If ID doesn't match with existing IDs
+    if(exists == false){
+      var person = {id:this.id, lat:coords.lat, lng:coords.lng}
+      groupCoords.push(person)
+    }
+    console.log(JSON.stringify(groupCoords))
+    // socket.broadcast.emit("receive-other-coordinates", coords)
+    // socket.broadcast.emit("receive-group-coordinates", groupCoords)
+    io.emit("receive-group-coordinates", groupCoords)
+  })
 })
