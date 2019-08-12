@@ -6,7 +6,7 @@
 
     <body>
 
-    <button onclick="tryGeolocation()">Try It</button>
+    <!-- <button onclick="tryGeolocation()">Try It</button> -->
 
     <div id="map"></div>
 
@@ -279,25 +279,25 @@
           if(confirm("This website requires access to your GPS location. Press OK and you'll receive a request to access your location.")) {
               tryGeolocation()
           } else {
-              firstCancel()
+              // firstCancel()
           }
       }
 
-      function firstCancel(){
-        if(confirm("Please let us know where you are so you can join us in this journey.")) {
-            tryGeolocation()
-        } else {
-            secondCancel()
-        }
-      }
-
-      function secondCancel(){
-        if(confirm("Ok that's fine too, if you want to change your mind just reload the page.")) {
-            tryGeolocation()
-        } else {
-            // askForLocation()
-        }
-      }
+      // function firstCancel(){
+      //   if(confirm("Please let us know where you are so you can join us in this journey.")) {
+      //       tryGeolocation()
+      //   } else {
+      //       secondCancel()
+      //   }
+      // }
+      //
+      // function secondCancel(){
+      //   if(confirm("Ok that's fine too, if you want to change your mind just reload the page.")) {
+      //       tryGeolocation()
+      //   } else {
+      //       // askForLocation()
+      //   }
+      // }
 
 
       //Get location of device  - navigator is just an html5 access for the browser
