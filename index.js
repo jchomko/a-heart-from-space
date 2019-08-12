@@ -21,8 +21,6 @@ http.listen((process.env.PORT || 5000), function(){
   console.log("Node app is running at localhost: "+app.get('port'))
 })
 
-
-
 app.get('/', function(request, response) {
     response.redirect('/getPosition.html')
 })
@@ -56,7 +54,6 @@ io.on('connection', function(socket){
 
   //this happens automatically when the socket connection breaks
   socket.on('disconnect', function(){
-
     //Remove mobile client from list
     var disconnectedClientIndex = usersList.indexOf(this.id)
     if (disconnectedClientIndex >= 0){
@@ -70,7 +67,6 @@ io.on('connection', function(socket){
       debugList.splice(disconnectedDebugClientIndex, 1)
       console.log("Debug Client disconnected: ", this.id," - updated list: ", debugList)
     }
-
   })
 
   //This we will call when we want a device to go offline
@@ -92,21 +88,17 @@ io.on('connection', function(socket){
     }
   })
 
-
   socket.on("update-coordinates", function(coords){
-
     var sID = this.id
     var formattedCoords = JSON.stringify(coords)
     console.log(formattedCoords + ", " + sID)
 
     //If we don't have this ID already
     var exists = false
-
     for( var i=0; i < groupCoords.length; i ++){
 
       //if we find a match
       if(groupCoords[i].id === this.id){
-
           groupCoords[i].lat = coords.lat
           groupCoords[i].lng = coords.lng
           exists = true
