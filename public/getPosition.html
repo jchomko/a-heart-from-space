@@ -265,38 +265,27 @@
           east: -73.628002
         }
 
-
-         map.addListener('click', addLatLng);
-
-
-        //
-        // heartOverlay = new google.maps.GroundOverlay( '/images/red_heart.png', imageBounds )
+        // heartOverlay = new google.maps.GroundOverlay('/images/red_heart.png',imageBounds);
         // heartOverlay.setMap(map);
 
-        // var imageBounds = {
-        //   north: 40.773941,
-        //   south: 40.712216,
-        //   east: -74.12544,
-        //   west: -74.22655
-        // };
-
-        heartOverlay = new google.maps.GroundOverlay('/images/red_heart.png',imageBounds);
-        heartOverlay.setMap(map);
-
         tryGeolocation();
+        // map.addListener('click', addLatLng);
+
+
 
       }
 
 
-      function addLatLng(event){
+      // function addLatLng(event){
+      //
+      //   console.log(event.latLng);
+      //   console.log(event.latLng.lat);
+      //
+      //   var path = polyLine.getPath();
+      //   path.push(event.latLng);
+      //
+      // }
 
-        console.log(event.latLng);
-        console.log(event.latLng.lat);
-
-        var path = polyLine.getPath();
-        path.push(event.latLng);
-
-      }
       //Get location of device  - navigator is just an html5 access for the browser
       var tryGeolocation = function() {
         if (navigator.geolocation) {
@@ -346,13 +335,13 @@
       var browserGeolocationFail = function(error) {
         switch (error.code) {
           case error.TIMEOUT:
-            alert("Browser geolocation error !\n\nTimeout.");
+            alert("Browser geolocation error !\n\nTimeout." + error.message);
             break;
           case error.PERMISSION_DENIED:
-            alert("Permission Denied");
+            alert("Permission Denied" + error.message);
             break;
           case error.POSITION_UNAVAILABLE:
-            alert("Browser geolocation error !\n\nPosition unavailable AGAIN");
+            alert("Browser geolocation error !\n\nPosition unavailable" + error.message);
             break;
         }
       };
