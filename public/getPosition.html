@@ -42,7 +42,7 @@
       var polyLine;
       var groupMarkers = [];
       var sessionID;
-
+      var firstAlert = false;
       //Function called by async script call at bottom
       function initMap() {
         var myLatLng = {lat: -25.363, lng: 131.044};
@@ -268,12 +268,35 @@
 
         // heartOverlay = new google.maps.GroundOverlay('/images/red_heart.png',imageBounds);
         // heartOverlay.setMap(map);
-
-        // tryGeolocation();
+        askForLocation()
+        // tryGeoloc  ation();
         // map.addListener('click', addLatLng);
 
 
+      }
 
+      function askForLocation(){
+          if(confirm("This website will draw a line between the positions of everyone who is online, allowing us to draw shapes together. When you press OK you'll receive a request to access your location - press OK.")) {
+              tryGeolocation()
+          } else {
+              firstCancel()
+          }
+      }
+
+      function firstCancel(){
+        if(confirm("Please let us know where you are so you can join us in this journey.")) {
+            tryGeolocation()
+        } else {
+            secondCancel()
+        }
+      }
+
+      function secondCancel(){
+        if(confirm("Ok that's fine too, if you want to change your mind just reload the page.")) {
+            tryGeolocation()
+        } else {
+            // askForLocation()
+        }
       }
 
 
@@ -290,7 +313,13 @@
 
       //Geolocation stuff
       var browserGeolocationSuccess = function(position) {
-      //alert("Browser geolocation success!\n\nlat = " + position.coords.latitude + "\nlng = " + position.coords.longitude);
+
+         if(!firstAlert){
+           firstAlert = true
+           alert("Ok great! Let's try to make a heart. ")
+         }
+         // alert("Browser geolocation success!\n\nlat = " + position.coords.latitude + "\nlng = " + position.coords.longitude);
+
          var myLatLng = {lat: position.coords.latitude, lng: position.coords.longitude};
 
          currLat = position.coords.latitude;
@@ -316,7 +345,7 @@
           // });
           //
           // marker.setMap(map)
-          
+
           socket.emit("update-coordinates", myLatLng)
       };
 
