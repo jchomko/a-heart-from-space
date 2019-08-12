@@ -276,7 +276,7 @@
       }
 
       function askForLocation(){
-          if(confirm("This website will draw a line between the positions of everyone who is online, allowing us to draw shapes together. When you press OK you'll receive a request to access your location.")) {
+          if(confirm("This website requires access to your GPS location. Press OK and you'll receive a request to access your location.")) {
               tryGeolocation()
           } else {
               firstCancel()
