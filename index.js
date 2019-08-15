@@ -96,7 +96,7 @@ io.on('connection', function(socket){
      console.log("removed eleemnt" + groupCoords)
 
      groupCoords.sort(function (a, b){
-       return a.sequentialID - b.sequentialID
+       return parseFloat(a.sequentialID) - parseFloat(b.sequentialID)
      });
 
      // console.log(JSON.stringify(groupCoords))
@@ -173,7 +173,7 @@ io.on('connection', function(socket){
     }
 
     groupCoords.sort(function (a, b){
-      return a.sequentialID - b.sequentialID
+      return parseFloat(a.sequentialID) - parseFloat(b.sequentialID)
     });
 
     console.log(JSON.stringify(groupCoords))

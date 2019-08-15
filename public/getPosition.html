@@ -405,7 +405,9 @@
 
       socket.on("receive-group-coordinates", function(groupCoords){
 
-        //Clear Old Markers:
+        //This can be done without making makers flicker
+        // Clear Old Markers:
+
         for (var i=0; i < groupMarkers.length; i ++){
           groupMarkers[i].setMap(null);
         }
@@ -429,7 +431,7 @@
                 size: new google.maps.Size(60,60),
                 origin: new google.maps.Point(0,0),
                 anchor: new google.maps.Point(30,30)
-            }
+             }
             }
 
             console.log(groupCoords)
@@ -472,7 +474,7 @@
 
         //every time this is updated re-draw the polyline from scratch
 
-
+        
     })
 
 
