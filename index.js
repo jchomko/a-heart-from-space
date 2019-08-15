@@ -94,6 +94,15 @@ io.on('connection', function(socket){
      }
 
      console.log("removed eleemnt" + groupCoords)
+
+     groupCoords.sort(function (a, b){
+       return a.sequentialID - b.sequentialID
+     });
+
+     // console.log(JSON.stringify(groupCoords))
+
+     io.emit("receive-group-coordinates", groupCoords)
+
   })
 
   // //This we will call when we want a device to go offline
