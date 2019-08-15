@@ -9,6 +9,7 @@ var io = null
 var usersList = []
 var debugList = []
 var groupCoords = [];
+var idCounter = 0;
 
 app.use(useragent.express())
 
@@ -27,6 +28,12 @@ app.get('/', function(request, response) {
 
 io = socketIo(http)
 io.on('connection', function(socket){
+
+  socket.on("request-id", function(){
+    io.to(this.id).emit("receive-id", idCounter)
+    idCounter++;
+
+  })
 
   //Add client id to usersList if on mobile
   socket.on("new-client", function(data){
@@ -136,13 +143,13 @@ io.on('connection', function(socket){
 
     var sID = this.id
     var formattedCoords = JSON.stringify(coords)
-    console.log(formattedCoords + ", " + sID)
+    console.log("received: " + formattedCoords + ", " + sID)
 
     //If we don't have this ID already
     var exists = false
     for( var i=0; i < groupCoords.length; i ++){
 
-      //if we find a match
+      //if we find a match, we update the existing coordinate
       if(groupCoords[i].id === this.id){
           groupCoords[i].lat = coords.lat
           groupCoords[i].lng = coords.lng
@@ -152,12 +159,17 @@ io.on('connection', function(socket){
 
     //If ID doesn't match with existing IDs
     if(exists == false){
-      var person = {id:this.id, lat:coords.lat, lng:coords.lng}
+      var person = {id:this.id, lat:coords.lat, lng:coords.lng, seqentialID:coords.seqentialID}
       groupCoords.push(person)
     }
+
+    groupCoords.sort(function (a, b){
+      return a.sequentialID - b.sequentialID
+    });
+
     console.log(JSON.stringify(groupCoords))
-    // socket.broadcast.emit("receive-other-coordinates", coords)
-    // socket.broadcast.emit("receive-group-coordinates", groupCoords)
+
     io.emit("receive-group-coordinates", groupCoords)
+
   })
 })
