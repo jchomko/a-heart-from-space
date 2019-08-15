@@ -421,8 +421,8 @@
         path.clear()
 
         //Draw users current position
-        var currll =  new google.maps.LatLng(currLat, currLong);
-        path.push(currll);
+        // var currll =  new google.maps.LatLng(currLat, currLong);
+        // path.push(currll);
 
         //Add positions of other people
         for(var i=0; i<groupCoords.length; i ++){
@@ -431,8 +431,14 @@
            path.push(ll);
         }
 
+        //close shape by bringing it back to the first person
+        if(groupCoords.length > 1){
+          var ll =  new google.maps.LatLng(groupCoords[0].lat,groupCoords[0].lng);
+          path.push(ll);
+        }
+
         //Close line by bringing it back to current position
-        path.push(currll);
+        // path.push(currll);
 
         //every time this is updated re-draw the polyline from scratch
 

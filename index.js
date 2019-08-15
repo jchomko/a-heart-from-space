@@ -67,15 +67,59 @@ io.on('connection', function(socket){
       debugList.splice(disconnectedDebugClientIndex, 1)
       console.log("Debug Client disconnected: ", this.id," - updated list: ", debugList)
     }
+
+    var exists = false
+    var index = -1
+
+    for( var i=0; i < groupCoords.length; i ++){
+      //if we find a match
+      if(groupCoords[i].id === this.id){
+          groupCoords[i].lat = coords.lat
+          groupCoords[i].lng = coords.lng
+          exists = true
+          index = i
+       }
+     }
+
+     //if we have a match
+     //remove that match from the list of coordinates
+     if(exists == true){
+       groupCoords.splice(index, 1)
+     }
+
   })
 
   //This we will call when we want a device to go offline
   socket.on('removeclient', function(){
-    var disconnectedClientIndex = usersList.indexOf(this.id)
-    if (disconnectedClientIndex >= 0){
-      usersList.splice(disconnectedClientIndex, 1)
-      console.log("removing client from list of active users: ", this.id," - updated list: " + usersList)
+    // var disconnectedClientIndex = usersList.indexOf(this.id)
+    // if (disconnectedClientIndex >= 0){
+    //   usersList.splice(disconnectedClientIndex, 1)
+    //   console.log("removing client from list of active users: ", this.id," - updated list: " + usersList)
+    // }
+
+    var exists = false
+    var index = -1
+
+    for( var i=0; i < groupCoords.length; i ++){
+
+      //if we find a match
+      if(groupCoords[i].id === this.id){
+          groupCoords[i].lat = coords.lat
+          groupCoords[i].lng = coords.lng
+          exists = true
+          index = i
+       }
+     }
+
+     //if we have a match
+     //remove that match from the list of coordinates
+     if(exists == true){
+       groupCoords.splice(index, 1)
+     }
+
     }
+
+
   })
 
   socket.on('addclient', function(){
@@ -89,6 +133,7 @@ io.on('connection', function(socket){
   })
 
   socket.on("update-coordinates", function(coords){
+
     var sID = this.id
     var formattedCoords = JSON.stringify(coords)
     console.log(formattedCoords + ", " + sID)
