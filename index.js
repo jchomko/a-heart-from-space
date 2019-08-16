@@ -31,7 +31,7 @@ io.on('connection', function(socket){
 
   socket.on("request-id", function(){
     io.to(this.id).emit("receive-id", idCounter)
-    idCounter++;
+    idCounter+= 1;
 
   })
 
@@ -93,7 +93,7 @@ io.on('connection', function(socket){
        groupCoords.splice(index, 1)
      }
 
-     console.log("removed eleemnt" + groupCoords)
+     console.log("removed element" + JSON.stringify(groupCoords))
 
      groupCoords.sort(function (a, b){
        return parseFloat(a.sequentialID) - parseFloat(b.sequentialID)
@@ -152,7 +152,7 @@ io.on('connection', function(socket){
 
     var sID = this.id
     var formattedCoords = JSON.stringify(coords)
-    console.log("received: " + formattedCoords + ", " + sID)
+    // console.log("received: " + formattedCoords + ", " + sID)
 
     //If we don't have this ID already
     var exists = false
@@ -176,7 +176,7 @@ io.on('connection', function(socket){
       return parseFloat(a.sequentialID) - parseFloat(b.sequentialID)
     });
 
-    console.log(JSON.stringify(groupCoords))
+    console.log("received, sorted: " + JSON.stringify(groupCoords))
 
     io.emit("receive-group-coordinates", groupCoords)
 
