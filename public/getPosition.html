@@ -333,7 +333,7 @@
         if (navigator.geolocation) {
             navigator.geolocation.watchPosition(
             browserGeolocationSuccess,
-            browserGeolocationFail, { enableHighAccuracy: true, timeout: 5000, maximumAge: 0});
+            browserGeolocationFail, { enableHighAccuracy: true, timeout: 10000, maximumAge: 5000});
           //  {maximumAge: 0, timeout: 5000, enableHighAccuracy: false});
         }
       };
@@ -474,7 +474,7 @@
 
         //every time this is updated re-draw the polyline from scratch
 
-        
+
     })
 
 
