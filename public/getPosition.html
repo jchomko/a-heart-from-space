@@ -291,6 +291,7 @@
         // heartOverlay = new google.maps.GroundOverlay('/images/red_heart.png',imageBounds);
         // heartOverlay.setMap(map);
         askForLocation()
+
         // map.addListener('click', addLatLng);
 
         var id = getCookie("id");
@@ -339,6 +340,12 @@
       };
 
 
+      function placeMarker(location) {
+          var marker = new google.maps.Marker({
+              position: location,
+              map: map
+          });
+      }
 
       //Geolocation stuff
       var browserGeolocationSuccess = function(position) {
@@ -347,6 +354,8 @@
          //   firstAlert = true
          //   alert("Ok great! Let's try to make a heart. ")
          // }
+         console.log(position);
+         
          // alert("Browser geolocation success!\n\nlat = " + position.coords.latitude + "\nlng = " + position.coords.longitude);
          var myLatLng = {lat: position.coords.latitude, lng: position.coords.longitude, seqentialID: cookieID};
          //
