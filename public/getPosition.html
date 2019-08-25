@@ -44,6 +44,8 @@
       var sessionID;
       var firstAlert = false;
       var cookieID;
+      var bestAccuracy = 100;
+
 
       function setCookie(c_name, value, exdays) {
         var exdate = new Date();
@@ -354,31 +356,23 @@
          //   firstAlert = true
          //   alert("Ok great! Let's try to make a heart. ")
          // }
-         console.log(position);
-         
-         // alert("Browser geolocation success!\n\nlat = " + position.coords.latitude + "\nlng = " + position.coords.longitude);
-         var myLatLng = {lat: position.coords.latitude, lng: position.coords.longitude, seqentialID: cookieID};
-         //
-         // currLat = position.coords.latitude;
-         // currLong = position.coords.longitude;
-         //update google map with position
-         map.panTo(myLatLng)
-         // map.setZoom(18)
-         // marker.setMap(null)
-         // var image = {
-         //     url: "/images/dot_marker_blue.png",
-         //     size: new google.maps.Size(60,60),
-         //     origin: new google.maps.Point(0,0),
-         //     anchor: new google.maps.Point(30,30)
-         // };
-         // marker = new google.maps.Marker({
-          //   position: myLatLng,
-          //   title: 'Your Position!',
-          //   icon:image
-          // });
-          // marker.setMap(map)
-          console.log("sending: " + myLatLng)
-          socket.emit("update-coordinates", myLatLng)
+         if(position.coords.accuracy < bestAccuracy){
+           bestAccuracy = position.coords.accuracy;
+           console.log("bestAccuracy: " + bestAccuracy);
+         }
+
+         // if we have a high accuracy reading
+         if(position.coords.accuracy < bestAccuracy + 10){
+           // alert("Browser geolocation success!\n\nlat = " + position.coords.latitude + "\nlng = " + position.coords.longitude);
+           var myLatLng = {lat: position.coords.latitude, lng: position.coords.longitude, seqentialID: cookieID};
+
+           // map.panTo(myLatLng)
+           console.log("accurate coordinates: " + myLatLng )
+           socket.emit("update-coordinates", myLatLng)
+
+         }
+
+
 
       };
 
