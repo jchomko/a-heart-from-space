@@ -45,7 +45,7 @@
       var firstAlert = false;
       var cookieID;
       var bestAccuracy = 100;
-
+      var firstLocation = true;
 
       function setCookie(c_name, value, exdays) {
         var exdate = new Date();
@@ -365,11 +365,18 @@
          if(position.coords.accuracy < bestAccuracy + 10){
            // alert("Browser geolocation success!\n\nlat = " + position.coords.latitude + "\nlng = " + position.coords.longitude);
            var myLatLng = {lat: position.coords.latitude, lng: position.coords.longitude, seqentialID: cookieID};
-           // map.panTo(myLatLng)
+
+           if(firstLocation){
+             map.panTo(myLatLng)
+             firstLocation = false;
+           }
+
            console.log("accurate coordinates: " + JSON.stringify(myLatLng) )
            socket.emit("update-coordinates", myLatLng)
 
+
          }
+
       };
 
       //Process errors for geoloc
