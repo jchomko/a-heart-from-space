@@ -365,15 +365,11 @@
          if(position.coords.accuracy < bestAccuracy + 10){
            // alert("Browser geolocation success!\n\nlat = " + position.coords.latitude + "\nlng = " + position.coords.longitude);
            var myLatLng = {lat: position.coords.latitude, lng: position.coords.longitude, seqentialID: cookieID};
-
            // map.panTo(myLatLng)
-           console.log("accurate coordinates: " + myLatLng )
+           console.log("accurate coordinates: " + JSON.stringify(myLatLng) )
            socket.emit("update-coordinates", myLatLng)
 
          }
-
-
-
       };
 
       //Process errors for geoloc
@@ -410,7 +406,6 @@
 
         //This can be done without making makers flicker
         // Clear Old Markers:
-
         for (var i=0; i < groupMarkers.length; i ++){
           groupMarkers[i].setMap(null);
         }
@@ -437,7 +432,7 @@
              }
             }
 
-            console.log(groupCoords)
+            console.log("received coords: " + groupCoords)
             var lat = groupCoords[i].lat
             var lng = groupCoords[i].lng
 
