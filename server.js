@@ -1,32 +1,50 @@
 var express = require('express')
 var path = require('path')
 var app = express()
-var http = require('http').Server(app)
 var fs = require('fs')
 var useragent = require('express-useragent')
-var socketIo = require('socket.io')
+require('dotenv').config();
+
+
 var io = null
 var usersList = []
 var debugList = []
 var groupCoords = [];
 var idCounter = 0;
 
-app.use(useragent.express())
 
+if(process.env.NODE_ENV != 'production') {
 
-app.use('/', express.static(path.join(__dirname, 'public')))
+  var https = require('https').createServer({
+        key: fs.readFileSync('localhost+4-key.pem'),
+        cert: fs.readFileSync('localhost+4.pem'),
+        requestCert: false,
+        rejectUnauthorized: false}, app);
+  io = require('socket.io').listen(https);
+  https.listen((process.env.PORT || 5000), function(){
+           console.log("Node app is running at localhost: "+ app.get('port'))
+         });
+  console.log("development")
 
-app.set('port', (process.env.PORT || 5000))
+}else{
 
-http.listen((process.env.PORT || 5000), function(){
-  console.log("Node app is running at localhost: "+app.get('port'))
-})
+  var http = require('http').createServer(app);
+  io = require('socket.io').listen(http);
+  http.listen((process.env.PORT || 5000), function(){
+        console.log("Node app is running at localhost: "+ app.get('port'))
+      });
+  console.log("production");
+
+}
+
+app.use(express.static('public'));
 
 app.get('/', function(request, response) {
-    response.redirect('/getPosition.html')
+    // response.redirect('/index.html')
+    response.sendFile('/public/index.html', {"root": __dirname})
 })
 
-io = socketIo(http)
+
 io.on('connection', function(socket){
 
   socket.on("request-id", function(){
@@ -34,7 +52,6 @@ io.on('connection', function(socket){
     idCounter+= 1;
 
   })
-
   //Add client id to usersList if on mobile
   socket.on("new-client", function(data){
 
