@@ -163,6 +163,7 @@ io.on('connection', function(socket){
     }else{
       console.log("Client Already Exists: ", this.id)
     }
+    
   })
 
   socket.on("update-coordinates", function(coords){

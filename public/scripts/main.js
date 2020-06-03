@@ -15,6 +15,8 @@ var marker;
 var heartOverlay;
 var polyLine;
 var groupMarkers = [];
+var groupPolyLines = [];
+
 var sessionID;
 var firstAlert = false;
 var cookieID;
@@ -23,6 +25,9 @@ var firstLocation = true;
 var hasSensorAccess = false;
 var compassOrientation = 0;
 
+var markerArray = [];
+
+var guideLine;
 
 var testMarker;
 
@@ -139,6 +144,101 @@ function askForLocation(){
     }
 }
 
+function drawLines(groupCoords){
+  var dist = 0;
+  //Cycle through Markers
+  console.log(groupCoords);
+
+  //clear all polylines
+  for( var i = 0; i < groupPolyLines.length; i ++){
+    // groupPolyLines[i].setMap(null);
+    groupPolyLines[i].getPath().clear();
+  }
+
+  for( var i=0; i < groupCoords.length; i ++){
+
+    var pairId = -1;
+    var thirdPairId = -1;
+    var secondPairId = -1;
+
+    var minDist = 10000000;
+    var secondMinDist = 10000000;
+    var thirdMinDist = 10000000;
+
+    for (var j=0; j < groupCoords.length; j ++) {
+      if (i != j) {
+        dist = distance(groupCoords[i].lat(), groupCoords[i].lng(), groupCoords[j].lat(), groupCoords[j].lng());
+        console.log(dist);
+
+
+        if ( dist < minDist  ) { //&& p1.numConnections < 1 && p2.numConnections < 2  &&  // j != (int)p2.lineStartId && j != (int)p2.lineEndId
+          //these will be the secondary values because they will always be one cycle delayed
+          minDist = dist;
+          pairId = j;
+        }
+      }
+    }
+
+    for (var j=0; j < groupCoords.length; j ++) {
+      if (i != j) {
+        dist = distance(groupCoords[i].lat(), groupCoords[i].lng(), groupCoords[j].lat(), groupCoords[j].lng());
+        console.log(dist);
+
+        if(dist < secondMinDist && dist > minDist){
+          secondMinDist = dist;
+          secondPairId = j;
+        }
+
+      }
+    }
+
+
+
+
+    if (pairId != -1 ) {
+      //make new polyline
+      var pl = new google.maps.Polyline({
+      strokeColor:'#f70000',
+      strokeOpacity: 1,
+      strokeWeight: 5
+      // editable: true
+      })
+
+      pl.setMap(map);
+      var path = pl.getPath();
+
+      var startPoint =  new google.maps.LatLng(groupCoords[i].lat(),groupCoords[i].lng());
+      path.push(startPoint);
+      var endPoint =  new google.maps.LatLng(groupCoords[pairId].lat(),groupCoords[pairId].lng());
+      path.push(endPoint);
+      //group is just a way to keep track of all the lines we're making so we can clear them
+      groupPolyLines.push(pl);
+    }
+
+    if (secondPairId != -1 ) {
+      //make new polyline
+      var pl = new google.maps.Polyline({
+      strokeColor:'#f70000',
+      strokeOpacity: 1,
+      strokeWeight: 5
+      // editable: true
+      })
+
+      pl.setMap(map);
+      var path = pl.getPath();
+
+      var startPoint =  new google.maps.LatLng(groupCoords[i].lat(),groupCoords[i].lng());
+      path.push(startPoint);
+      var endPoint =  new google.maps.LatLng(groupCoords[secondPairId].lat(),groupCoords[secondPairId].lng());
+      path.push(endPoint);
+      //group is just a way to keep track of all the lines we're making so we can clear them
+      groupPolyLines.push(pl);
+    }
+
+
+  }
+}
+
 function placeMarker(location) {
     var marker = new google.maps.Marker({
         position: location,
@@ -146,11 +246,73 @@ function placeMarker(location) {
     });
 }
 
+
+
+function addLatLng(event) {
+    // need to create marker here
+    // each marker needs to be added to an array
+    // and when a marker changes position, we update our coordiantes array
+    // and then send it to the drawing function
+
+
+      var path = guideLine.getPath();
+
+      // Because path is an MVCArray, we can simply append a new coordinate
+      // and it will automatically appear.
+      path.push(event.latLng);
+
+     //
+     //    // Add a new marker at the new plotted point on the polyline.
+
+     //  var marker = new google.maps.Marker({
+     //      position: event.latLng,
+     //      map: map,
+     //      // dragend: function(evt){
+     //      //   console.log(evt); //.latLng.lat().toFixed(3)
+     //      // },
+     //      arrayIndex: markerArray.length,
+     //      draggable: true
+     //  });
+     //
+
+
+     // markerArray.push(marker);
+     //
+     //
+     //
+     var coord = {lat: event.latLng.lat(), lng: event.latLng.lng()};
+     coordinates.push(coord);
+     console.log(coordinates);
+
+      // coordinates.push(event.latLng);
+      // console.log(coordinates);
+     drawLines(guideLine.getPath().getArray());
+
+}
+
+function distance(lat1,lon1,lat2,lon2) {
+      	var R = 6371; // km (change this constant to get miles)
+      	var dLat = (lat2-lat1) * Math.PI / 180;
+      	var dLon = (lon2-lon1) * Math.PI / 180;
+
+        var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+      		Math.cos(lat1 * Math.PI / 180 ) * Math.cos(lat2 * Math.PI / 180 ) *
+      		Math.sin(dLon/2) * Math.sin(dLon/2);
+      	var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+      	var d = R * c;
+      	// if (d>1) return Math.round(d)+"km";
+      	// else if (d<=1) return Math.round(d*1000)+"m";
+        // if (d>1) return Math.round(d);
+        // else if (d<=1) return Math.round(d*1000);
+
+        //meters
+      	return d*1000;
+}
+
 socket.on("receive-id",function(id){
   setCookie("id", id, 1)
   console.log("setting id cookie to : " + id);
   cookieID = id;
-
 })
 
 socket.on('connect', function() {
@@ -160,12 +322,20 @@ socket.on('connect', function() {
 })
 
 socket.on("receive-group-coordinates", function(groupCoords){
-  //This can be done without making makers flicker
+  //find distance between all coordinates
+  //Draw lines between shortest two distances
+  //Each line will need to be a new polyLine
 
+
+  //This can be done without making makers flicker
   // Clear Old Markers:
-  // for (var i=0; i < groupMarkers.length; i ++){
-  //   groupMarkers[i].setMap(null);
-  // }
+  for (var i=0; i < groupMarkers.length; i ++){
+    groupMarkers[i].setMap(null);
+  }
+
+  drawLines(groupCoords);
+
+
   //
   // //Draw Markers:
   // for( var i=0; i < groupCoords.length; i ++){
@@ -228,6 +398,7 @@ socket.on("receive-group-coordinates", function(groupCoords){
   // //Close line by bringing it back to current position
   // // path.push(currll);
   // //every time this is updated re-draw the polyline from scratch
+
 })
 
 if( typeof( DeviceOrientationEvent ) !== "undefined" && typeof( DeviceOrientationEvent.requestPermission ) === "function" ) {
@@ -359,6 +530,10 @@ if( typeof( DeviceOrientationEvent ) !== "undefined" && typeof( DeviceOrientatio
 
 }
 
+function polylineChanged(){
+   drawLines(guideLine.getPath().getArray());
+   // console.log("draing lines");
+}
 
 //Function called by async script call at bottom of index.html
 function initMap() {
@@ -562,6 +737,52 @@ function initMap() {
   polyLine.setMap(map);
 
 
+  guideLine = new google.maps.Polyline({
+    strokeColor:'#989898',
+    strokeOpacity: 0.1,
+    strokeWeight: 5,
+    editable: true
+    // draggable: true
+  });
+
+  // click: function(evt){
+  //   console.log("click");
+  // },
+  // dragend: function(evt){
+  //   console.log("drag");
+  // }
+
+
+  guideLine.setMap(map);
+
+  // google.maps.event.addListener(guideLine.getPath(), "dragend", function(evt){
+  //   drawLines(guideLine.getPath().getArray());
+  //   console.log("drag end");
+  //   // console.log(evt);
+  // });
+
+  google.maps.event.addListener(guideLine.getPath(), 'insert_at', polylineChanged);
+  google.maps.event.addListener(guideLine.getPath(), 'remove_at', polylineChanged);
+  google.maps.event.addListener(guideLine.getPath(), 'set_at', polylineChanged);
+
+  // google.maps.event.addListener(guideLine, 'click', function(e) {
+  //   console.log("click");
+  //   // handelPolyClick(e, this);
+  //   // var handelPolyClick (eventArgs, polyLine) {
+  //     // now you can access the polyLine
+  //     // console.log(polyLine.strokeColor);
+  //   // });
+  // });
+
+
+
+  // guideLine.getPath().addListener('click', function(evt){
+  //   // drawLines(guideLine.getPath().getArray());
+  //   console.log("click");
+  //   // console.log(evt);
+  // });
+
+
     var imageBounds = {
       north:45.536384,
       south:45.535557,
@@ -573,7 +794,7 @@ function initMap() {
     // heartOverlay.setMap(map);
 
 
-    // map.addListener('click', addLatLng);
+    map.addListener('click', addLatLng);
 
     var id = getCookie("id");
     if(id != null){
