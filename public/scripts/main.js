@@ -280,17 +280,17 @@ function drawMarkers(groupCoords) {
     if (groupCoords[i].id === sessionID) {
 
       homeMarkerID = i;
-
-      image = {
-        // url: "/images/compass_dot_marker.png",
-        path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
-        scale: 4
-        // ,
-        // size: new google.maps.Size(60,60),
-        // origin: new google.maps.Point(0,0),
-        // anchor: new google.maps.Point(30,30),
-        // rotation: compassOrientation
-      }
+      //
+      // image = {
+      //   // url: "/images/compass_dot_marker.png",
+      //   path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+      //   scale: 4
+      //   // ,
+      //   // size: new google.maps.Size(60,60),
+      //   // origin: new google.maps.Point(0,0),
+      //   // anchor: new google.maps.Point(30,30),
+      //   // rotation: compassOrientation
+      // }
     } else {
       //update coordinates of marker
       image = {
@@ -299,6 +299,9 @@ function drawMarkers(groupCoords) {
         origin: new google.maps.Point(0, 0),
         anchor: new google.maps.Point(30, 30)
       }
+
+
+
     }
 
     console.log("received coords: " + groupCoords)
@@ -307,12 +310,13 @@ function drawMarkers(groupCoords) {
     var lng = groupCoords[i].lng
 
     //if we already have a marker in our file
-    if (i < groupMarkers.length) {
-
+    if (i < groupMarkers.length ) {
       var latlng = new google.maps.LatLng(lat, lng);
       groupMarkers[i].setPosition(latlng);
-      groupMarkers[i].setIcon(image);
-      //add new marker
+      if(groupCoords[i].id != sessionID){
+        groupMarkers[i].setIcon(image);
+      }
+    //add new marker
     } else {
 
       groupMarkers[i] = new google.maps.Marker({
