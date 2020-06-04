@@ -122,7 +122,7 @@ io.on('connection', function(socket){
 
   })
 
-  // //This we will call when we want a device to go offline
+  // //This can manually called when we want a device to go offline
   // socket.on('removeclient', function(){
   //   // var disconnectedClientIndex = usersList.indexOf(this.id)
   //   // if (disconnectedClientIndex >= 0){
@@ -156,16 +156,23 @@ io.on('connection', function(socket){
   // })
 
   socket.on('addclient', function(){
+
+    //If user doesn't already exist
     if (usersList.indexOf(this.id) == -1){
+      //Add user to our list of users
       usersList.push( this.id )
       console.log("adding client back to list: ", this.id," - updated list: ", usersList)
+      //reply only to user with their ID
       io.to(this.id).emit("client-id", usersList.indexOf(this.id))
+
+    //Client already exists in our list
     }else{
       console.log("Client Already Exists: ", this.id)
     }
-    
+
   })
 
+  //Receive coordinates from each participant and add them to our list
   socket.on("update-coordinates", function(coords){
 
     var sID = this.id
@@ -190,11 +197,21 @@ io.on('connection', function(socket){
       groupCoords.push(person)
     }
 
-    groupCoords.sort(function (a, b){
-      return parseFloat(a.sequentialID) - parseFloat(b.sequentialID)
-    });
+    //WE don't need to sort these anymore because we are doing complicated drawing techniques to find closest points
+    // groupCoords.sort(function (a, b){
+    //   return parseFloat(a.sequentialID) - parseFloat(b.sequentialID)
+    // });
 
     console.log("received, sorted: " + JSON.stringify(groupCoords))
+
+    //this sends the list back to the original sender
+    //it isn't a problem because we check for our own id in the list
+    //it might make sense to only send this every little while because each user submitting their data
+    //triggers the send of this to everyone
+    //but that insures that everyone gets the latest info
+    //and plus when people are still they don't update so much
+    //the only other way to do this would be to have everyone maintain their own lists of people's points
+    //but i don't think we need that much efficiency
 
     io.emit("receive-group-coordinates", groupCoords)
 
