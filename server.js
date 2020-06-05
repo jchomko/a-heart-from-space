@@ -172,6 +172,24 @@ io.on('connection', function(socket){
 
   })
 
+
+  socket.on("update-heading", function(heading){
+      var sID = this.id
+      var exists = false
+
+      for( var i=0; i < groupCoords.length; i ++){
+
+        //if we find a match, we update the existing coordinate
+        if(groupCoords[i].id === this.id){
+            groupCoords[i].heading = heading
+            exists = true
+        }
+      }
+      if(exists){
+        io.emit("receive-group-coordinates", groupCoords)
+      }
+  })
+
   //Receive coordinates from each participant and add them to our list
   socket.on("update-coordinates", function(coords){
 
@@ -202,7 +220,7 @@ io.on('connection', function(socket){
     //   return parseFloat(a.sequentialID) - parseFloat(b.sequentialID)
     // });
 
-    console.log("received, sorted: " + JSON.stringify(groupCoords))
+    // console.log("received, sorted: " + JSON.stringify(groupCoords))
 
     //this sends the list back to the original sender
     //it isn't a problem because we check for our own id in the list

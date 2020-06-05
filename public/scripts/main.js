@@ -30,7 +30,7 @@ var markerArray = [];
 var guideLine;
 var testMarker;
 var hasSensorAccess = false;
-
+var lastMarkerLength = 0;
 //TO-DO - add compass arrow to graphic (or to map) (make map little square?)
 //
 
@@ -83,38 +83,39 @@ var browserGeolocationSuccess = function(position) {
     //   firstLocation = false;
     // }
 
-    if (firstLocation) {
-      // map.panTo(myLatLng)
-      firstLocation = false;
-      var image = {
-        // url: "/images/compass_dot_marker.png",
-        path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
-        scale: 4
-        // size: new google.maps.Size(60,60),
-        // origin: new google.maps.Point(0,0),
-        // anchor: new google.maps.Point(30,30),
-        // rotation: compassOrientation
-      }
-      // map.setHeading(180)
+    // if (firstLocation) {
+    //   // map.panTo(myLatLng)
+    //   firstLocation = false;
+    //   var image = {
+    //     // url: "/images/compass_dot_marker.png",
+    //     path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+    //     scale: 4
+    //     // size: new google.maps.Size(60,60),
+    //     // origin: new google.maps.Point(0,0),
+    //     // anchor: new google.maps.Point(30,30),
+    //     // rotation: compassOrientation
+    //   }
+    //   // map.setHeading(180)
+    //
+    //   var lat = position.coords.latitude
+    //   var lng = position.coords.longitude
+    //
+    //   // testMarker = new google.maps.Marker({
+    //   //   position: {
+    //   //     lat: lat,
+    //   //     lng: lng
+    //   //   },
+    //   //   title: 'Position of ' + this.id,
+    //   //   icon: image
+    //   // });
+    //   //
+    //   // testMarker.setMap(map);
+    //   firstLocation = false;
+    //
+    // }
 
-      var lat = position.coords.latitude
-      var lng = position.coords.longitude
+    // console.log("accurate coordinates: " + JSON.stringify(myLatLng))
 
-      // testMarker = new google.maps.Marker({
-      //   position: {
-      //     lat: lat,
-      //     lng: lng
-      //   },
-      //   title: 'Position of ' + this.id,
-      //   icon: image
-      // });
-      //
-      // testMarker.setMap(map);
-      firstLocation = false;
-
-    }
-
-    console.log("accurate coordinates: " + JSON.stringify(myLatLng))
     socket.emit("update-coordinates", myLatLng)
   }
 };
@@ -259,10 +260,13 @@ function drawLines(groupCoords) {
 
 function drawMarkers(groupCoords) {
 
-  // Clear Old Markers:
-  // for (var i = 0; i < groupMarkers.length; i++) {
-  //   groupMarkers[i].setMap(null);
-  // }
+  // Clear Old Markers, if there is a difference between the last length and the current length
+
+  for (var i = lastMarkerLength; i < groupMarkers.length; i++) {
+    groupMarkers[i].setMap(null);
+  }
+
+  lastMarkerLength = groupCoords.length;
 
   var image;
   // all we need to do here is make sure you know which marker you are
@@ -274,28 +278,24 @@ function drawMarkers(groupCoords) {
     if (groupCoords[i].id === sessionID) {
 
       homeMarkerID = i;
-      //
-      // image = {
-      //   // url: "/images/compass_dot_marker.png",
-      //   path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
-      //   scale: 4
-      //   // ,
-      //   // size: new google.maps.Size(60,60),
-      //   // origin: new google.maps.Point(0,0),
-      //   // anchor: new google.maps.Point(30,30),
-      //   // rotation: compassOrientation
-      // }
     } else {
       //update coordinates of marker
+      // image = {
+      //   url: "/images/dot_marker_gray.png",
+      //   size: new google.maps.Size(60, 60),
+      //   origin: new google.maps.Point(0, 0),
+      //   anchor: new google.maps.Point(30, 30)
+      // }
       image = {
-        url: "/images/dot_marker_gray.png",
-        size: new google.maps.Size(60, 60),
-        origin: new google.maps.Point(0, 0),
-        anchor: new google.maps.Point(30, 30)
+        path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+        strokeWeight: 2,
+        fillColor: "#919191",
+        strokeColor: "#919191",
+        fillOpacity: 1.0,
+        scale: 6,
+        anchor: new google.maps.Point(0, 3),
+        rotation: groupCoords[i].heading
       }
-
-
-
     }
 
     console.log("received coords: " + groupCoords)
@@ -304,13 +304,14 @@ function drawMarkers(groupCoords) {
     var lng = groupCoords[i].lng
 
     //if we already have a marker in our file
-    if (i < groupMarkers.length ) {
+    if (i < groupMarkers.length) {
       var latlng = new google.maps.LatLng(lat, lng);
       groupMarkers[i].setPosition(latlng);
-      if(groupCoords[i].id != sessionID){
+
+      if (groupCoords[i].id != sessionID) {
         groupMarkers[i].setIcon(image);
       }
-    //add new marker
+      //add new marker
     } else {
 
       groupMarkers[i] = new google.maps.Marker({
@@ -450,7 +451,7 @@ if (typeof(DeviceOrientationEvent) !== "undefined" && typeof(DeviceOrientationEv
     } else {
       data = {
         info: "No permissions: absolute=false, heading might not be absolute to magnetic north",
-        z: 360-event.alpha
+        z: 360 - event.alpha
       }
     }
     // console0.log(data);
@@ -462,21 +463,18 @@ if (typeof(DeviceOrientationEvent) !== "undefined" && typeof(DeviceOrientationEv
 
     $("#compassInfo").html(data.info + ": " + compassOrientation + ". event: " + event);
 
-    // if (testMarker != null) {
-    //   testMarker.setIcon({
-    //     path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
-    //     scale: 4,
-    //     rotation: compassOrientation
-    //   });
-    // }
-
     if (groupMarkers.length > homeMarkerID) {
       groupMarkers[homeMarkerID].setIcon({
         path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
-        scale: 4,
+        strokeWeight: 2,
+        fillColor: "#000000",
+        fillOpacity: 1.0,
+        scale: 6,
+        anchor: new google.maps.Point(0, 3),
         rotation: compassOrientation
       });
     }
+    socket.emit('update-heading',compassOrientation);
 
   })
 }
@@ -512,27 +510,21 @@ function requestSensorAccess() {
             }
 
             $("#compassInfo").html(data.info + ": " + data.z + ". Has sensor access: " + hasSensorAccess);
-            // $("#compassInfo").html(data);
-            // compassOrientation = data.z;
 
-            // if(groupMarkers[0] != undefined){
+            compassOrientation = data.z;
+            compassOrientation = (compassOrientation + 0);
+            if (compassOrientation > 360) {
+              compassOrientation = compassOrientation - 360;
+            }
 
-            // if (testMarker != null) {
-            //   testMarker.setIcon({
-            //     path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
-            //     scale: 4,
-            //     rotation: compassOrientation
-            //   });
-            // }
-
-            // if (groupMarkers.length < homeMarkerID) {
-            //   groupMarkers[homeMarkerID].setIcon({
-            //     path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
-            //     scale: 4,
-            //     rotation: compassOrientation
-            //   });
-            // }
-
+            if (groupMarkers.length > homeMarkerID) {
+              groupMarkers[homeMarkerID].setIcon({
+                path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+                scale: 4,
+                rotation: compassOrientation
+              });
+            }
+            socket.emit('update-heading',compassOrientation);
           })
         }
       })
