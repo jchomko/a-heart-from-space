@@ -27,15 +27,9 @@ var hasSensorAccess = false;
 var compassOrientation = 0;
 
 var markerArray = [];
-
 var guideLine;
-
 var testMarker;
-
 var hasSensorAccess = false;
-
-
-
 
 //TO-DO - add compass arrow to graphic (or to map) (make map little square?)
 //
@@ -456,7 +450,7 @@ if (typeof(DeviceOrientationEvent) !== "undefined" && typeof(DeviceOrientationEv
     } else {
       data = {
         info: "No permissions: absolute=false, heading might not be absolute to magnetic north",
-        z: event.alpha
+        z: 360-event.alpha
       }
     }
     // console0.log(data);
@@ -466,7 +460,7 @@ if (typeof(DeviceOrientationEvent) !== "undefined" && typeof(DeviceOrientationEv
       compassOrientation = compassOrientation - 360;
     }
 
-    $("#compassInfo").html(data.info + ": " + compassOrientation + ". Has sensor access: " + hasSensorAccess);
+    $("#compassInfo").html(data.info + ": " + compassOrientation + ". event: " + event);
 
     // if (testMarker != null) {
     //   testMarker.setIcon({
