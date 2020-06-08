@@ -21,7 +21,7 @@ var homeMarkerID;
 var sessionID;
 var firstAlert = false;
 var cookieID;
-var bestAccuracy = 100;
+var bestAccuracy = 1000;
 var firstLocation = true;
 var hasSensorAccess = false;
 var compassOrientation = 0;
@@ -65,6 +65,8 @@ var browserGeolocationSuccess = function(position) {
   //   firstAlert = true
   //   alert("Ok great! Let's try to make a heart. ")
   // }
+  console.log(position.coords.accuracy);
+
   if (position.coords.accuracy < bestAccuracy) {
     bestAccuracy = position.coords.accuracy;
     console.log("bestAccuracy: " + bestAccuracy);
@@ -73,7 +75,7 @@ var browserGeolocationSuccess = function(position) {
 
 
   // if we have a high accuracy reading
-  if (position.coords.accuracy < bestAccuracy + 10) {
+  if (position.coords.accuracy < bestAccuracy + 10 || position.coords.accuracy === 150) {
     // alert("Browser geolocation success!\n\nlat = " + position.coords.latitude + "\nlng = " + position.coords.longitude);
     var myLatLng = {
       lat: position.coords.latitude,
@@ -118,7 +120,7 @@ var browserGeolocationSuccess = function(position) {
     //
     // }
 
-    // console.log("accurate coordinates: " + JSON.stringify(myLatLng))
+    console.log("accurate coordinates: " + JSON.stringify(myLatLng))
 
     socket.emit("update-coordinates", myLatLng)
   }
