@@ -11,28 +11,31 @@ var usersList = []
 var debugList = []
 var groupCoords = [];
 var idCounter = 0;
+var headingChangedFlag = false;
 
 
-if(process.env.NODE_ENV != 'production') {
+
+if (process.env.NODE_ENV != 'production') {
 
   var https = require('https').createServer({
-        key: fs.readFileSync('localhost+4-key.pem'),
-        cert: fs.readFileSync('localhost+4.pem'),
-        requestCert: false,
-        rejectUnauthorized: false}, app);
+    key: fs.readFileSync('localhost+4-key.pem'),
+    cert: fs.readFileSync('localhost+4.pem'),
+    requestCert: false,
+    rejectUnauthorized: false
+  }, app);
   io = require('socket.io').listen(https);
-  https.listen((process.env.PORT || 5000), function(){
-           console.log("Node app is running at localhost: "+ app.get('port'))
-         });
+  https.listen((process.env.PORT || 5000), function() {
+    console.log("Node app is running at localhost: " + app.get('port'))
+  });
   console.log("development")
 
-}else{
+} else {
 
   var http = require('http').createServer(app);
   io = require('socket.io').listen(http);
-  http.listen((process.env.PORT || 5000), function(){
-        console.log("Node app is running at localhost: "+ app.get('port'))
-      });
+  http.listen((process.env.PORT || 5000), function() {
+    console.log("Node app is running at localhost: " + app.get('port'))
+  });
   console.log("production");
 
 }
@@ -40,20 +43,23 @@ if(process.env.NODE_ENV != 'production') {
 app.use(express.static('public'));
 
 app.get('/', function(request, response) {
-    // response.redirect('/index.html')
-    response.sendFile('/public/index.html', {"root": __dirname})
+  // response.redirect('/index.html')
+  response.sendFile('/public/index.html', {
+    "root": __dirname
+  })
 })
 
 
-io.on('connection', function(socket){
 
-  socket.on("request-id", function(){
+io.on('connection', function(socket) {
+
+  socket.on("request-id", function() {
     io.to(this.id).emit("receive-id", idCounter)
-    idCounter+= 1;
+    idCounter += 1;
 
   })
   //Add client id to usersList if on mobile
-  socket.on("new-client", function(data){
+  socket.on("new-client", function(data) {
 
     // if (data == "mobile"){
     //
@@ -78,7 +84,7 @@ io.on('connection', function(socket){
   })
 
   //this happens automatically when the socket connection breaks
-  socket.on('disconnect', function(){
+  socket.on('disconnect', function() {
     //Remove mobile client from list
     // var disconnectedClientIndex = usersList.indexOf(this.id)
     // if (disconnectedClientIndex >= 0){
@@ -96,29 +102,29 @@ io.on('connection', function(socket){
     var exists = false
     var index = -1
 
-    for( var i=0; i < groupCoords.length; i ++){
+    for (var i = 0; i < groupCoords.length; i++) {
       //if we find a match
-      if(groupCoords[i].id === this.id){
-          exists = true
-          index = i
-       }
-     }
+      if (groupCoords[i].id === this.id) {
+        exists = true
+        index = i
+      }
+    }
 
-     //if we have a match
-     //remove that match from the list of coordinates
-     if(exists == true){
-       groupCoords.splice(index, 1)
-     }
+    //if we have a match
+    //remove that match from the list of coordinates
+    if (exists == true) {
+      groupCoords.splice(index, 1)
+    }
 
-     console.log("removed element" + JSON.stringify(groupCoords))
+    console.log("removed element" + JSON.stringify(groupCoords))
 
-     groupCoords.sort(function (a, b){
-       return parseFloat(a.sequentialID) - parseFloat(b.sequentialID)
-     });
+    groupCoords.sort(function(a, b) {
+      return parseFloat(a.sequentialID) - parseFloat(b.sequentialID)
+    });
 
-     // console.log(JSON.stringify(groupCoords))
+    // console.log(JSON.stringify(groupCoords))
 
-     io.emit("receive-group-coordinates", groupCoords)
+    io.emit("receive-group-coordinates", groupCoords)
 
   })
 
@@ -155,43 +161,45 @@ io.on('connection', function(socket){
   //
   // })
 
-  socket.on('addclient', function(){
+  socket.on('addclient', function() {
 
     //If user doesn't already exist
-    if (usersList.indexOf(this.id) == -1){
+    if (usersList.indexOf(this.id) == -1) {
       //Add user to our list of users
-      usersList.push( this.id )
-      console.log("adding client back to list: ", this.id," - updated list: ", usersList)
+      usersList.push(this.id)
+      console.log("adding client back to list: ", this.id, " - updated list: ", usersList)
       //reply only to user with their ID
       io.to(this.id).emit("client-id", usersList.indexOf(this.id))
 
-    //Client already exists in our list
-    }else{
+      //Client already exists in our list
+    } else {
       console.log("Client Already Exists: ", this.id)
     }
 
   })
 
 
-  socket.on("update-heading", function(heading){
-      var sID = this.id
-      var exists = false
+  socket.on("update-heading", function(heading) {
+    var sID = this.id
+    var exists = false
 
-      for( var i=0; i < groupCoords.length; i ++){
+    for (var i = 0; i < groupCoords.length; i++) {
 
-        //if we find a match, we update the existing coordinate
-        if(groupCoords[i].id === this.id){
-            groupCoords[i].heading = heading
-            exists = true
-        }
+      //if we find a match, we update the existing coordinate
+      if (groupCoords[i].id === this.id) {
+        groupCoords[i].heading = heading
+        exists = true
       }
-      if(exists){
-        io.emit("receive-group-coordinates", groupCoords)
-      }
+    }
+
+    if (exists) {
+      io.emit("receive-group-coordinates", groupCoords)
+    }
+
   })
 
   //Receive coordinates from each participant and add them to our list
-  socket.on("update-coordinates", function(coords){
+  socket.on("update-coordinates", function(coords) {
 
     var sID = this.id
     var formattedCoords = JSON.stringify(coords)
@@ -199,19 +207,26 @@ io.on('connection', function(socket){
 
     //If we don't have this ID already
     var exists = false
-    for( var i=0; i < groupCoords.length; i ++){
+    for (var i = 0; i < groupCoords.length; i++) {
 
       //if we find a match, we update the existing coordinate
-      if(groupCoords[i].id === this.id){
-          groupCoords[i].lat = coords.lat
-          groupCoords[i].lng = coords.lng
-          exists = true
+      if (groupCoords[i].id === this.id) {
+        groupCoords[i].lat = coords.lat
+        groupCoords[i].lng = coords.lng
+        groupCoords[i].heading = coords.heading
+        exists = true
       }
     }
 
     //If ID doesn't match with existing IDs
-    if(exists == false){
-      var person = {id:this.id, lat:coords.lat, lng:coords.lng, seqentialID:coords.seqentialID}
+    if (exists == false) {
+      var person = {
+        id: this.id,
+        lat: coords.lat,
+        lng: coords.lng,
+        seqentialID: coords.seqentialID,
+        heading: coords.heading
+      }
       groupCoords.push(person)
     }
 
@@ -232,6 +247,5 @@ io.on('connection', function(socket){
     //but i don't think we need that much efficiency
 
     io.emit("receive-group-coordinates", groupCoords)
-
   })
 })

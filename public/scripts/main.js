@@ -31,6 +31,8 @@ var guideLine;
 var testMarker;
 var hasSensorAccess = false;
 var lastMarkerLength = 0;
+var lastCompassOrientation = 0;
+
 //TO-DO - add compass arrow to graphic (or to map) (make map little square?)
 //
 
@@ -76,10 +78,12 @@ var browserGeolocationSuccess = function(position) {
     var myLatLng = {
       lat: position.coords.latitude,
       lng: position.coords.longitude,
-      seqentialID: cookieID
+      seqentialID: cookieID,
+      heading: compassOrientation
     };
+
     // if(firstLocation){
-    //   // map.panTo(myLatLng)
+    //   map.panTo(myLatLng)
     //   firstLocation = false;
     // }
 
@@ -95,7 +99,7 @@ var browserGeolocationSuccess = function(position) {
     //     // anchor: new google.maps.Point(30,30),
     //     // rotation: compassOrientation
     //   }
-    //   // map.setHeading(180)
+
     //
     //   var lat = position.coords.latitude
     //   var lng = position.coords.longitude
@@ -461,21 +465,26 @@ if (typeof(DeviceOrientationEvent) !== "undefined" && typeof(DeviceOrientationEv
       compassOrientation = compassOrientation - 360;
     }
 
-    $("#compassInfo").html(data.info + ": " + compassOrientation + ". event: " + event);
+    compassOrientation = Math.round(compassOrientation);
 
-    if (groupMarkers.length > homeMarkerID) {
-      groupMarkers[homeMarkerID].setIcon({
-        path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
-        strokeWeight: 2,
-        fillColor: "#000000",
-        fillOpacity: 1.0,
-        scale: 6,
-        anchor: new google.maps.Point(0, 3),
-        rotation: compassOrientation
-      });
+    if (compassOrientation != lastCompassOrientation) {
+      $("#compassInfo").html(data.info + ": " + Math.round(compassOrientation) + ". event: " + event);
+
+
+      if (groupMarkers.length > homeMarkerID) {
+        groupMarkers[homeMarkerID].setIcon({
+          path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+          strokeWeight: 2,
+          fillColor: "#000000",
+          fillOpacity: 1.0,
+          scale: 6,
+          anchor: new google.maps.Point(0, 3),
+          rotation: compassOrientation
+        });
+      }
+      socket.emit('update-heading', compassOrientation);
+      lastCompassOrientation = compassOrientation;
     }
-    socket.emit('update-heading',compassOrientation);
-
   })
 }
 
@@ -517,14 +526,26 @@ function requestSensorAccess() {
               compassOrientation = compassOrientation - 360;
             }
 
-            if (groupMarkers.length > homeMarkerID) {
-              groupMarkers[homeMarkerID].setIcon({
-                path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
-                scale: 4,
-                rotation: compassOrientation
-              });
+            compassOrientation = Math.round(compassOrientation);
+
+            if (compassOrientation != lastCompassOrientation) {
+              $("#compassInfo").html(data.info + ": " + Math.round(compassOrientation) + ". event: " + event);
+
+              if (groupMarkers.length > homeMarkerID) {
+                groupMarkers[homeMarkerID].setIcon({
+                  path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+                  strokeWeight: 2,
+                  fillColor: "#000000",
+                  fillOpacity: 1.0,
+                  scale: 6,
+                  anchor: new google.maps.Point(0, 3),
+                  rotation: compassOrientation
+                });
+              }
+              socket.emit('update-heading', compassOrientation);
+              lastCompassOrientation = compassOrientation;
             }
-            socket.emit('update-heading',compassOrientation);
+
           })
         }
       })
@@ -536,48 +557,7 @@ function requestSensorAccess() {
   }
 }
 
-//
-//
-// if (typeof(DeviceOrientationEvent) !== "undefined" && typeof(DeviceOrientationEvent.requestPermission) === "function") {
-//   if (window.confirm("We need sensor access, please say yes")) {
-//     requestSensorAccess()
-//   }
-//   //sensor access not required
-// } else {
-//   window.addEventListener('deviceorientation', (event) => {
-//     hasSensorAccess = true;
-//     var data = "";
-//     if ("webkitCompassHeading" in event) {
-//       data = {
-//         info: "No permissions: received from deviceorientation webkitCompassHeading - iOS Safari,  Chrome, Firefox",
-//         z: (180 + event.webkitCompassHeading) % 360 //360 -
-//       }
-//       // Android - Chrome <50
-//     } else if (event.absolute) {
-//       data = {
-//         info: "No permissions: received from deviceorientation with absolute=true & alpha val",
-//         z: event.alpha
-//       }
-//     } else {
-//       data = {
-//         info: "No permissions: absolute=false, heading might not be absolute to magnetic north",
-//         z: event.alpha
-//       }
-//     }
-//     // console.log(data);
-//     $("#compassInfo").html(data.info + ": " + data.z + ". Has sensor access: " + hasSensorAccess);
-//     // console.log(data);
-//     compassOrientation = data.z;
-//
-//     if (testMarker != null) {
-//       testMarker.setIcon({
-//         path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
-//         scale: 4,
-//         rotation: compassOrientation
-//       });
-//     }
-//   })
-// }
+
 
 function polylineChanged() {
   drawLines(guideLine.getPath().getArray());
@@ -788,8 +768,3 @@ function initMap() {
   askForLocation();
 
 }
-
-
-
-
-// socket.emit('reset-sequence')
