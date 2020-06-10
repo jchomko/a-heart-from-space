@@ -60,7 +60,7 @@ io.on('connection', function(socket) {
   })
   //Add client id to usersList if on mobile
   socket.on("new-client", function(data) {
-
+    console.log("new client : ", data);
     // if (data == "mobile"){
     //
     //     if(usersList.indexOf(this.id) == -1){
@@ -113,14 +113,15 @@ io.on('connection', function(socket) {
     //if we have a match
     //remove that match from the list of coordinates
     if (exists == true) {
+      console.log("removing :" + JSON.stringify(groupCoords[index]))
       groupCoords.splice(index, 1)
     }
 
-    console.log("removed element" + JSON.stringify(groupCoords))
 
-    groupCoords.sort(function(a, b) {
-      return parseFloat(a.sequentialID) - parseFloat(b.sequentialID)
-    });
+
+    // groupCoords.sort(function(a, b) {
+    //   return parseFloat(a.sequentialID) - parseFloat(b.sequentialID)
+    // });
 
     // console.log(JSON.stringify(groupCoords))
 

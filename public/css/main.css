@@ -6,3 +6,14 @@ html, body {
   margin: 0;
   padding: 0;
 }
+
+#toggleArrows{
+  position: absolute;
+  top: 0;
+}
+
+#centerMap{
+  position: absolute;
+  bottom:0;
+  right: 0;
+}
