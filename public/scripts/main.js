@@ -58,16 +58,10 @@ function togArrows() {
 
 }
 
-
+//Called from centerMap button
 function center() {
-
   map.panTo(new google.maps.LatLng(currLatLng.lat, currLatLng.lng));
-
 }
-//TO-DO - add compass arrow to graphic (or to map) (make map little square?)
-//
-
-// $("#compassInfo").html("hasSensorAccess: ", hasSensorAccess);
 
 function setCookie(c_name, value, exdays) {
   var exdate = new Date();
@@ -92,23 +86,14 @@ function getCookie(c_name) {
 //Geolocation stuff
 var browserGeolocationSuccess = function(position) {
 
-  // if(!firstAlert){
-  //   firstAlert = true
-  //   alert("Ok great! Let's try to make a heart. ")
-  // }
-  // console.log(position.coords.accuracy);
-
   if (position.coords.accuracy < bestAccuracy) {
     bestAccuracy = position.coords.accuracy;
     console.log("bestAccuracy: " + bestAccuracy);
-
   }
-
 
   // if we have a high accuracy reading
   if (position.coords.accuracy < bestAccuracy + 10 || position.coords.accuracy === 150) {
-    // alert("Browser geolocation success!\n\nlat = " + position.coords.latitude + "\nlng = " + position.coords.longitude);
-     currLatLng = {
+    currLatLng = {
       lat: position.coords.latitude,
       lng: position.coords.longitude,
       seqentialID: cookieID,
@@ -117,44 +102,7 @@ var browserGeolocationSuccess = function(position) {
 
     updateHomeMarkerPosition(position);
 
-    // if(firstLocation){
-    //   map.panTo(myLatLng)
-    //   firstLocation = false;
-    // }
-
-    // if (firstLocation) {
-    //   // map.panTo(myLatLng)
-    //   firstLocation = false;
-    //   var image = {
-    //     // url: "/images/compass_dot_marker.png",
-    //     path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
-    //     scale: 4
-    //     // size: new google.maps.Size(60,60),
-    //     // origin: new google.maps.Point(0,0),
-    //     // anchor: new google.maps.Point(30,30),
-    //     // rotation: compassOrientation
-    //   }
-
-    //
-    currLat = position.coords.latitude
-    currLng = position.coords.longitude
-    //
-    //   // testMarker = new google.maps.Marker({
-    //   //   position: {
-    //   //     lat: lat,
-    //   //     lng: lng
-    //   //   },
-    //   //   title: 'Position of ' + this.id,
-    //   //   icon: image
-    //   // });
-    //   //
-    //   // testMarker.setMap(map);
-    //   firstLocation = false;
-    //
-    // }
-
     // console.log("accurate coordinates: " + JSON.stringify(myLatLng))
-
     socket.emit("update-coordinates", currLatLng)
   }
 };
@@ -173,7 +121,6 @@ var browserGeolocationFail = function(error) {
       break;
   }
 };
-
 
 //Get location of device  - navigator is just an html5 access for the browser
 function tryGeolocation() {
@@ -225,10 +172,7 @@ function drawLines(groupCoords) {
           //debug sends google formatting lat lng which requires funciton call - when using live data we don't need function call
           //// TODO: send debug commands in same format as live data , ie .lat
           // dist = distance(groupCoords[i].lat(), groupCoords[i].lng(), groupCoords[j].lat(), groupCoords[j].lng());
-
           // console.log(dist);
-
-
           if (dist < minDist) { //&& p1.numConnections < 1 && p2.numConnections < 2  &&  // j != (int)p2.lineStartId && j != (int)p2.lineEndId
             //these will be the secondary values because they will always be one cycle delayed
             minDist = dist;
@@ -241,14 +185,11 @@ function drawLines(groupCoords) {
         if (i != j) {
           dist = distance(groupCoords[i].lat, groupCoords[i].lng, groupCoords[j].lat, groupCoords[j].lng);
           // dist = distance(groupCoords[i].lat(), groupCoords[i].lng(), groupCoords[j].lat(), groupCoords[j].lng());
-
           // console.log(dist);
-
           if (dist < secondMinDist && dist > minDist) {
             secondMinDist = dist;
             secondPairId = j;
           }
-
         }
       }
 
@@ -261,12 +202,15 @@ function drawLines(groupCoords) {
           strokeWeight: 5
           // editable: true
         })
-
+        //set it to the map
         pl.setMap(map);
+
+        //get it's path
         var path = pl.getPath();
 
         var startPoint = new google.maps.LatLng(groupCoords[i].lat, groupCoords[i].lng);
         path.push(startPoint);
+
         var endPoint = new google.maps.LatLng(groupCoords[pairId].lat, groupCoords[pairId].lng);
         path.push(endPoint);
         //group is just a way to keep track of all the lines we're making so we can clear them
@@ -284,42 +228,52 @@ function drawLines(groupCoords) {
         })
 
         pl.setMap(map);
-        var path = pl.getPath();
 
+        var path = pl.getPath();
         var startPoint = new google.maps.LatLng(groupCoords[i].lat, groupCoords[i].lng);
         path.push(startPoint);
         var endPoint = new google.maps.LatLng(groupCoords[secondPairId].lat, groupCoords[secondPairId].lng);
         path.push(endPoint);
 
-        //group is just a way to keep track of all the lines we're making so we can clear them
+        //this array is just a way to keep track of all the lines we're making so we can clear them
         groupPolyLines.push(pl);
-
       }
-
     }
   }
 }
 
-//
-// function clearMarker(markerID) {
-//
-//   for (var i = 0; i < groupMarkers.length; i++) {
-//     if (groupMarkers[i].id === markerID) {
-//       groupMarkers[i].setMap(null);
-//     }
-//   }
-//
+// Original line drawing function that requires untangling
+// function drawFixedLines(groupCoords){
+
+    //Line drawing code for original version with untangling
+    // var path = polyLine.getPath();
+    // path.clear()
+    //
+    // //Draw users current position
+    // // var currll =  new google.maps.LatLng(currLat, currLong);
+    // // path.push(currll);
+    // //Add positions of other people
+    // for(var i=0; i<groupCoords.length; i ++){
+    //    var ll =  new google.maps.LatLng(groupCoords[i].lat,groupCoords[i].lng);
+    //    // console.log("adding new coordinate");
+    //    path.push(ll);
+    // }
+    //
+    // //close shape by bringing it back to the first person
+    // if(groupCoords.length > 1){
+    //   var ll =  new google.maps.LatLng(groupCoords[0].lat,groupCoords[0].lng);
+    //   path.push(ll);
+    // }
+    // //Close line by bringing it back to current position
+    // // path.push(currll);
+    // //every time this is updated re-draw the polyline from scratch
+
 // }
 
 function drawMarkers(groupCoords) {
 
   // Clear Old Markers, if there is a difference between the last length and the current length
-  //if we want to do this properly it has to be by ID - match the Id then clear that one that matches
-
-  console.log("num markers: ", groupMarkers.length, "num coords: ", groupCoords.length);
-  console.log(groupMarkers);
-  console.log(groupCoords);
-
+  // This might get slow later on
   if (groupMarkers.length > groupCoords.length) {
 
     var noMatch = -1;
@@ -328,10 +282,8 @@ function drawMarkers(groupCoords) {
     for (var i = 0; i < groupMarkers.length; i++) {
       //check each id against the incoming list
       for (var j = 0; j < groupCoords.length; j++) {
+
         //try to find group marker array member that doesn't have a matching id
-
-        //matchin IDs doesn't really work bc the id is embedded in googles structure and i don't know how to get it out
-
         if (groupMarkers[i].id === groupCoords[j].id) {
           noMatch = -1;
         } else if (groupMarkers[i].id != sessionID) {
@@ -339,40 +291,24 @@ function drawMarkers(groupCoords) {
           noMatch = i;
         }
       }
-
       //clear that marker from the map
       if (noMatch != -1) {
         groupMarkers[noMatch].setMap(null);
         console.log("clearing :", noMatch);
       }
-
     }
 
-
-    // for (var i = groupCoords.length-1; i < groupMarkers.length+1; i++) {
-    //
-    // }
-    // groupMarkers.splice(0, groupCoords.length);
   }
-  //
-  // lastMarkerLength = groupCoords.length;
 
-  //make new markers every time
-  //but makes them flicker
-  //problem is incrementenal - not removing the oldest one
-  // for (var i = 0; i < groupMarkers.length; i++) {
-  //   groupMarkers[i].setMap(null);
-  //   console.log("clearing marker: ", i);
-  // }
-  // groupMarkers.splice(0, groupMarkers.length);
-
-  //Clear array of markers
-
-  //Find out if we have existing markers for these incoming IDs
+  //Update existing markers
   for (var i = 0; i < groupCoords.length; i++) {
+
+    //Don't process the home marker
     if (groupCoords[i].id != sessionID) {
+
       var lat = groupCoords[i].lat;
       var lng = groupCoords[i].lng;
+
       //declare image, grab the heading value from the incoming array
       var image = {
         path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
@@ -385,9 +321,10 @@ function drawMarkers(groupCoords) {
         rotation: groupCoords[i].heading
       };
 
-      //add new markers
+      //if index is greater than our current list of markers
       if (i > groupMarkers.length - 1) {
 
+        //add new marker
         groupMarkers.push(new google.maps.Marker({
           position: {
             lat: lat,
@@ -396,46 +333,21 @@ function drawMarkers(groupCoords) {
           title: 'Position of ' + i,
           icon: image
         }));
+
+        //add new marker to map
         groupMarkers[groupMarkers.length - 1].setMap(map);
+        //set it's id from the incoming coordinate
         groupMarkers[groupMarkers.length - 1].id = groupCoords[i].id;
+
         // console.log("adding new marker", groupMarkers[groupMarkers.length - 1])
 
-        //markers exist
+        //Or if we don't need to add a new marker
       } else {
 
-        // var matchId = -1;
-        // homeMarkerID = -1;
-        //
-        // //Check list of markers
-        // for (var m = 0; m < groupMarkers.length; m++) {
-        //
-        //   //Look for matches between the incoming list of ids in our current list of markers
-        //   if (groupCoords[i].id === groupMarkers[m].id) {
-        //
-        //     //if the match is NOT our sessionID
-        //     // if (groupMarkers[m].id != sessionID) {
-        //     //save the index of that match
-        //     matchId = i;
-        //     // } else {
-        //     //   //if it does match our session ID, save that ID for the compass function
-        //     //   //we're saving the m index because that is the one that relates to our local array
-        //     //   homeMarkerID = m;
-        //     // }
-        //   }
-        // }
-
-        //If we found a match
-        // if (matchId != -1) {
         //Update position and icon of marker
         var latlng = new google.maps.LatLng(lat, lng);
         groupMarkers[i].setPosition(latlng);
         groupMarkers[i].setIcon(image);
-        groupMarkers[i].setMap(map);
-
-
-        // if there isn't a match, and we haven't saved an index for the compass function
-        // }
-
 
       }
     }
@@ -443,28 +355,21 @@ function drawMarkers(groupCoords) {
 
 }
 
-function placeMarker(location) {
-  var marker = new google.maps.Marker({
-    position: location,
-    map: map
-  });
-}
 
-
-//Fired on click on map - disabled for normal operation
+//Debug function -
+//Fired on map click - disabled for normal operation
 function addLatLng(event) {
 
   var path = guideLine.getPath();
   path.push(event.latLng);
 
-
   var coord = {
     lat: event.latLng.lat(),
     lng: event.latLng.lng()
   };
+
   coordinates.push(coord);
   console.log(coordinates);
-
   // coordinates.push(event.latLng);
   // console.log(coordinates);
   drawLines(guideLine.getPath().getArray());
@@ -475,12 +380,12 @@ function distance(lat1, lon1, lat2, lon2) {
   var R = 6371; // km (change this constant to get miles)
   var dLat = (lat2 - lat1) * Math.PI / 180;
   var dLon = (lon2 - lon1) * Math.PI / 180;
-
   var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
     Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
     Math.sin(dLon / 2) * Math.sin(dLon / 2);
   var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   var d = R * c;
+
   // if (d>1) return Math.round(d)+"km";
   // else if (d<=1) return Math.round(d*1000)+"m";
   // if (d>1) return Math.round(d);
@@ -505,36 +410,11 @@ socket.on('connect', function() {
 })
 
 socket.on("receive-group-coordinates", function(groupCoords) {
-
   console.log(groupCoords);
   drawLines(groupCoords);
-
   if (showArrows) {
     drawMarkers(groupCoords);
   }
-  //Line drawing code for original version with untangling
-  // var path = polyLine.getPath();
-  // path.clear()
-  //
-  // //Draw users current position
-  // // var currll =  new google.maps.LatLng(currLat, currLong);
-  // // path.push(currll);
-  // //Add positions of other people
-  // for(var i=0; i<groupCoords.length; i ++){
-  //    var ll =  new google.maps.LatLng(groupCoords[i].lat,groupCoords[i].lng);
-  //    // console.log("adding new coordinate");
-  //    path.push(ll);
-  // }
-  //
-  // //close shape by bringing it back to the first person
-  // if(groupCoords.length > 1){
-  //   var ll =  new google.maps.LatLng(groupCoords[0].lat,groupCoords[0].lng);
-  //   path.push(ll);
-  // }
-  // //Close line by bringing it back to current position
-  // // path.push(currll);
-  // //every time this is updated re-draw the polyline from scratch
-
 })
 
 
@@ -568,8 +448,12 @@ function updateHomeMarker(data) {
     lastCompassOrientation = compassOrientation;
 
   }
-
 }
+
+//Request sensor access if necessary
+//We need a way to detect if we're not getting the sensor data, and we can't ask for permission - ie for iOS 12
+//Maybe just detect if we're not getting sensor values after a certain time
+//Test on iPhone 5, turn off sensors
 
 if (typeof(DeviceOrientationEvent) !== "undefined" && typeof(DeviceOrientationEvent.requestPermission) === "function") {
   if (window.confirm("We need sensor access, please say yes")) {
@@ -596,13 +480,11 @@ if (typeof(DeviceOrientationEvent) !== "undefined" && typeof(DeviceOrientationEv
         z: 360 - event.alpha
       }
     }
-
     updateHomeMarker(data);
-
   })
 }
 
-//Only for ios 12 I think
+//Only for ios 12 I think - there must be a way to not duplicate these functions
 function requestSensorAccess() {
   if (typeof(DeviceOrientationEvent) !== "undefined" && typeof(DeviceOrientationEvent.requestPermission) === "function") {
 
@@ -631,11 +513,7 @@ function requestSensorAccess() {
                 z: event.alpha
               }
             }
-
-            $("#compassInfo").html(data.info + ": " + data.z + ". Has sensor access: " + hasSensorAccess);
-
             updateHomeMarker(data);
-
           })
         }
       })
@@ -646,8 +524,6 @@ function requestSensorAccess() {
     $("#errorInfo").html("DeviceOrientationEvent.requestPermission is not a function");
   }
 }
-
-
 
 function polylineChanged() {
   drawLines(guideLine.getPath().getArray());
@@ -809,16 +685,8 @@ function initMap() {
       }
     ]
   });
-  //
-  // polyLine = new google.maps.Polyline({
-  //   strokeColor: '#f70000',
-  //   strokeOpacity: 1.0,
-  //   strokeWeight: 5
-  // });
-  //
-  // polyLine.setMap(map);
-  //
-  //
+
+  //Uncomment for debugging mode where we draw a line with clicks and then the system finds the closest points between
   // guideLine = new google.maps.Polyline({
   //   strokeColor: '#989898',
   //   strokeOpacity: 0.1,
