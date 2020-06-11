@@ -433,7 +433,7 @@ function updateHomeMarker(data) {
   }
 
   if (compassOrientation != lastCompassOrientation) {
-    $("#compassInfo").html(data.info + ": " + Math.round(compassOrientation) + ". event: " + event);
+    // $("#compassInfo").html(data.info + ": " + Math.round(compassOrientation) + ". event: " + event);
 
     homeMarker.setIcon({
       path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
@@ -449,7 +449,7 @@ function updateHomeMarker(data) {
     lastCompassOrientation = compassOrientation;
 
   } else {
-    $("#compassInfo").html("no change");
+    // $("#compassInfo").html("no change");
   }
 }
 
@@ -480,7 +480,7 @@ function setupSensorListeners() {
         }
       }
       updateHomeMarker(data);
-      alert("listener added");
+      // alert("listener added");
     })
     // alert("Can't access compass! You can enable permission at Settings -> Safari -> Motion & Orientation Access.")
 }
