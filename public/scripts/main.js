@@ -275,84 +275,90 @@ function drawMarkers(groupCoords) {
 
   // Clear Old Markers, if there is a difference between the last length and the current length
   // This might get slow later on
-  if (groupMarkers.length > groupCoords.length) {
+  // we need to add new markers, making sure we're not giving a used id to a new marker
 
-    var noMatch = -1;
 
-    //cycle through list of markers
+  console.log(groupCoords, groupMarkers);
+  //we need to do somethign at the start to populate the lists
+
+  //cycle through list of incoming coords
+  for (var j = 0; j < groupCoords.length; j++) {
+
+    //declare image, grab the heading value from the incoming array
+    var image = {
+      path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+      strokeWeight: 2,
+      fillColor: "#919191",
+      strokeColor: "#919191",
+      fillOpacity: 1.0,
+      scale: 4,
+      anchor: new google.maps.Point(0, 2),
+      rotation: groupCoords[j].heading
+    };
+
+    var noMatchIndex = -1;
+    var noMatchId;
+
+    //this doesn't run at the start - because there is nothign in the list
+    //check each incoming id against the list of markers
     for (var i = 0; i < groupMarkers.length; i++) {
-      //check each id against the incoming list
-      for (var j = 0; j < groupCoords.length; j++) {
 
-        //try to find group marker array member that doesn't have a matching id
-        if (groupMarkers[i].id === groupCoords[j].id) {
-          noMatch = -1;
-        } else if (groupMarkers[i].id != sessionID) {
-          //This should actually be a list incase we have multiple leaving at the same time
-          noMatch = i;
-        }
-      }
-      //clear that marker from the map
-      if (noMatch != -1) {
-        groupMarkers[noMatch].setMap(null);
-        console.log("clearing :", noMatch);
-      }
-    }
+      //try to find group marker array member that doesn't have a matching id
+      if (groupMarkers[i].id === groupCoords[j].id && groupMarkers[i].id != sessionID) {
 
-  }
-
-  //Update existing markers
-  for (var i = 0; i < groupCoords.length; i++) {
-
-    //Don't process the home marker
-    if (groupCoords[i].id != sessionID) {
-
-      var lat = groupCoords[i].lat;
-      var lng = groupCoords[i].lng;
-
-      //declare image, grab the heading value from the incoming array
-      var image = {
-        path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
-        strokeWeight: 2,
-        fillColor: "#919191",
-        strokeColor: "#919191",
-        fillOpacity: 1.0,
-        scale: 4,
-        anchor: new google.maps.Point(0, 2),
-        rotation: groupCoords[i].heading
-      };
-
-      //if index is greater than our current list of markers
-      if (i > groupMarkers.length - 1) {
-
-        //add new marker
-        groupMarkers.push(new google.maps.Marker({
-          position: {
-            lat: lat,
-            lng: lng
-          },
-          title: 'Position of ' + i,
-          icon: image
-        }));
-
-        //add new marker to map
-        groupMarkers[groupMarkers.length - 1].setMap(map);
-        //set it's id from the incoming coordinate
-        groupMarkers[groupMarkers.length - 1].id = groupCoords[i].id;
-
-        // console.log("adding new marker", groupMarkers[groupMarkers.length - 1])
-
-        //Or if we don't need to add a new marker
-      } else {
-
-        //Update position and icon of marker
+        //If we do have a match
+        var lat = groupCoords[j].lat;
+        var lng = groupCoords[j].lng;
         var latlng = new google.maps.LatLng(lat, lng);
         groupMarkers[i].setPosition(latlng);
         groupMarkers[i].setIcon(image);
+        groupMarkers[i].setMap(map);
 
+      } else {
+        //This should actually be a list incase we have multiple leaving at the same time
+        noMatchIndex = i;
+        noMatchId = groupCoords[j];
       }
     }
+
+    //clear that marker from the map
+    if (noMatchIndex != -1 && groupMarkers.length > groupCoords.length) {
+      //if we have more markers than we have coordinates
+      // if (groupMarkers.length > groupCoords.length) {
+      groupMarkers[noMatchIndex].setMap(null);
+      console.log("clearing :", noMatchIndex);
+
+    //No match found and we have more coordinates than we have markers
+    //this should then run three times, but only runs once
+  } else if (noMatchIndex === -1 ){ //&& groupCoords.length > groupMarkers.length
+    //add new markers
+
+      var lat = groupCoords[j].lat;
+      var lng = groupCoords[j].lng;
+
+      //if index is greater than our current list of markers
+      // if (i > groupMarkers.length - 1) {
+
+      //add new marker
+      groupMarkers.push(new google.maps.Marker({
+        position: {
+          lat: lat,
+          lng: lng
+        },
+        title: 'Position of ' + i,
+        icon: image
+      }));
+
+      //add new marker to map
+      groupMarkers[groupMarkers.length - 1].setMap(map);
+      //set it's id from the incoming coordinate
+      groupMarkers[groupMarkers.length - 1].id = noMatchId;
+      console.log("adding new marker");
+
+    }
+
   }
+
 
 }
 
@@ -460,30 +466,30 @@ function updateHomeMarker(data) {
 //Test on iPhone 5, turn off sensors
 function setupSensorListeners() {
 
-    window.addEventListener('deviceorientation', (event) => {
-      hasSensorAccess = true;
-      var data = "";
-      if ("webkitCompassHeading" in event) {
-        data = {
-          info: "Received from deviceorientation webkitCompassHeading - iOS Safari,  Chrome, Firefox",
-          z: event.webkitCompassHeading
-        }
-        // Android - Chrome <50
-      } else if (event.absolute) {
-        data = {
-          info: "Received from deviceorientation with absolute=true & alpha val",
-          z: event.alpha
-        }
-      } else {
-        data = {
-          info: "absolute=false, heading might not be absolute to magnetic north",
-          z: 360 - event.alpha
-        }
+  window.addEventListener('deviceorientation', (event) => {
+    hasSensorAccess = true;
+    var data = "";
+    if ("webkitCompassHeading" in event) {
+      data = {
+        info: "Received from deviceorientation webkitCompassHeading - iOS Safari,  Chrome, Firefox",
+        z: event.webkitCompassHeading
       }
-      updateHomeMarker(data);
-      // alert("listener added");
-    })
-    // alert("Can't access compass! You can enable permission at Settings -> Safari -> Motion & Orientation Access.")
+      // Android - Chrome <50
+    } else if (event.absolute) {
+      data = {
+        info: "Received from deviceorientation with absolute=true & alpha val",
+        z: event.alpha
+      }
+    } else {
+      data = {
+        info: "absolute=false, heading might not be absolute to magnetic north",
+        z: 360 - event.alpha
+      }
+    }
+    updateHomeMarker(data);
+    // alert("listener added");
+  })
+  // alert("Can't access compass! You can enable permission at Settings -> Safari -> Motion & Orientation Access.")
 }
 
 
@@ -736,10 +742,10 @@ function initMap() {
 }
 
 //Print errors as they happen
-window.onerror = function (msg, url, lineNo, columnNo, error) {
+window.onerror = function(msg, url, lineNo, columnNo, error) {
   var string = msg.toLowerCase();
   var substring = "script error";
-  if (string.indexOf(substring) > -1){
+  if (string.indexOf(substring) > -1) {
     alert('Script Error: See Browser Console for Detail');
   } else {
     var message = [
