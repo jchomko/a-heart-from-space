@@ -114,7 +114,8 @@ var browserGeolocationFail = function(error) {
       alert("Browser geolocation error !\n\nTimeout." + error.message);
       break;
     case error.PERMISSION_DENIED:
-      alert("Permission Denied" + error.message);
+      // alert("Permission Denied" + error.message);
+      alert("No location access - you might need to enable this in Settings -> Privacy -> Location Services -> Safari Websites. Change from 'Never' to 'While Usingthe App'")
       break;
     case error.POSITION_UNAVAILABLE:
       alert("Browser geolocation error !\n\nPosition unavailable" + error.message);
@@ -245,28 +246,28 @@ function drawLines(groupCoords) {
 // Original line drawing function that requires untangling
 // function drawFixedLines(groupCoords){
 
-    //Line drawing code for original version with untangling
-    // var path = polyLine.getPath();
-    // path.clear()
-    //
-    // //Draw users current position
-    // // var currll =  new google.maps.LatLng(currLat, currLong);
-    // // path.push(currll);
-    // //Add positions of other people
-    // for(var i=0; i<groupCoords.length; i ++){
-    //    var ll =  new google.maps.LatLng(groupCoords[i].lat,groupCoords[i].lng);
-    //    // console.log("adding new coordinate");
-    //    path.push(ll);
-    // }
-    //
-    // //close shape by bringing it back to the first person
-    // if(groupCoords.length > 1){
-    //   var ll =  new google.maps.LatLng(groupCoords[0].lat,groupCoords[0].lng);
-    //   path.push(ll);
-    // }
-    // //Close line by bringing it back to current position
-    // // path.push(currll);
-    // //every time this is updated re-draw the polyline from scratch
+//Line drawing code for original version with untangling
+// var path = polyLine.getPath();
+// path.clear()
+//
+// //Draw users current position
+// // var currll =  new google.maps.LatLng(currLat, currLong);
+// // path.push(currll);
+// //Add positions of other people
+// for(var i=0; i<groupCoords.length; i ++){
+//    var ll =  new google.maps.LatLng(groupCoords[i].lat,groupCoords[i].lng);
+//    // console.log("adding new coordinate");
+//    path.push(ll);
+// }
+//
+// //close shape by bringing it back to the first person
+// if(groupCoords.length > 1){
+//   var ll =  new google.maps.LatLng(groupCoords[0].lat,groupCoords[0].lng);
+//   path.push(ll);
+// }
+// //Close line by bringing it back to current position
+// // path.push(currll);
+// //every time this is updated re-draw the polyline from scratch
 
 // }
 
@@ -447,6 +448,8 @@ function updateHomeMarker(data) {
     // socket.emit('update-heading', compassOrientation);
     lastCompassOrientation = compassOrientation;
 
+  } else {
+    $("#compassInfo").html("no change");
   }
 }
 
@@ -454,75 +457,76 @@ function updateHomeMarker(data) {
 //We need a way to detect if we're not getting the sensor data, and we can't ask for permission - ie for iOS 12
 //Maybe just detect if we're not getting sensor values after a certain time
 //Test on iPhone 5, turn off sensors
+function setupSensorListeners() {
 
-if (typeof(DeviceOrientationEvent) !== "undefined" && typeof(DeviceOrientationEvent.requestPermission) === "function") {
-  if (window.confirm("We need sensor access, please say yes")) {
-    requestSensorAccess()
-  }
-} else {
-  window.addEventListener('deviceorientation', (event) => {
-    hasSensorAccess = true;
-    var data = "";
-    if ("webkitCompassHeading" in event) {
-      data = {
-        info: "No permissions: received from deviceorientation webkitCompassHeading - iOS Safari,  Chrome, Firefox",
-        z: event.webkitCompassHeading
+    window.addEventListener('deviceorientation', (event) => {
+      hasSensorAccess = true;
+      var data = "";
+      if ("webkitCompassHeading" in event) {
+        data = {
+          info: "Received from deviceorientation webkitCompassHeading - iOS Safari,  Chrome, Firefox",
+          z: event.webkitCompassHeading
+        }
+        // Android - Chrome <50
+      } else if (event.absolute) {
+        data = {
+          info: "Received from deviceorientation with absolute=true & alpha val",
+          z: event.alpha
+        }
+      } else {
+        data = {
+          info: "absolute=false, heading might not be absolute to magnetic north",
+          z: 360 - event.alpha
+        }
       }
-      // Android - Chrome <50
-    } else if (event.absolute) {
-      data = {
-        info: "No permissions: received from deviceorientation with absolute=true & alpha val",
-        z: event.alpha
-      }
-    } else {
-      data = {
-        info: "No permissions: absolute=false, heading might not be absolute to magnetic north",
-        z: 360 - event.alpha
-      }
-    }
-    updateHomeMarker(data);
-  })
+      updateHomeMarker(data);
+      alert("listener added");
+    })
+    // alert("Can't access compass! You can enable permission at Settings -> Safari -> Motion & Orientation Access.")
 }
 
-//Only for ios 12 I think - there must be a way to not duplicate these functions
-function requestSensorAccess() {
-  if (typeof(DeviceOrientationEvent) !== "undefined" && typeof(DeviceOrientationEvent.requestPermission) === "function") {
+window.onerror = function (msg, url, lineNo, columnNo, error) {
+  var string = msg.toLowerCase();
+  var substring = "script error";
+  if (string.indexOf(substring) > -1){
+    alert('Script Error: See Browser Console for Detail');
+  } else {
+    var message = [
+      'Message: ' + msg,
+      'URL: ' + url,
+      'Line: ' + lineNo,
+      'Column: ' + columnNo,
+      'Error object: ' + JSON.stringify(error)
+    ].join(' - ');
 
+    alert(message);
+  }
+
+  return false;
+};
+
+
+//Check if we need to request access to sensors
+if (typeof(DeviceOrientationEvent) !== "undefined" && typeof(DeviceOrientationEvent.requestPermission) === "function") {
+  if (window.confirm("We need sensor access, please say yes")) {
     DeviceOrientationEvent.requestPermission()
       .then(response => {
         if (response == 'granted') {
-
-          hasSensorAccess = true;
-          window.addEventListener('deviceorientation', (event) => {
-            //iOS
-            var data = "";
-            if ("webkitCompassHeading" in event) {
-              data = {
-                info: "Permission Granted: received from deviceorientation webkitCompassHeading - iOS Safari,  Chrome, Firefox",
-                z: event.webkitCompassHeading //360 -
-              }
-              // Android - Chrome <50
-            } else if (event.absolute) {
-              data = {
-                info: "Permission Granted:  received from deviceorientation with absolute=true & alpha val",
-                z: event.alpha
-              }
-            } else {
-              data = {
-                info: "Permission Granted:  absolute=false, heading might not be absolute to magnetic north",
-                z: event.alpha
-              }
-            }
-            updateHomeMarker(data);
-          })
+          requestSensorAccess();
         }
       })
       .catch(function(err) {
         $("#errorInfo").html("Cannot get permission", err.toString());
       })
-  } else {
-    $("#errorInfo").html("DeviceOrientationEvent.requestPermission is not a function");
+    requestSensorAccess()
   }
+} else {
+  setupSensorListeners();
+}
+
+//Only for ios 12 I think - there must be a way to not duplicate these functions
+function requestSensorAccess() {
+
 }
 
 function polylineChanged() {
@@ -733,7 +737,7 @@ function initMap() {
   // heartOverlay = new google.maps.GroundOverlay('/images/red_heart.png',imageBounds);
   // heartOverlay.setMap(map);
 
-  map.addListener('click', addLatLng);
+  // map.addListener('click', addLatLng);
 
   var id = getCookie("id");
   if (id != null) {
