@@ -12,11 +12,12 @@ var debugList = []
 var groupCoords = [];
 var idCounter = 0;
 var headingChangedFlag = false;
+var coordinatesChanged = false;
 
 
 
 if (process.env.NODE_ENV != 'production') {
-
+  // var http = express.createServer();
   var https = require('https').createServer({
     key: fs.readFileSync('localhost+4-key.pem'),
     cert: fs.readFileSync('localhost+4.pem'),
@@ -163,7 +164,6 @@ io.on('connection', function(socket) {
   // })
 
   socket.on('addclient', function() {
-
     //If user doesn't already exist
     if (usersList.indexOf(this.id) == -1) {
       //Add user to our list of users
@@ -171,21 +171,17 @@ io.on('connection', function(socket) {
       console.log("adding client back to list: ", this.id, " - updated list: ", usersList)
       //reply only to user with their ID
       io.to(this.id).emit("client-id", usersList.indexOf(this.id))
-
       //Client already exists in our list
     } else {
       console.log("Client Already Exists: ", this.id)
     }
-
   })
-
 
   socket.on("update-heading", function(heading) {
     var sID = this.id
     var exists = false
 
     for (var i = 0; i < groupCoords.length; i++) {
-
       //if we find a match, we update the existing coordinate
       if (groupCoords[i].id === this.id) {
         groupCoords[i].heading = heading
@@ -193,10 +189,11 @@ io.on('connection', function(socket) {
       }
     }
 
-    if (exists) {
-      io.emit("receive-group-coordinates", groupCoords)
-    }
+    coordinatesChanged = true;
 
+    // if (exists) {
+      // io.emit("receive-group-coordinates", groupCoords)
+    // }
   })
 
   //Receive coordinates from each participant and add them to our list
@@ -247,6 +244,17 @@ io.on('connection', function(socket) {
     //the only other way to do this would be to have everyone maintain their own lists of people's points
     //but i don't think we need that much efficiency
 
-    io.emit("receive-group-coordinates", groupCoords)
+    //lets try sending this on an interval
+    // io.emit("receive-group-coordinates", groupCoords)
+    coordinatesChanged = true;
   })
 })
+
+function sendGroupCoordinates(){
+  if(coordinatesChanged){
+    coordinatesChanged = false;
+    io.emit("receive-group-coordinates", groupCoords)
+  }
+}
+
+setInterval(sendGroupCoordinates, 150);

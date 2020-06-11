@@ -445,7 +445,8 @@ function updateHomeMarker(data) {
       rotation: compassOrientation
     });
 
-    // socket.emit('update-heading', compassOrientation);
+    //Only sending rotation updates with location updates
+    socket.emit('update-heading', compassOrientation);
     lastCompassOrientation = compassOrientation;
 
   } else {
@@ -485,30 +486,12 @@ function setupSensorListeners() {
     // alert("Can't access compass! You can enable permission at Settings -> Safari -> Motion & Orientation Access.")
 }
 
-window.onerror = function (msg, url, lineNo, columnNo, error) {
-  var string = msg.toLowerCase();
-  var substring = "script error";
-  if (string.indexOf(substring) > -1){
-    alert('Script Error: See Browser Console for Detail');
-  } else {
-    var message = [
-      'Message: ' + msg,
-      'URL: ' + url,
-      'Line: ' + lineNo,
-      'Column: ' + columnNo,
-      'Error object: ' + JSON.stringify(error)
-    ].join(' - ');
 
-    alert(message);
-  }
-
-  return false;
-};
 
 
 //Check if we need to request access to sensors
 if (typeof(DeviceOrientationEvent) !== "undefined" && typeof(DeviceOrientationEvent.requestPermission) === "function") {
-  if (window.confirm("We need sensor access, please say yes")) {
+  if (window.confirm("We need to access the compass sensor to show your orientation on the map")) {
     DeviceOrientationEvent.requestPermission()
       .then(response => {
         if (response == 'granted') {
@@ -751,3 +734,25 @@ function initMap() {
   // askForLocation();
 
 }
+
+//Print errors as they happen
+window.onerror = function (msg, url, lineNo, columnNo, error) {
+  var string = msg.toLowerCase();
+  var substring = "script error";
+  if (string.indexOf(substring) > -1){
+    alert('Script Error: See Browser Console for Detail');
+  } else {
+    var message = [
+      'Message: ' + msg,
+      'URL: ' + url,
+      'Line: ' + lineNo,
+      'Column: ' + columnNo,
+      'Error object: ' + JSON.stringify(error)
+    ].join(' - ');
+
+    console.log("captured error:", message);
+    // alert(message);
+  }
+
+  return false;
+};
