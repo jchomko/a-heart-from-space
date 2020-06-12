@@ -147,7 +147,7 @@ function askForLocation() {
 function drawLines(groupCoords) {
   var dist = 0;
 
-  console.log("num lines: ", groupPolyLines.length);
+  // console.log("num lines: ", groupPolyLines.length);
   if (groupCoords.length > 1) {
 
     for (var i = 0; i < groupPolyLines.length; i++) {
@@ -271,20 +271,42 @@ function drawLines(groupCoords) {
 
 // }
 
+function clearMarkers(numberToClear) {
+  var index = 0;
+  while (index < numberToClear) {
+
+    console.log("removing marker: ", groupMarkers[groupMarkers.length-1].getTitle())
+    groupMarkers[groupMarkers.length-1].setMap(null);
+    // groupPolyLines.splice(groupMarkers.length-1,1);
+    groupMarkers.pop();
+
+    index ++;
+    console.log("total markers : ", groupMarkers.length);
+  }
+}
+
 function drawMarkers(groupCoords) {
 
   // Clear Old Markers, if there is a difference between the last length and the current length
   // This might get slow later on
   // we need to add new markers, making sure we're not giving a used id to a new marker
+  //if we need to clear markers
+  // console.log(groupCoords, groupMarkers);
+
+  //clear new markers if we have more than we have coordinates
 
 
-  console.log(groupCoords, groupMarkers);
-  //we need to do somethign at the start to populate the lists
+  //there are some markers that don't get cleared
+  //i'm not sure when it happens - maybe they are actually getting set
+  //maybe the simplest way is to just have a separate clear function called
+  // we know when people are getting disconnected, just send that directly!
+  // then we know when it's happening and don't have to worry about anything else
 
-  //cycle through list of incoming coords
-  for (var j = 0; j < groupCoords.length; j++) {
 
-    //declare image, grab the heading value from the incoming array
+  //add new markers to list
+  var index = 0
+  while (groupMarkers.length < groupCoords.length) {
+
     var image = {
       path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
       strokeWeight: 2,
@@ -292,74 +314,69 @@ function drawMarkers(groupCoords) {
       strokeColor: "#919191",
       fillOpacity: 1.0,
       scale: 4,
-      anchor: new google.maps.Point(0, 2),
-      rotation: groupCoords[j].heading
+      anchor: new google.maps.Point(0, 2)
+      // rotation: groupCoords[c].heading
     };
 
-    var noMatchIndex = -1;
-    var noMatchId;
-
-    //this doesn't run at the start - because there is nothign in the list
-    //check each incoming id against the list of markers
-    for (var i = 0; i < groupMarkers.length; i++) {
-
-      //try to find group marker array member that doesn't have a matching id
-      if (groupMarkers[i].id === groupCoords[j].id && groupMarkers[i].id != sessionID) {
-
-        //If we do have a match
-        var lat = groupCoords[j].lat;
-        var lng = groupCoords[j].lng;
-        var latlng = new google.maps.LatLng(lat, lng);
-        groupMarkers[i].setPosition(latlng);
-        groupMarkers[i].setIcon(image);
-        groupMarkers[i].setMap(map);
-
-      } else {
-        //This should actually be a list incase we have multiple leaving at the same time
-        noMatchIndex = i;
-        noMatchId = groupCoords[j];
-      }
-    }
-
-    //clear that marker from the map
-    if (noMatchIndex != -1 && groupMarkers.length > groupCoords.length) {
-      //if we have more markers than we have coordinates
-      // if (groupMarkers.length > groupCoords.length) {
-      groupMarkers[noMatchIndex].setMap(null);
-      console.log("clearing :", noMatchIndex);
-
-    //No match found and we have more coordinates than we have markers
-    //this should then run three times, but only runs once
-  } else if (noMatchIndex === -1 ){ //&& groupCoords.length > groupMarkers.length
-    //add new markers
-
-      var lat = groupCoords[j].lat;
-      var lng = groupCoords[j].lng;
-
-      //if index is greater than our current list of markers
-      // if (i > groupMarkers.length - 1) {
-
-      //add new marker
-      groupMarkers.push(new google.maps.Marker({
-        position: {
-          lat: lat,
-          lng: lng
-        },
-        title: 'Position of ' + i,
-        icon: image
-      }));
-
-      //add new marker to map
-      groupMarkers[groupMarkers.length - 1].setMap(map);
-      //set it's id from the incoming coordinate
-      groupMarkers[groupMarkers.length - 1].id = noMatchId;
-      console.log("adding new marker");
-
-    }
-
+    groupMarkers.push(new google.maps.Marker({
+      // title: 'Position of ' + index,
+      icon: image
+    }));
+    console.log("adding marker, total markers: ", groupMarkers.length)
+    index++;
   }
 
+  // //Clear all markers from map
+  // for (var m = 0; m < groupMarkers.length; m++) {
+  //   groupMarkers[m].setMap(null);
+  // }
 
+  // console.log(groupCoords, groupMarkers);
+  //we need to do somethign at the start to populate the lists
+
+  //cycle through list of incoming coords
+  for (var c = 0; c < groupCoords.length; c++) {
+
+    //declare image, grab the heading value from the incoming array
+    if (groupCoords[c].id != sessionID) {
+      var image = {
+        path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+        strokeWeight: 2,
+        fillColor: "#919191",
+        strokeColor: "#919191",
+        fillOpacity: 1.0,
+        scale: 4,
+        anchor: new google.maps.Point(0, 2),
+        rotation: groupCoords[c].heading
+      };
+
+      // var noMatchIndex = -1;
+      // var noMatchId;
+
+      //this doesn't run at the start - because there is nothign in the list
+      //check each incoming id against the list of markers
+      // for (var i = 0; i < groupMarkers.length; i++) {
+
+      //try to find group marker array member that doesn't have a matching id
+      // if (groupMarkers[i].id === groupCoords[j].id && groupCoords[j].id != sessionID ) { //&&
+      // noMatchIndex = -1;
+      //If we do have a match
+      var lat = groupCoords[c].lat;
+      var lng = groupCoords[c].lng;
+      var latlng = new google.maps.LatLng(lat, lng);
+
+      groupMarkers[c].setPosition(latlng);
+      groupMarkers[c].setIcon(image);
+      groupMarkers[c].setMap(map);
+      groupMarkers[c].setTitle(groupCoords[c].id);
+
+    }
+    //log that we've found a match on the incoming array
+    // groupMarkers[i].hasMatch = true;
+    // groupCoords[j].hasMatch = true;
+  }
+  // }
+  // }
 }
 
 
@@ -402,6 +419,10 @@ function distance(lat1, lon1, lat2, lon2) {
   return d * 1000;
 }
 
+socket.on("clear-markers",function(number){
+  clearMarkers(number)
+})
+
 socket.on("receive-id", function(id) {
   setCookie("id", id, 1)
   console.log("setting id cookie to : " + id);
@@ -417,7 +438,7 @@ socket.on('connect', function() {
 })
 
 socket.on("receive-group-coordinates", function(groupCoords) {
-  console.log(groupCoords);
+  // console.log(groupCoords);
   drawLines(groupCoords);
   if (showArrows) {
     drawMarkers(groupCoords);
