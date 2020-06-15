@@ -370,7 +370,7 @@ function drawMarkers(groupCoords) {
     groupMarkers[c].setTitle(groupCoords[c].id);
 
 
-    if (groupMarkers[c].id != sessionID) {
+    if (groupMarkers[c].getTitle() != sessionID) {
       groupMarkers[c].setMap(map);
     }else{
       groupMarkers[c].setMap(null);
