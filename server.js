@@ -59,46 +59,15 @@ io.on('connection', function(socket) {
     idCounter += 1;
 
   })
-  //Add client id to usersList if on mobile
+
+  //detect new client
+  //client is added to list only when it sends some coordinates
   socket.on("new-client", function(data) {
     console.log("new client : ", data);
-    // if (data == "mobile"){
-    //
-    //     if(usersList.indexOf(this.id) == -1){
-    //       usersList.push( this.id )
-    //       console.log("New Mobile Client: ", this.id," - updated list: ", usersList)
-    //       //respond with their their id
-    //       io.to(this.id).emit("client-id", usersList.indexOf(this.id))
-    //     }else{
-    //       console.log("Existing Mobile Client: ", this.id," - updated list: ", usersList)
-    //   }
-    //     //if the user is a debug viewer add them to a separate list
-    //   }else if (data == 'debug'){
-    //     if (debugList.indexOf(this.id) == -1){
-    //        debugList.push(this.id)
-    //        console.log("New Debug Client: ", this.id," - updated list: ", debugList)
-    //     }else{
-    //       console.log("Existing Debug Client: ", this.id," - updated list: ", debugList)
-    //      }
-    //   }
-
   })
 
   //this happens automatically when the socket connection breaks
   socket.on('disconnect', function() {
-    //Remove mobile client from list
-    // var disconnectedClientIndex = usersList.indexOf(this.id)
-    // if (disconnectedClientIndex >= 0){
-    //   usersList.splice(disconnectedClientIndex, 1)
-    //   console.log("Mobile Client disconnected: ", this.id," - updated list: ", usersList)
-    // }
-    //
-    // //Remove debug client from list
-    // var disconnectedDebugClientIndex = debugList.indexOf(this.id)
-    // if (disconnectedDebugClientIndex >= 0){
-    //   debugList.splice(disconnectedDebugClientIndex, 1)
-    //   console.log("Debug Client disconnected: ", this.id," - updated list: ", debugList)
-    // }
 
     var exists = false
     var index = -1
@@ -121,15 +90,6 @@ io.on('connection', function(socket) {
       io.emit("clear-markers", 1 ) //groupCoords
 
     }
-
-
-
-    // groupCoords.sort(function(a, b) {
-    //   return parseFloat(a.sequentialID) - parseFloat(b.sequentialID)
-    // });
-
-    // console.log(JSON.stringify(groupCoords))
-
 
   })
 
@@ -193,7 +153,7 @@ io.on('connection', function(socket) {
     }
 
     coordinatesChanged = true;
-
+    //Update happens on timer now
     // if (exists) {
       // io.emit("receive-group-coordinates", groupCoords)
     // }
@@ -231,34 +191,18 @@ io.on('connection', function(socket) {
       groupCoords.push(person)
     }
 
-    //WE don't need to sort these anymore because we are doing complicated drawing techniques to find closest points
-    // groupCoords.sort(function (a, b){
-    //   return parseFloat(a.sequentialID) - parseFloat(b.sequentialID)
-    // });
-
-    // console.log("received, sorted: " + JSON.stringify(groupCoords))
-
-    //this sends the list back to the original sender
-    //it isn't a problem because we check for our own id in the list
-    //it might make sense to only send this every little while because each user submitting their data
-    //triggers the send of this to everyone
-    //but that insures that everyone gets the latest info
-    //and plus when people are still they don't update so much
-    //the only other way to do this would be to have everyone maintain their own lists of people's points
-    //but i don't think we need that much efficiency
-
-    //lets try sending this on an interval
+    //Sending coordinates on an interval timer
     // io.emit("receive-group-coordinates", groupCoords)
     coordinatesChanged = true;
   })
 })
+
 
 function sendGroupCoordinates(){
   if(coordinatesChanged){
     coordinatesChanged = false;
     io.emit("receive-group-coordinates", groupCoords)
     // console.log("coord array length : ", groupCoords.length)
-
   }
 }
 
