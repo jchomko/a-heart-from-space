@@ -116,7 +116,7 @@ io.on('connection', function(socket) {
     if (exists == true) {
       console.log("removing :" + JSON.stringify(groupCoords[index]))
       groupCoords.splice(index, 1)
-      console.log("coord array length : ", groupCoords.length)
+      // console.log("coord array length : ", groupCoords.length)
       // coordinatesChanged = true;
       io.emit("clear-markers", 1 ) //groupCoords
 
@@ -257,7 +257,7 @@ function sendGroupCoordinates(){
   if(coordinatesChanged){
     coordinatesChanged = false;
     io.emit("receive-group-coordinates", groupCoords)
-    console.log("coord array length : ", groupCoords.length)
+    // console.log("coord array length : ", groupCoords.length)
 
   }
 }

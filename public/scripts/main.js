@@ -367,13 +367,14 @@ function drawMarkers(groupCoords) {
 
     groupMarkers[c].setPosition(latlng);
     groupMarkers[c].setIcon(image);
-    if (groupCoords[c].id != sessionID) {
+    groupMarkers[c].setTitle(groupCoords[c].id);
+
+
+    if (groupMarkers[c].id != sessionID) {
       groupMarkers[c].setMap(map);
     }else{
       groupMarkers[c].setMap(null);
     }
-    groupMarkers[c].setTitle(groupCoords[c].id);
-
 
     //log that we've found a match on the incoming array
     // groupMarkers[i].hasMatch = true;
