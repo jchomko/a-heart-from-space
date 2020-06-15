@@ -10,10 +10,14 @@ html, body {
 #toggleArrows{
   position: absolute;
   top: 0;
+  width: 80px;
+  height: 40px;
 }
 
 #centerMap{
   position: absolute;
   bottom:0;
   right: 0;
+  width: 80px;
+  height: 50px;
 }

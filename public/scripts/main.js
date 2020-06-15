@@ -271,6 +271,7 @@ function drawLines(groupCoords) {
 
 // }
 
+//Called every time someone disconnects
 function clearMarkers(numberToClear) {
   var index = 0;
   while (index < numberToClear) {
@@ -287,26 +288,11 @@ function clearMarkers(numberToClear) {
 
 function drawMarkers(groupCoords) {
 
-  // Clear Old Markers, if there is a difference between the last length and the current length
-  // This might get slow later on
-  // we need to add new markers, making sure we're not giving a used id to a new marker
-  //if we need to clear markers
-  // console.log(groupCoords, groupMarkers);
-
-  //clear new markers if we have more than we have coordinates
-
-
-  //there are some markers that don't get cleared
-  //i'm not sure when it happens - maybe they are actually getting set
-  //maybe the simplest way is to just have a separate clear function called
-  // we know when people are getting disconnected, just send that directly!
-  // then we know when it's happening and don't have to worry about anything else
-
-
-  //add new markers to list
+  //add new markers to list if we need any
   var index = 0
   while (groupMarkers.length < groupCoords.length ) {
 
+    //no rotation
     var image = {
       path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
       strokeWeight: 2,
@@ -319,26 +305,17 @@ function drawMarkers(groupCoords) {
     };
 
     groupMarkers.push(new google.maps.Marker({
-      // title: 'Position of ' + index,
       icon: image
     }));
+
     console.log("adding marker, total markers: ", groupMarkers.length)
     index++;
   }
-
-  // //Clear all markers from map
-  // for (var m = 0; m < groupMarkers.length; m++) {
-  //   groupMarkers[m].setMap(null);
-  // }
-
-  // console.log(groupCoords, groupMarkers);
-  //we need to do somethign at the start to populate the lists
 
   //cycle through list of incoming coords
   for (var c = 0; c < groupCoords.length; c++) {
 
     //declare image, grab the heading value from the incoming array
-
     var image = {
       path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
       strokeWeight: 2,
@@ -350,40 +327,25 @@ function drawMarkers(groupCoords) {
       rotation: groupCoords[c].heading
     };
 
-    // var noMatchIndex = -1;
-    // var noMatchId;
-
-    //this doesn't run at the start - because there is nothign in the list
-    //check each incoming id against the list of markers
-    // for (var i = 0; i < groupMarkers.length; i++) {
-
-    //try to find group marker array member that doesn't have a matching id
-    // if (groupMarkers[i].id === groupCoords[j].id && groupCoords[j].id != sessionID ) { //&&
-    // noMatchIndex = -1;
-    //If we do have a match
+    //Get new coordinate
     var lat = groupCoords[c].lat;
     var lng = groupCoords[c].lng;
     var latlng = new google.maps.LatLng(lat, lng);
 
+    //Set marker position
     groupMarkers[c].setPosition(latlng);
     groupMarkers[c].setIcon(image);
     groupMarkers[c].setTitle(groupCoords[c].id);
 
-
+    //Hide the marker if it's our own sessionId
     if (groupMarkers[c].getTitle() != sessionID) {
       groupMarkers[c].setMap(map);
     }else{
       groupMarkers[c].setMap(null);
     }
 
-    //log that we've found a match on the incoming array
-    // groupMarkers[i].hasMatch = true;
-    // groupCoords[j].hasMatch = true;
   }
-  // }
-  // }
 }
-
 
 //Debug function -
 //Fired on map click - disabled for normal operation
