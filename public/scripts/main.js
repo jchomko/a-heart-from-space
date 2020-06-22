@@ -1,68 +1,25 @@
 var socket = io()
-//var positionHng = document.getElementById("position-hng");
+
 var output = document.querySelector('.output');
 var arr = document.getElementById("arrow");
 
-var minDist = 0.006;
-var coordinates = [];
-var coordinateIndex = 0;
-
-var bearing = 0;
 var currLatLng;
-
 var map;
-var marker;
-var heartOverlay;
-var polyLine;
 var groupMarkers = [];
 var groupPolyLines = [];
 var homeMarkerID;
-
 var sessionID;
-var firstAlert = false;
-var cookieID;
 var bestAccuracy = 1000;
-var firstLocation = true;
 var hasSensorAccess = false;
 var compassOrientation = 0;
-
 var markerArray = [];
-var guideLine;
-var testMarker;
-var hasSensorAccess = false;
-var lastMarkerLength = 0;
-var lastCompassOrientation = 0;
 var homeMarker;
-
+var lastCompassOrientation = 0;
 var showArrows = true;
+var guideLine;
 
 
-function togArrows() {
-
-  showArrows = !showArrows;
-
-  if (!showArrows) {
-    $("#toggleArrows").html("Arrows On")
-    for (var i = 0; i < groupMarkers.length; i++) {
-      groupMarkers[i].setMap(null);
-    }
-
-  } else {
-    $("#toggleArrows").html("Arrows Off")
-    if (map != null) {
-      for (var i = 0; i < groupMarkers.length; i++) {
-        groupMarkers[i].setMap(map);
-      }
-    }
-  }
-
-}
-
-//Called from centerMap button
-function center() {
-  map.panTo(new google.maps.LatLng(currLatLng.lat, currLatLng.lng));
-}
-
+//Set cookie - not yet used
 function setCookie(c_name, value, exdays) {
   var exdate = new Date();
   exdate.setDate(exdate.getDate() + exdays);
@@ -70,6 +27,7 @@ function setCookie(c_name, value, exdays) {
   document.cookie = c_name + "=" + c_value;
 }
 
+//Retrieve cookie - not yet used
 function getCookie(c_name) {
   var i, x, y;
   var ARRcookies = document.cookie.split(";");
@@ -83,16 +41,38 @@ function getCookie(c_name) {
   }
 }
 
-//Geolocation stuff
-var browserGeolocationSuccess = function(position) {
+//Show / hide arrows
+function togArrows() {
+  showArrows = !showArrows;
+  if (!showArrows) {
+    $("#toggleArrows").html("Arrows On")
+    for (var i = 0; i < groupMarkers.length; i++) {
+      groupMarkers[i].setMap(null);
+    }
+  } else {
+    $("#toggleArrows").html("Arrows Off")
+    if (map != null) {
+      for (var i = 0; i < groupMarkers.length; i++) {
+        groupMarkers[i].setMap(map);
+      }
+    }
+  }
+}
 
+//Center map to current position (if it's been set)
+function center() {
+  map.panTo(new google.maps.LatLng(currLatLng.lat, currLatLng.lng));
+}
+
+//Geolocation success callback
+var browserGeolocationSuccess = function(position) {
   if (position.coords.accuracy < bestAccuracy) {
     bestAccuracy = position.coords.accuracy;
     console.log("bestAccuracy: " + bestAccuracy);
   }
-
   // if we have a high accuracy reading
-  if ( position.coords.accuracy < bestAccuracy + 10 ) { //|| position.coords.accuracy === 150
+  // if using simulated position the accuracy will be fixed at 150
+  if (position.coords.accuracy < bestAccuracy + 10) { //|| position.coords.accuracy === 150
     currLatLng = {
       lat: position.coords.latitude,
       lng: position.coords.longitude,
@@ -105,7 +85,7 @@ var browserGeolocationSuccess = function(position) {
   }
 };
 
-//Process errors for geoloc
+//Geolocation fail callback
 var browserGeolocationFail = function(error) {
   switch (error.code) {
     case error.TIMEOUT:
@@ -131,23 +111,24 @@ function tryGeolocation() {
         timeout: 10000,
         maximumAge: 5000
       });
-    //  {maximumAge: 0, timeout: 5000, enableHighAccuracy: false});
   }
 }
 
+//Request for position must come from user action, hence the prompt
 function askForLocation() {
   if (confirm("This website requires access to your GPS location. Press OK and you'll receive a request to access your location.")) {
     tryGeolocation()
   }
 }
 
-//Draw lines of connection
+//Draw lines between the received points
 function drawLines(groupCoords) {
   var dist = 0;
 
   // console.log("num lines: ", groupPolyLines.length);
   if (groupCoords.length > 1) {
 
+    //clear polylines
     for (var i = 0; i < groupPolyLines.length; i++) {
       groupPolyLines[i].setMap(null);
     }
@@ -266,15 +247,14 @@ function drawLines(groupCoords) {
 // //Close line by bringing it back to current position
 // // path.push(currll);
 // //every time this is updated re-draw the polyline from scratch
-
 // }
 
-//Called every time someone disconnects
+//Called every time a socket is disconnected
 function clearMarkers(numberToClear) {
   var index = 0;
   while (index < numberToClear) {
 
-    console.log("removing marker: ", groupMarkers[groupMarkers.length -1].getTitle())
+    console.log("removing marker: ", groupMarkers[groupMarkers.length - 1].getTitle())
     groupMarkers[groupMarkers.length - 1].setMap(null);
     // groupPolyLines.splice(groupMarkers.length-1,1);
     groupMarkers.pop();
@@ -284,12 +264,11 @@ function clearMarkers(numberToClear) {
   }
 }
 
+//add a marker for each incoming coordinate
 function drawMarkers(groupCoords) {
-
   //add new markers to list if we need any
   var index = 0
-  while (groupMarkers.length < groupCoords.length ) {
-
+  while (groupMarkers.length < groupCoords.length) {
     //no rotation
     var image = {
       path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
@@ -301,18 +280,15 @@ function drawMarkers(groupCoords) {
       anchor: new google.maps.Point(0, 2)
       // rotation: groupCoords[c].heading
     };
-
     groupMarkers.push(new google.maps.Marker({
       icon: image
     }));
-
     console.log("adding marker, total markers: ", groupMarkers.length)
     index++;
   }
 
   //cycle through list of incoming coords
   for (var c = 0; c < groupCoords.length; c++) {
-
     //declare image, grab the heading value from the incoming array
     var image = {
       path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
@@ -338,33 +314,40 @@ function drawMarkers(groupCoords) {
     //Hide the marker if it's our own sessionId
     if (groupMarkers[c].getTitle() != sessionID) {
       groupMarkers[c].setMap(map);
-    }else{
+    } else {
       groupMarkers[c].setMap(null);
     }
-
   }
 }
 
-//Debug function -
-//Fired on map click - disabled for normal operation
+//Debug function - Fired on map click - disabled for normal operation
 function addLatLng(event) {
-
   var path = guideLine.getPath();
   path.push(event.latLng);
-
-  var coord = {
-    lat: event.latLng.lat(),
-    lng: event.latLng.lng()
-  };
-
-  coordinates.push(coord);
-  console.log(coordinates);
-  // coordinates.push(event.latLng);
-  // console.log(coordinates);
-  drawLines(guideLine.getPath().getArray());
+  // drawLines(guideLine.getPath().getArray());
+  drawLines(convertCoordinates(guideLine.getPath().getArray()))
 
 }
 
+function polylineChanged() {
+  drawLines(convertCoordinates(guideLine.getPath().getArray()))
+  // drawLines(guideLine.getPath().getArray());
+  // console.log("drawing lines : ", guideLine.getPath().getArray());
+}
+
+function convertCoordinates(coordsToConvert){
+  var formattedCoords = [];
+  for(var i = 0; i < coordsToConvert.length; i ++){
+    var formattedCoord = {
+      lat: coordsToConvert[i].lat(),
+      lng: coordsToConvert[i].lng()
+    };
+    formattedCoords.push(formattedCoord);
+  }
+  return formattedCoords;
+}
+
+//Calculate distance between two points
 function distance(lat1, lon1, lat2, lon2) {
   var R = 6371; // km (change this constant to get miles)
   var dLat = (lat2 - lat1) * Math.PI / 180;
@@ -391,7 +374,7 @@ socket.on("clear-markers", function(number) {
 socket.on("receive-id", function(id) {
   setCookie("id", id, 1)
   console.log("setting id cookie to : " + id);
-  cookieID = id;
+  // cookieID = id;
 })
 
 socket.on('connect', function() {
@@ -410,14 +393,12 @@ socket.on("receive-group-coordinates", function(groupCoords) {
   }
 })
 
-
 function updateHomeMarkerPosition(position) {
   var latlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
   homeMarker.setPosition(latlng);
 }
 
-function updateHomeMarker(data) {
-
+function updateHomeMarkerRotation(data) {
   compassOrientation = data.z;
   compassOrientation = (compassOrientation + 0);
   if (compassOrientation > 360) {
@@ -426,7 +407,6 @@ function updateHomeMarker(data) {
 
   if (compassOrientation != lastCompassOrientation) {
     // $("#compassInfo").html(data.info + ": " + Math.round(compassOrientation) + ". event: " + event);
-
     homeMarker.setIcon({
       path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
       strokeWeight: 2,
@@ -446,10 +426,8 @@ function updateHomeMarker(data) {
   }
 }
 
-//Request sensor access if necessary
-//We need a way to detect if we're not getting the sensor data, and we can't ask for permission - ie for iOS 12
-//Maybe just detect if we're not getting sensor values after a certain time
-//Test on iPhone 5, turn off sensors
+//setup sensor listeners
+//// TODO:  detect if ios12 and user needs to turn on sensor access
 function setupSensorListeners() {
 
   window.addEventListener('deviceorientation', (event) => {
@@ -472,14 +450,11 @@ function setupSensorListeners() {
         z: 360 - event.alpha
       }
     }
-    updateHomeMarker(data);
+    updateHomeMarkerRotation(data);
     // alert("listener added");
   })
   // alert("Can't access compass! You can enable permission at Settings -> Safari -> Motion & Orientation Access.")
 }
-
-
-
 
 //Check if we need to request access to sensors
 if (typeof(DeviceOrientationEvent) !== "undefined" && typeof(DeviceOrientationEvent.requestPermission) === "function") {
@@ -494,19 +469,12 @@ if (typeof(DeviceOrientationEvent) !== "undefined" && typeof(DeviceOrientationEv
         $("#errorInfo").html("Cannot get permission", err.toString());
       })
   }
+//if not then we just setup the listeners
 } else {
   setupSensorListeners();
 }
 
-//Only for ios 12 I think - there must be a way to not duplicate these functions
-function requestSensorAccess() {
 
-}
-
-function polylineChanged() {
-  drawLines(guideLine.getPath().getArray());
-  // console.log("draing lines");
-}
 
 //Function called by async script call at bottom of index.html
 function initMap() {
@@ -664,20 +632,23 @@ function initMap() {
     ]
   });
 
-  //Uncomment for debugging mode where we draw a line with clicks and then the system finds the closest points between
-  // guideLine = new google.maps.Polyline({
-  //   strokeColor: '#989898',
-  //   strokeOpacity: 0.1,
-  //   strokeWeight: 5,
-  //   editable: true
-  //   // draggable: true
-  // });
-  //
-  // guideLine.setMap(map);
-  //
-  // google.maps.event.addListener(guideLine.getPath(), 'insert_at', polylineChanged);
-  // google.maps.event.addListener(guideLine.getPath(), 'remove_at', polylineChanged);
-  // google.maps.event.addListener(guideLine.getPath(), 'set_at', polylineChanged);
+  //Uncomment below for debugging mode - add 'location' points with mouse click
+
+  guideLine = new google.maps.Polyline({
+    strokeColor: '#989898',
+    strokeOpacity: 0.1,
+    strokeWeight: 5,
+    editable: true
+    // draggable: true
+  });
+
+  guideLine.setMap(map);
+
+  google.maps.event.addListener(guideLine.getPath(), 'insert_at', polylineChanged);
+  google.maps.event.addListener(guideLine.getPath(), 'remove_at', polylineChanged);
+  google.maps.event.addListener(guideLine.getPath(), 'set_at', polylineChanged);
+
+  map.addListener('click', addLatLng);
 
   var image = {
     path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
@@ -708,10 +679,8 @@ function initMap() {
 
   homeMarker.setMap(map);
 
-  // heartOverlay = new google.maps.GroundOverlay('/images/red_heart.png',imageBounds);
-  // heartOverlay.setMap(map);
 
-  // map.addListener('click', addLatLng);
+
 
   var id = getCookie("id");
   if (id != null) {
@@ -721,9 +690,6 @@ function initMap() {
     console.log("has no id : " + id);
     socket.emit('request-id');
   }
-
-  // askForLocation();
-
 }
 
 //Print errors as they happen
