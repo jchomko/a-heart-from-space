@@ -15,9 +15,8 @@ var headingChangedFlag = false;
 var coordinatesChanged = false;
 
 
-
+//Development section
 if (process.env.NODE_ENV != 'production') {
-  // var http = express.createServer();
   var https = require('https').createServer({
     key: fs.readFileSync('localhost+4-key.pem'),
     cert: fs.readFileSync('localhost+4.pem'),

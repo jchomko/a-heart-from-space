@@ -92,16 +92,14 @@ var browserGeolocationSuccess = function(position) {
   }
 
   // if we have a high accuracy reading
-  if (position.coords.accuracy < bestAccuracy + 10 || position.coords.accuracy === 150) {
+  if ( position.coords.accuracy < bestAccuracy + 10 ) { //|| position.coords.accuracy === 150
     currLatLng = {
       lat: position.coords.latitude,
       lng: position.coords.longitude,
       seqentialID: cookieID,
       heading: compassOrientation
     };
-
     updateHomeMarkerPosition(position);
-
     // console.log("accurate coordinates: " + JSON.stringify(myLatLng))
     socket.emit("update-coordinates", currLatLng)
   }
@@ -489,13 +487,12 @@ if (typeof(DeviceOrientationEvent) !== "undefined" && typeof(DeviceOrientationEv
     DeviceOrientationEvent.requestPermission()
       .then(response => {
         if (response == 'granted') {
-          requestSensorAccess();
+          setupSensorListeners();
         }
       })
       .catch(function(err) {
         $("#errorInfo").html("Cannot get permission", err.toString());
       })
-    requestSensorAccess()
   }
 } else {
   setupSensorListeners();
