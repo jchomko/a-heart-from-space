@@ -76,7 +76,6 @@ var browserGeolocationSuccess = function(position) {
     currLatLng = {
       lat: position.coords.latitude,
       lng: position.coords.longitude,
-      seqentialID: cookieID,
       heading: compassOrientation
     };
     updateHomeMarkerPosition(position);
