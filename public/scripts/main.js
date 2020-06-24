@@ -19,6 +19,28 @@ var showArrows = true;
 var guideLine;
 
 
+var spriteSound = new Howl({
+    src: ['Ticket-machine-sound.mp3'] //,
+    // sprite: {
+    //   arrival1: [0, 2500],
+    //   arrival2: [4500, 2500],
+    //   arrival3: [9000, 2500],
+    //   arrival4: [13400, 2500],
+    //   arrival5: [18000, 2500],
+    //   arrival6: [22500, 2500],
+    //   arrival7: [27300, 2500],
+    //   arrival8: [31500, 2500],
+    //   arrival9: [36200, 2500],
+    //   arrival10: [40400, 2500],
+    //   arrival11: [45350, 2500],
+    //   arrival12: [49600, 2500],
+    //   arrival13: [54100, 2500],
+    //   arrival14: [58800, 2500],
+    //   arrival15: [63000, 2500]
+    // }
+});
+
+
 //Set cookie - not yet used
 function setCookie(c_name, value, exdays) {
   var exdate = new Date();
@@ -279,9 +301,17 @@ function drawMarkers(groupCoords) {
       anchor: new google.maps.Point(0, 2)
       // rotation: groupCoords[c].heading
     };
-    groupMarkers.push(new google.maps.Marker({
+
+    var marker = new google.maps.Marker({
       icon: image
-    }));
+    })
+
+    google.maps.event.addListener( marker, 'mouseup', function (event) {
+      console.log("tapping : ", this.getTitle());
+      socket.emit("send-tap", this.getTitle() );
+    });
+
+    groupMarkers.push(marker);
     console.log("adding marker, total markers: ", groupMarkers.length)
     index++;
   }
@@ -318,6 +348,7 @@ function drawMarkers(groupCoords) {
     }
   }
 }
+
 
 //Debug function - Fired on map click - disabled for normal operation
 function addLatLng(event) {
@@ -365,6 +396,15 @@ function distance(lat1, lon1, lat2, lon2) {
   //meters
   return d * 1000;
 }
+
+socket.on("receive-tap", function(){
+      console.log("vibrate")
+      if(window.navigator.vibrate){
+        window.navigator.vibrate(500);
+      }
+      // var key = "arrival1";
+      spriteSound.play(); //key
+})
 
 socket.on("clear-markers", function(number) {
   clearMarkers(number)
@@ -669,6 +709,7 @@ function initMap() {
     icon: image
   });
 
+
   var imageBounds = {
     north: 45.536384,
     south: 45.535557,
@@ -678,7 +719,11 @@ function initMap() {
 
   homeMarker.setMap(map);
 
-
+  google.maps.event.addListener( homeMarker, 'mouseup', function (event) {
+    // console.log("tapping : ", this.getTitle());
+    // socket.emit("send-tap", this.getTitle() );
+    spriteSound.play();
+  });
 
 
   var id = getCookie("id");

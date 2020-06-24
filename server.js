@@ -125,6 +125,11 @@ io.on('connection', function(socket) {
   //
   // })
 
+  socket.on('send-tap', function(targetSocketId){
+    io.to(targetSocketId).emit('receive-tap');
+    console.log("sending tap to :", targetSocketId);
+  })
+
   socket.on('addclient', function() {
     //If user doesn't already exist
     if (usersList.indexOf(this.id) == -1) {
