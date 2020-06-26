@@ -87,7 +87,7 @@ function center() {
 }
 
 //Geolocation success callback
-var browserGeolocationSuccess = function(position) {
+var browserGeolocationSuccess = function (position) {
   if (position.coords.accuracy < bestAccuracy) {
     bestAccuracy = position.coords.accuracy;
     console.log("bestAccuracy: " + bestAccuracy);
@@ -107,7 +107,7 @@ var browserGeolocationSuccess = function(position) {
 };
 
 //Geolocation fail callback
-var browserGeolocationFail = function(error) {
+var browserGeolocationFail = function (error) {
   switch (error.code) {
     case error.TIMEOUT:
       alert("Browser geolocation error !\n\nTimeout." + error.message);
@@ -142,6 +142,14 @@ function askForLocation() {
   }
 }
 
+const calculateCentroid = (acc, {lat, lng}, idx, src) => {
+  acc.lat += lat / src.length;
+  acc.lng += lng / src.length;
+  return acc;
+}
+
+const sortByAngle = (a, b) => a.angle - b.angle
+
 //Draw lines between the received points
 function drawLines(groupCoords) {
   var dist = 0;
@@ -156,90 +164,111 @@ function drawLines(groupCoords) {
     //clear all polylines
     groupPolyLines.splice(0, groupPolyLines.length);
 
-    for (var i = 0; i < groupCoords.length; i++) {
+    const center = groupCoords.reduce(calculateCentroid, {lat: 0, lng: 0});
 
-      var pairId = -1;
-      var thirdPairId = -1;
-      var secondPairId = -1;
+    const angles = groupCoords.map(({lat, lng}) => {
+      return {lat, lng, angle: Math.atan2(lat - center.lat, lng - center.lng) * 180 / Math.PI};
+    });
 
-      var minDist = 10000000;
-      var secondMinDist = 10000000;
-      var thirdMinDist = 10000000;
+    let groupCoordsSorted = angles.sort(sortByAngle);
 
-      for (var j = 0; j < groupCoords.length; j++) {
-        if (i != j) {
+    groupCoordsSorted.push(groupCoordsSorted[0]);
 
-          dist = distance(groupCoords[i].lat, groupCoords[i].lng, groupCoords[j].lat, groupCoords[j].lng);
-          //debug sends google formatting lat lng which requires funciton call - when using live data we don't need function call
-          //// TODO: send debug commands in same format as live data , ie .lat
-          // dist = distance(groupCoords[i].lat(), groupCoords[i].lng(), groupCoords[j].lat(), groupCoords[j].lng());
-          // console.log(dist);
-          if (dist < minDist) { //&& p1.numConnections < 1 && p2.numConnections < 2  &&  // j != (int)p2.lineStartId && j != (int)p2.lineEndId
-            //these will be the secondary values because they will always be one cycle delayed
-            minDist = dist;
-            pairId = j;
-          }
+    var polyline = new google.maps.Polyline({
+      strokeColor: '#f70000',
+      strokeOpacity: 1,
+      strokeOpacity: 1,
+      strokeWeight: 5,
+      path: groupCoordsSorted
+    })
+    polyline.setMap(map);
+
+    groupPolyLines.push(polyline);
+
+    /*for (var i = 0; i < groupCoords.length; i++) {
+
+        var pairId = -1;
+        var thirdPairId = -1;
+        var secondPairId = -1;
+
+        var minDist = 10000000;
+        var secondMinDist = 10000000;
+        var thirdMinDist = 10000000;
+
+        for (var j = 0; j < groupCoords.length; j++) {
+            if (i != j) {
+
+                dist = distance(groupCoords[i].lat, groupCoords[i].lng, groupCoords[j].lat, groupCoords[j].lng);
+                //debug sends google formatting lat lng which requires funciton call - when using live data we don't need function call
+                //// TODO: send debug commands in same format as live data , ie .lat
+                // dist = distance(groupCoords[i].lat(), groupCoords[i].lng(), groupCoords[j].lat(), groupCoords[j].lng());
+                // console.log(dist);
+                if (dist < minDist) { //&& p1.numConnections < 1 && p2.numConnections < 2  &&  // j != (int)p2.lineStartId && j != (int)p2.lineEndId
+                    //these will be the secondary values because they will always be one cycle delayed
+                    minDist = dist;
+                    pairId = j;
+                }
+            }
         }
-      }
 
-      for (var j = 0; j < groupCoords.length; j++) {
-        if (i != j) {
-          dist = distance(groupCoords[i].lat, groupCoords[i].lng, groupCoords[j].lat, groupCoords[j].lng);
-          // dist = distance(groupCoords[i].lat(), groupCoords[i].lng(), groupCoords[j].lat(), groupCoords[j].lng());
-          // console.log(dist);
-          if (dist < secondMinDist && dist > minDist) {
-            secondMinDist = dist;
-            secondPairId = j;
-          }
+        for (var j = 0; j < groupCoords.length; j++) {
+            if (i != j) {
+                dist = distance(groupCoords[i].lat, groupCoords[i].lng, groupCoords[j].lat, groupCoords[j].lng);
+                // dist = distance(groupCoords[i].lat(), groupCoords[i].lng(), groupCoords[j].lat(), groupCoords[j].lng());
+                // console.log(dist);
+                if (dist < secondMinDist && dist > minDist) {
+                    secondMinDist = dist;
+                    secondPairId = j;
+                }
+            }
         }
-      }
 
-      //Draw first line
-      if (pairId != -1) {
-        //make new polyline
-        var pl = new google.maps.Polyline({
-          strokeColor: '#f70000',
-          strokeOpacity: 1,
-          strokeWeight: 5
-          // editable: true
-        })
-        //set it to the map
-        pl.setMap(map);
+        //Draw first line
+        if (pairId != -1) {
+            //make new polyline
+            var pl = new google.maps.Polyline({
+                strokeColor: '#f70000',
+                strokeOpacity: 1,
+                strokeWeight: 5
+                // editable: true
+            })
+            //set it to the map
+            pl.setMap(map);
 
-        //get it's path
-        var path = pl.getPath();
+            //get it's path
+            var path = pl.getPath();
 
-        var startPoint = new google.maps.LatLng(groupCoords[i].lat, groupCoords[i].lng);
-        path.push(startPoint);
+            var startPoint = new google.maps.LatLng(groupCoords[i].lat, groupCoords[i].lng);
+            path.push(startPoint);
 
-        var endPoint = new google.maps.LatLng(groupCoords[pairId].lat, groupCoords[pairId].lng);
-        path.push(endPoint);
-        //group is just a way to keep track of all the lines we're making so we can clear them
-        groupPolyLines.push(pl);
-      }
+            var endPoint = new google.maps.LatLng(groupCoords[pairId].lat, groupCoords[pairId].lng);
+            path.push(endPoint);
+            //group is just a way to keep track of all the lines we're making so we can clear them
+            groupPolyLines.push(pl);
+        }
 
-      //Draws second line
-      if (secondPairId != -1) {
-        //make new polyline
-        var pl = new google.maps.Polyline({
-          strokeColor: '#f70000',
-          strokeOpacity: 1,
-          strokeWeight: 5
-          // editable: true
-        })
+        //Draws second line
+        if (secondPairId != -1) {
+            //make new polyline
+            var pl = new google.maps.Polyline({
+                strokeColor: '#f70000',
+                strokeOpacity: 1,
+                strokeWeight: 5
+                // editable: true
+            })
 
-        pl.setMap(map);
+            pl.setMap(map);
 
-        var path = pl.getPath();
-        var startPoint = new google.maps.LatLng(groupCoords[i].lat, groupCoords[i].lng);
-        path.push(startPoint);
-        var endPoint = new google.maps.LatLng(groupCoords[secondPairId].lat, groupCoords[secondPairId].lng);
-        path.push(endPoint);
+            var path = pl.getPath();
+            var startPoint = new google.maps.LatLng(groupCoords[i].lat, groupCoords[i].lng);
+            path.push(startPoint);
+            var endPoint = new google.maps.LatLng(groupCoords[secondPairId].lat, groupCoords[secondPairId].lng);
+            path.push(endPoint);
 
-        //this array is just a way to keep track of all the lines we're making so we can clear them
-        groupPolyLines.push(pl);
-      }
-    }
+            //this array is just a way to keep track of all the lines we're making so we can clear them
+            groupPolyLines.push(pl);
+        }
+    }*/
   }
 }
 
@@ -356,18 +385,31 @@ function addLatLng(event) {
   path.push(event.latLng);
   // drawLines(guideLine.getPath().getArray());
   drawLines(convertCoordinates(guideLine.getPath().getArray()))
-
 }
 
-function polylineChanged() {
+function polylineChanged(index) {
   drawLines(convertCoordinates(guideLine.getPath().getArray()))
   // drawLines(guideLine.getPath().getArray());
   // console.log("drawing lines : ", guideLine.getPath().getArray());
 }
 
-function convertCoordinates(coordsToConvert){
+function insertAt(index) {
+  if (guideLine.getPath().length - index !== 1) {
+    polylineChanged();
+  }
+}
+
+function removeAt(index) {
+  polylineChanged();
+}
+
+function setAt(index) {
+  polylineChanged();
+}
+
+function convertCoordinates(coordsToConvert) {
   var formattedCoords = [];
-  for(var i = 0; i < coordsToConvert.length; i ++){
+  for (var i = 0; i < coordsToConvert.length; i++) {
     var formattedCoord = {
       lat: coordsToConvert[i].lat(),
       lng: coordsToConvert[i].lng()
@@ -397,26 +439,17 @@ function distance(lat1, lon1, lat2, lon2) {
   return d * 1000;
 }
 
-socket.on("receive-tap", function(){
-      console.log("vibrate")
-      if(window.navigator.vibrate){
-        window.navigator.vibrate(500);
-      }
-      // var key = "arrival1";
-      spriteSound.play(); //key
-})
-
-socket.on("clear-markers", function(number) {
+socket.on("clear-markers", function (number) {
   clearMarkers(number)
 })
 
-socket.on("receive-id", function(id) {
+socket.on("receive-id", function (id) {
   setCookie("id", id, 1)
   console.log("setting id cookie to : " + id);
   // cookieID = id;
 })
 
-socket.on('connect', function() {
+socket.on('connect', function () {
   socket.emit('new-client', 'mobile')
   sessionID = socket.id;
   console.log('connected', socket.connected, sessionID);
@@ -424,7 +457,7 @@ socket.on('connect', function() {
 
 })
 
-socket.on("receive-group-coordinates", function(groupCoords) {
+socket.on("receive-group-coordinates", function (groupCoords) {
   // console.log(groupCoords);
   drawLines(groupCoords);
   if (showArrows) {
@@ -496,7 +529,7 @@ function setupSensorListeners() {
 }
 
 //Check if we need to request access to sensors
-if (typeof(DeviceOrientationEvent) !== "undefined" && typeof(DeviceOrientationEvent.requestPermission) === "function") {
+if (typeof (DeviceOrientationEvent) !== "undefined" && typeof (DeviceOrientationEvent.requestPermission) === "function") {
   if (window.confirm("We need to access the compass sensor to show your orientation on the map")) {
     DeviceOrientationEvent.requestPermission()
       .then(response => {
@@ -504,7 +537,7 @@ if (typeof(DeviceOrientationEvent) !== "undefined" && typeof(DeviceOrientationEv
           setupSensorListeners();
         }
       })
-      .catch(function(err) {
+      .catch(function (err) {
         $("#errorInfo").html("Cannot get permission", err.toString());
       })
   }
@@ -512,7 +545,6 @@ if (typeof(DeviceOrientationEvent) !== "undefined" && typeof(DeviceOrientationEv
 } else {
   setupSensorListeners();
 }
-
 
 
 //Function called by async script call at bottom of index.html
@@ -529,11 +561,11 @@ function initMap() {
     },
     disableDefaultUI: true,
     styles: [{
-        "elementType": "geometry",
-        "stylers": [{
-          "color": "#f5f5f5"
-        }]
-      },
+      "elementType": "geometry",
+      "stylers": [{
+        "color": "#f5f5f5"
+      }]
+    },
       {
         "elementType": "labels",
         "stylers": [{
@@ -683,9 +715,9 @@ function initMap() {
 
   guideLine.setMap(map);
 
-  google.maps.event.addListener(guideLine.getPath(), 'insert_at', polylineChanged);
-  google.maps.event.addListener(guideLine.getPath(), 'remove_at', polylineChanged);
-  google.maps.event.addListener(guideLine.getPath(), 'set_at', polylineChanged);
+  google.maps.event.addListener(guideLine.getPath(), 'insert_at', insertAt);
+  google.maps.event.addListener(guideLine.getPath(), 'remove_at', removeAt);
+  google.maps.event.addListener(guideLine.getPath(), 'set_at', setAt);
 
   map.addListener('click', addLatLng);
 
@@ -719,12 +751,6 @@ function initMap() {
 
   homeMarker.setMap(map);
 
-  google.maps.event.addListener( homeMarker, 'mouseup', function (event) {
-    // console.log("tapping : ", this.getTitle());
-    // socket.emit("send-tap", this.getTitle() );
-    spriteSound.play();
-  });
-
 
   var id = getCookie("id");
   if (id != null) {
@@ -737,7 +763,7 @@ function initMap() {
 }
 
 //Print errors as they happen
-window.onerror = function(msg, url, lineNo, columnNo, error) {
+window.onerror = function (msg, url, lineNo, columnNo, error) {
   var string = msg.toLowerCase();
   var substring = "script error";
   if (string.indexOf(substring) > -1) {
