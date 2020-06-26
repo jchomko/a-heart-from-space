@@ -174,11 +174,13 @@ function drawLines(groupCoords) {
 
     groupCoordsSorted.push(groupCoordsSorted[0]);
 
-    var polyline = new google.maps.Polyline({
+    var polyline = new google.maps.Polygon({
       strokeColor: '#f70000',
       strokeOpacity: 1,
       strokeOpacity: 1,
       strokeWeight: 5,
+      fillColor: '#f70000',
+      fillOpacity: 0.5,
       path: groupCoordsSorted
     })
     polyline.setMap(map);
