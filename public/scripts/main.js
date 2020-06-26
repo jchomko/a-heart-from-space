@@ -291,16 +291,19 @@ function drawMarkers(groupCoords) {
   var index = 0
   while (groupMarkers.length < groupCoords.length) {
     //no rotation
+    //Arrow
+
     var image = {
-      path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+      path: 'M39.167,30c0,5.062-4.104,9.167-9.166,9.167c-5.063,0-9.167-4.104-9.167-9.167c0-9.125,8.416-18,9.167-18 C30.75,12,39.167,20.875,39.167,30z',
       strokeWeight: 2,
       fillColor: "#919191",
       strokeColor: "#919191",
       fillOpacity: 1.0,
-      scale: 4,
-      anchor: new google.maps.Point(0, 2)
+      scale: 0.75,
+      anchor: new google.maps.Point(30, 30),
       // rotation: groupCoords[c].heading
     };
+
 
     var marker = new google.maps.Marker({
       icon: image
@@ -320,13 +323,13 @@ function drawMarkers(groupCoords) {
   for (var c = 0; c < groupCoords.length; c++) {
     //declare image, grab the heading value from the incoming array
     var image = {
-      path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+      path: 'M39.167,30c0,5.062-4.104,9.167-9.166,9.167c-5.063,0-9.167-4.104-9.167-9.167c0-9.125,8.416-18,9.167-18 C30.75,12,39.167,20.875,39.167,30z',
       strokeWeight: 2,
       fillColor: "#919191",
       strokeColor: "#919191",
       fillOpacity: 1.0,
-      scale: 4,
-      anchor: new google.maps.Point(0, 2),
+      scale: 0.75,
+      anchor: new google.maps.Point(30, 30),
       rotation: groupCoords[c].heading
     };
 
@@ -447,14 +450,25 @@ function updateHomeMarkerRotation(data) {
   if (compassOrientation != lastCompassOrientation) {
     // $("#compassInfo").html(data.info + ": " + Math.round(compassOrientation) + ". event: " + event);
     homeMarker.setIcon({
-      path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+      // path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+      path: 'M39.167,30c0,5.062-4.104,9.167-9.166,9.167c-5.063,0-9.167-4.104-9.167-9.167c0-9.125,8.416-18,9.167-18 C30.75,12,39.167,20.875,39.167,30z',
       strokeWeight: 2,
-      fillColor: "#000000",
+      strokeColor: "#29ABE2",
+      fillColor: "#29ABE2",
       fillOpacity: 1.0,
-      scale: 4,
-      anchor: new google.maps.Point(0, 2),
+      scale: 0.75,
+      anchor: new google.maps.Point(30, 30),
       rotation: compassOrientation
     });
+
+    //Images can't use rotation!
+    // homeMarker.setIcon({
+    //   url: "/images/compass_dot_marker_integrated_blue.png",
+    //   size: new google.maps.Size(60,60),
+    //   origin: new google.maps.Point(0,0),
+    //   anchor: new google.maps.Point(30,30),
+    //   rotation: compassOrientation
+    // });
 
     //Only sending rotation updates with location updates
     socket.emit('update-heading', compassOrientation);
@@ -690,13 +704,13 @@ function initMap() {
   map.addListener('click', addLatLng);
 
   var image = {
-    path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+    path: 'M39.167,30c0,5.062-4.104,9.167-9.166,9.167c-5.063,0-9.167-4.104-9.167-9.167c0-9.125,8.416-18,9.167-18 C30.75,12,39.167,20.875,39.167,30z',
     strokeWeight: 2,
-    fillColor: "#000000",
-    strokeColor: "#000000",
+    strokeColor: "#29ABE2",
+    fillColor: "#29ABE2",
     fillOpacity: 1.0,
-    scale: 4,
-    anchor: new google.maps.Point(0, 2),
+    scale: 0.75,
+    anchor: new google.maps.Point(30, 30),
     rotation: 0
   };
 
