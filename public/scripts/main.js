@@ -444,6 +444,15 @@ function distance(lat1, lon1, lat2, lon2) {
   return d * 1000;
 }
 
+socket.on("receive-tap", function(){
+      console.log("vibrate")
+      if(window.navigator.vibrate){
+        window.navigator.vibrate(500);
+      }
+      // var key = "arrival1";
+      spriteSound.play(); //key
+})
+
 socket.on("clear-markers", function (number) {
   clearMarkers(number)
 })
@@ -767,6 +776,11 @@ function initMap() {
 
   homeMarker.setMap(map);
 
+  google.maps.event.addListener( homeMarker, 'mouseup', function (event) {
+    spriteSound.play();
+    // console.log("tapping : ", this.getTitle());
+    // socket.emit("send-tap", this.getTitle() );
+  });
 
   var id = getCookie("id");
   if (id != null) {
