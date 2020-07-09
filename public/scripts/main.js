@@ -20,24 +20,24 @@ var guideLine;
 
 
 var spriteSound = new Howl({
-    src: ['Ticket-machine-sound.mp3'] //,
-    // sprite: {
-    //   arrival1: [0, 2500],
-    //   arrival2: [4500, 2500],
-    //   arrival3: [9000, 2500],
-    //   arrival4: [13400, 2500],
-    //   arrival5: [18000, 2500],
-    //   arrival6: [22500, 2500],
-    //   arrival7: [27300, 2500],
-    //   arrival8: [31500, 2500],
-    //   arrival9: [36200, 2500],
-    //   arrival10: [40400, 2500],
-    //   arrival11: [45350, 2500],
-    //   arrival12: [49600, 2500],
-    //   arrival13: [54100, 2500],
-    //   arrival14: [58800, 2500],
-    //   arrival15: [63000, 2500]
-    // }
+  src: ['Ticket-machine-sound.mp3'] //,
+  // sprite: {
+  //   arrival1: [0, 2500],
+  //   arrival2: [4500, 2500],
+  //   arrival3: [9000, 2500],
+  //   arrival4: [13400, 2500],
+  //   arrival5: [18000, 2500],
+  //   arrival6: [22500, 2500],
+  //   arrival7: [27300, 2500],
+  //   arrival8: [31500, 2500],
+  //   arrival9: [36200, 2500],
+  //   arrival10: [40400, 2500],
+  //   arrival11: [45350, 2500],
+  //   arrival12: [49600, 2500],
+  //   arrival13: [54100, 2500],
+  //   arrival14: [58800, 2500],
+  //   arrival15: [63000, 2500]
+  // }
 });
 
 
@@ -87,14 +87,14 @@ function center() {
 }
 
 //Geolocation success callback
-var browserGeolocationSuccess = function (position) {
+var browserGeolocationSuccess = function(position) {
   if (position.coords.accuracy < bestAccuracy) {
     bestAccuracy = position.coords.accuracy;
     console.log("bestAccuracy: " + bestAccuracy);
   }
   // if we have a high accuracy reading
   // if using simulated position the accuracy will be fixed at 150
-  if (position.coords.accuracy < bestAccuracy + 10) { //|| position.coords.accuracy === 150
+  if (position.coords.accuracy < bestAccuracy + 10 ) { //|| position.coords.accuracy === 150
     currLatLng = {
       lat: position.coords.latitude,
       lng: position.coords.longitude,
@@ -107,7 +107,7 @@ var browserGeolocationSuccess = function (position) {
 };
 
 //Geolocation fail callback
-var browserGeolocationFail = function (error) {
+var browserGeolocationFail = function(error) {
   switch (error.code) {
     case error.TIMEOUT:
       alert("Browser geolocation error !\n\nTimeout." + error.message);
@@ -142,7 +142,10 @@ function askForLocation() {
   }
 }
 
-const calculateCentroid = (acc, {lat, lng}, idx, src) => {
+const calculateCentroid = (acc, {
+  lat,
+  lng
+}, idx, src) => {
   acc.lat += lat / src.length;
   acc.lng += lng / src.length;
   return acc;
@@ -152,11 +155,13 @@ const sortByAngle = (a, b) => a.angle - b.angle
 
 //Draw lines between the received points
 function drawLines(groupCoords) {
+
   var dist = 0;
 
   // console.log("num lines: ", groupPolyLines.length);
   if (groupCoords.length > 1) {
 
+    console.log(groupCoords);
     //clear polylines
     for (var i = 0; i < groupPolyLines.length; i++) {
       groupPolyLines[i].setMap(null);
@@ -164,17 +169,30 @@ function drawLines(groupCoords) {
     //clear all polylines
     groupPolyLines.splice(0, groupPolyLines.length);
 
-    const center = groupCoords.reduce(calculateCentroid, {lat: 0, lng: 0});
+    const center = groupCoords.reduce(calculateCentroid, {
+      lat: 0,
+      lng: 0
+    });
 
-    const angles = groupCoords.map(({lat, lng}) => {
-      return {lat, lng, angle: Math.atan2(lat - center.lat, lng - center.lng) * 180 / Math.PI};
+    const angles = groupCoords.map(({
+      lat,
+      lng,
+      id
+    }) => {
+      return {
+        lat,
+        lng,
+        id,
+        angle: Math.atan2(lat - center.lat, lng - center.lng) * 180 / Math.PI
+      };
     });
 
     let groupCoordsSorted = angles.sort(sortByAngle);
 
+    //closing the loop
     groupCoordsSorted.push(groupCoordsSorted[0]);
 
-    var polyline = new google.maps.Polygon({
+    var polyline = new google.maps.Polyline({
       strokeColor: '#f70000',
       strokeOpacity: 1,
       strokeOpacity: 1,
@@ -187,6 +205,55 @@ function drawLines(groupCoords) {
 
     groupPolyLines.push(polyline);
 
+
+    //Drawing single triangle for I'm done visualization
+    // if (drawDone) {
+      //find which index you are on the sorted list
+      //then just increment one up or down on the list to get the next point
+      //but that means we need to keep the id in the coordinates
+      console.log(groupCoordsSorted)
+
+      let matchIndex = -1;
+      for(var i = 0; i < groupCoordsSorted.length; i ++){
+        if(groupCoordsSorted[i].id === sessionID){
+          matchIndex = i;
+        }
+      }
+
+      if(matchIndex != -1){
+        var trianglePolyline = new google.maps.Polygon({
+          strokeColor: '#f70000',
+          strokeOpacity: 1,
+          strokeOpacity: 1,
+          strokeWeight: 5,
+          fillColor: '#f70000',
+          fillOpacity: 1.0
+        })
+        trianglePolyline.setMap(map);
+
+        var path = trianglePolyline.getPath();
+
+        var a = new google.maps.LatLng(groupCoordsSorted[matchIndex].lat, groupCoordsSorted[matchIndex].lng);
+        path.push(a);
+
+        var b = new google.maps.LatLng(center.lat, center.lng);
+        path.push(b);
+
+        let nextIndex = matchIndex +1;
+        if(nextIndex > groupCoordsSorted.length-1){
+          nextIndex = 1;
+        }
+        var c = new google.maps.LatLng(groupCoordsSorted[nextIndex].lat, groupCoordsSorted[nextIndex].lng);
+        path.push(c);
+
+        groupPolyLines.push(trianglePolyline);
+
+        //once we've drawn our triangle we need to send a signal to others that we've drawn our triangles!
+        //then that needs to get embedded in the data that streams to the phone
+        //and so if an ID has a marker of being finished we draw a triangle for it
+        //(or include it in our triangle if it's adjacent)
+      }
+    // }
     /*for (var i = 0; i < groupCoords.length; i++) {
 
         var pairId = -1;
@@ -340,9 +407,9 @@ function drawMarkers(groupCoords) {
       icon: image
     })
 
-    google.maps.event.addListener( marker, 'mouseup', function (event) {
+    google.maps.event.addListener(marker, 'mouseup', function(event) {
       console.log("tapping : ", this.getTitle());
-      socket.emit("send-tap", this.getTitle() );
+      socket.emit("send-tap", this.getTitle());
     });
 
     groupMarkers.push(marker);
@@ -444,26 +511,26 @@ function distance(lat1, lon1, lat2, lon2) {
   return d * 1000;
 }
 
-socket.on("receive-tap", function(){
-      console.log("vibrate")
-      if(window.navigator.vibrate){
-        window.navigator.vibrate(500);
-      }
-      // var key = "arrival1";
-      spriteSound.play(); //key
+socket.on("receive-tap", function() {
+  console.log("vibrate")
+  if (window.navigator.vibrate) {
+    window.navigator.vibrate(500);
+  }
+  // var key = "arrival1";
+  spriteSound.play(); //key
 })
 
-socket.on("clear-markers", function (number) {
+socket.on("clear-markers", function(number) {
   clearMarkers(number)
 })
 
-socket.on("receive-id", function (id) {
+socket.on("receive-id", function(id) {
   setCookie("id", id, 1)
   console.log("setting id cookie to : " + id);
   // cookieID = id;
 })
 
-socket.on('connect', function () {
+socket.on('connect', function() {
   socket.emit('new-client', 'mobile')
   sessionID = socket.id;
   console.log('connected', socket.connected, sessionID);
@@ -471,7 +538,7 @@ socket.on('connect', function () {
 
 })
 
-socket.on("receive-group-coordinates", function (groupCoords) {
+socket.on("receive-group-coordinates", function(groupCoords) {
   // console.log(groupCoords);
   drawLines(groupCoords);
   if (showArrows) {
@@ -554,7 +621,7 @@ function setupSensorListeners() {
 }
 
 //Check if we need to request access to sensors
-if (typeof (DeviceOrientationEvent) !== "undefined" && typeof (DeviceOrientationEvent.requestPermission) === "function") {
+if (typeof(DeviceOrientationEvent) !== "undefined" && typeof(DeviceOrientationEvent.requestPermission) === "function") {
   if (window.confirm("We need to access the compass sensor to show your orientation on the map")) {
     DeviceOrientationEvent.requestPermission()
       .then(response => {
@@ -562,11 +629,11 @@ if (typeof (DeviceOrientationEvent) !== "undefined" && typeof (DeviceOrientation
           setupSensorListeners();
         }
       })
-      .catch(function (err) {
+      .catch(function(err) {
         $("#errorInfo").html("Cannot get permission", err.toString());
       })
   }
-//if not then we just setup the listeners
+  //if not then we just setup the listeners
 } else {
   setupSensorListeners();
 }
@@ -586,11 +653,11 @@ function initMap() {
     },
     disableDefaultUI: true,
     styles: [{
-      "elementType": "geometry",
-      "stylers": [{
-        "color": "#f5f5f5"
-      }]
-    },
+        "elementType": "geometry",
+        "stylers": [{
+          "color": "#f5f5f5"
+        }]
+      },
       {
         "elementType": "labels",
         "stylers": [{
@@ -776,7 +843,7 @@ function initMap() {
 
   homeMarker.setMap(map);
 
-  google.maps.event.addListener( homeMarker, 'mouseup', function (event) {
+  google.maps.event.addListener(homeMarker, 'mouseup', function(event) {
     spriteSound.play();
     // console.log("tapping : ", this.getTitle());
     // socket.emit("send-tap", this.getTitle() );
@@ -793,7 +860,7 @@ function initMap() {
 }
 
 //Print errors as they happen
-window.onerror = function (msg, url, lineNo, columnNo, error) {
+window.onerror = function(msg, url, lineNo, columnNo, error) {
   var string = msg.toLowerCase();
   var substring = "script error";
   if (string.indexOf(substring) > -1) {
