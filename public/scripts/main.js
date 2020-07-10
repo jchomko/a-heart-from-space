@@ -1,6 +1,6 @@
-var socket = io()
+var socket = io();
 
-var output = document.querySelector('.output');
+var output = document.querySelector(".output");
 var arr = document.getElementById("arrow");
 
 var currLatLng;
@@ -18,34 +18,33 @@ var lastCompassOrientation = 0;
 var showArrows = true;
 var guideLine;
 
-
 var spriteSound = new Howl({
-    src: ['Ticket-machine-sound.mp3'] //,
-    // sprite: {
-    //   arrival1: [0, 2500],
-    //   arrival2: [4500, 2500],
-    //   arrival3: [9000, 2500],
-    //   arrival4: [13400, 2500],
-    //   arrival5: [18000, 2500],
-    //   arrival6: [22500, 2500],
-    //   arrival7: [27300, 2500],
-    //   arrival8: [31500, 2500],
-    //   arrival9: [36200, 2500],
-    //   arrival10: [40400, 2500],
-    //   arrival11: [45350, 2500],
-    //   arrival12: [49600, 2500],
-    //   arrival13: [54100, 2500],
-    //   arrival14: [58800, 2500],
-    //   arrival15: [63000, 2500]
-    // }
+  src: ["Ticket-machine-sound.mp3"] //,
+  // sprite: {
+  //   arrival1: [0, 2500],
+  //   arrival2: [4500, 2500],
+  //   arrival3: [9000, 2500],
+  //   arrival4: [13400, 2500],
+  //   arrival5: [18000, 2500],
+  //   arrival6: [22500, 2500],
+  //   arrival7: [27300, 2500],
+  //   arrival8: [31500, 2500],
+  //   arrival9: [36200, 2500],
+  //   arrival10: [40400, 2500],
+  //   arrival11: [45350, 2500],
+  //   arrival12: [49600, 2500],
+  //   arrival13: [54100, 2500],
+  //   arrival14: [58800, 2500],
+  //   arrival15: [63000, 2500]
+  // }
 });
-
 
 //Set cookie - not yet used
 function setCookie(c_name, value, exdays) {
   var exdate = new Date();
   exdate.setDate(exdate.getDate() + exdays);
-  var c_value = escape(value) + ((exdays == null) ? "" : "; expires=" + exdate.toUTCString());
+  var c_value =
+    escape(value) + (exdays == null ? "" : "; expires=" + exdate.toUTCString());
   document.cookie = c_name + "=" + c_value;
 }
 
@@ -67,12 +66,12 @@ function getCookie(c_name) {
 function togArrows() {
   showArrows = !showArrows;
   if (!showArrows) {
-    $("#toggleArrows").html("Arrows On")
+    $("#toggleArrows").html("Arrows On");
     for (var i = 0; i < groupMarkers.length; i++) {
       groupMarkers[i].setMap(null);
     }
   } else {
-    $("#toggleArrows").html("Arrows Off")
+    $("#toggleArrows").html("Arrows Off");
     if (map != null) {
       for (var i = 0; i < groupMarkers.length; i++) {
         groupMarkers[i].setMap(map);
@@ -87,14 +86,15 @@ function center() {
 }
 
 //Geolocation success callback
-var browserGeolocationSuccess = function (position) {
+var browserGeolocationSuccess = function(position) {
   if (position.coords.accuracy < bestAccuracy) {
     bestAccuracy = position.coords.accuracy;
     console.log("bestAccuracy: " + bestAccuracy);
   }
   // if we have a high accuracy reading
   // if using simulated position the accuracy will be fixed at 150
-  if (position.coords.accuracy < bestAccuracy + 10) { //|| position.coords.accuracy === 150
+  if (position.coords.accuracy < bestAccuracy + 10) {
+    //|| position.coords.accuracy === 150
     currLatLng = {
       lat: position.coords.latitude,
       lng: position.coords.longitude,
@@ -102,22 +102,26 @@ var browserGeolocationSuccess = function (position) {
     };
     updateHomeMarkerPosition(position);
     // console.log("accurate coordinates: " + JSON.stringify(myLatLng))
-    socket.emit("update-coordinates", currLatLng)
+    socket.emit("update-coordinates", currLatLng);
   }
 };
 
 //Geolocation fail callback
-var browserGeolocationFail = function (error) {
+var browserGeolocationFail = function(error) {
   switch (error.code) {
     case error.TIMEOUT:
       alert("Browser geolocation error !\n\nTimeout." + error.message);
       break;
     case error.PERMISSION_DENIED:
       // alert("Permission Denied" + error.message);
-      alert("No location access - you might need to enable this in Settings -> Privacy -> Location Services -> Safari Websites. Change from 'Never' to 'While Usingthe App'")
+      alert(
+        "No location access - you might need to enable this in Settings -> Privacy -> Location Services -> Safari Websites. Change from 'Never' to 'While Usingthe App'"
+      );
       break;
     case error.POSITION_UNAVAILABLE:
-      alert("Browser geolocation error !\n\nPosition unavailable" + error.message);
+      alert(
+        "Browser geolocation error !\n\nPosition unavailable" + error.message
+      );
       break;
   }
 };
@@ -127,28 +131,45 @@ function tryGeolocation() {
   if (navigator.geolocation) {
     navigator.geolocation.watchPosition(
       browserGeolocationSuccess,
-      browserGeolocationFail, {
+      browserGeolocationFail,
+      {
         enableHighAccuracy: true,
         timeout: 10000,
         maximumAge: 5000
-      });
+      }
+    );
   }
 }
 
 //Request for position must come from user action, hence the prompt
 function askForLocation() {
-  if (confirm("This website requires access to your GPS location. Press OK and you'll receive a request to access your location.")) {
-    tryGeolocation()
+  if (
+    confirm(
+      "This website requires access to your GPS location. Press OK and you'll receive a request to access your location."
+    )
+  ) {
+    tryGeolocation();
   }
 }
 
-const calculateCentroid = (acc, {lat, lng}, idx, src) => {
+const calculateCentroid = (acc, { lat, lng }, idx, src) => {
   acc.lat += lat / src.length;
   acc.lng += lng / src.length;
   return acc;
-}
+};
 
-const sortByAngle = (a, b) => a.angle - b.angle
+const sortByAngle = (a, b) => a.angle - b.angle;
+
+function calculateSimilarity(groupCoordsSorted) {
+  const curve = groupCoordsSorted.map(coords => ({
+    x: coords.lng,
+    y: coords.lat
+  }));
+  const similarity = curveMatcher.shapeSimilarity(curve, heartShape, {
+    rotations: 500
+  });
+  console.log("similarity", similarity);
+}
 
 //Draw lines between the received points
 function drawLines(groupCoords) {
@@ -156,7 +177,6 @@ function drawLines(groupCoords) {
 
   // console.log("num lines: ", groupPolyLines.length);
   if (groupCoords.length > 1) {
-
     //clear polylines
     for (var i = 0; i < groupPolyLines.length; i++) {
       groupPolyLines[i].setMap(null);
@@ -164,10 +184,14 @@ function drawLines(groupCoords) {
     //clear all polylines
     groupPolyLines.splice(0, groupPolyLines.length);
 
-    const center = groupCoords.reduce(calculateCentroid, {lat: 0, lng: 0});
+    const center = groupCoords.reduce(calculateCentroid, { lat: 0, lng: 0 });
 
-    const angles = groupCoords.map(({lat, lng}) => {
-      return {lat, lng, angle: Math.atan2(lat - center.lat, lng - center.lng) * 180 / Math.PI};
+    const angles = groupCoords.map(({ lat, lng }) => {
+      return {
+        lat,
+        lng,
+        angle: (Math.atan2(lat - center.lat, lng - center.lng) * 180) / Math.PI
+      };
     });
 
     let groupCoordsSorted = angles.sort(sortByAngle);
@@ -175,15 +199,17 @@ function drawLines(groupCoords) {
     groupCoordsSorted.push(groupCoordsSorted[0]);
 
     var polyline = new google.maps.Polygon({
-      strokeColor: '#f70000',
+      strokeColor: "#f70000",
       strokeOpacity: 1,
       strokeOpacity: 1,
       strokeWeight: 5,
-      fillColor: '#f70000',
+      fillColor: "#f70000",
       fillOpacity: 0.5,
       path: groupCoordsSorted
-    })
+    });
     polyline.setMap(map);
+
+    calculateSimilarity(groupCoordsSorted);
 
     groupPolyLines.push(polyline);
 
@@ -305,8 +331,10 @@ function drawLines(groupCoords) {
 function clearMarkers(numberToClear) {
   var index = 0;
   while (index < numberToClear) {
-
-    console.log("removing marker: ", groupMarkers[groupMarkers.length - 1].getTitle())
+    console.log(
+      "removing marker: ",
+      groupMarkers[groupMarkers.length - 1].getTitle()
+    );
     groupMarkers[groupMarkers.length - 1].setMap(null);
     // groupPolyLines.splice(groupMarkers.length-1,1);
     groupMarkers.pop();
@@ -319,34 +347,34 @@ function clearMarkers(numberToClear) {
 //add a marker for each incoming coordinate
 function drawMarkers(groupCoords) {
   //add new markers to list if we need any
-  var index = 0
+  var index = 0;
   while (groupMarkers.length < groupCoords.length) {
     //no rotation
     //Arrow
 
     var image = {
-      path: 'M39.167,30c0,5.062-4.104,9.167-9.166,9.167c-5.063,0-9.167-4.104-9.167-9.167c0-9.125,8.416-18,9.167-18 C30.75,12,39.167,20.875,39.167,30z',
+      path:
+        "M39.167,30c0,5.062-4.104,9.167-9.166,9.167c-5.063,0-9.167-4.104-9.167-9.167c0-9.125,8.416-18,9.167-18 C30.75,12,39.167,20.875,39.167,30z",
       strokeWeight: 2,
       fillColor: "#919191",
       strokeColor: "#919191",
       fillOpacity: 1.0,
       scale: 0.75,
-      anchor: new google.maps.Point(30, 30),
+      anchor: new google.maps.Point(30, 30)
       // rotation: groupCoords[c].heading
     };
 
-
     var marker = new google.maps.Marker({
       icon: image
-    })
+    });
 
-    google.maps.event.addListener( marker, 'mouseup', function (event) {
+    google.maps.event.addListener(marker, "mouseup", function(event) {
       console.log("tapping : ", this.getTitle());
-      socket.emit("send-tap", this.getTitle() );
+      socket.emit("send-tap", this.getTitle());
     });
 
     groupMarkers.push(marker);
-    console.log("adding marker, total markers: ", groupMarkers.length)
+    console.log("adding marker, total markers: ", groupMarkers.length);
     index++;
   }
 
@@ -354,7 +382,8 @@ function drawMarkers(groupCoords) {
   for (var c = 0; c < groupCoords.length; c++) {
     //declare image, grab the heading value from the incoming array
     var image = {
-      path: 'M39.167,30c0,5.062-4.104,9.167-9.166,9.167c-5.063,0-9.167-4.104-9.167-9.167c0-9.125,8.416-18,9.167-18 C30.75,12,39.167,20.875,39.167,30z',
+      path:
+        "M39.167,30c0,5.062-4.104,9.167-9.166,9.167c-5.063,0-9.167-4.104-9.167-9.167c0-9.125,8.416-18,9.167-18 C30.75,12,39.167,20.875,39.167,30z",
       strokeWeight: 2,
       fillColor: "#919191",
       strokeColor: "#919191",
@@ -383,17 +412,16 @@ function drawMarkers(groupCoords) {
   }
 }
 
-
 //Debug function - Fired on map click - disabled for normal operation
 function addLatLng(event) {
   var path = guideLine.getPath();
   path.push(event.latLng);
   // drawLines(guideLine.getPath().getArray());
-  drawLines(convertCoordinates(guideLine.getPath().getArray()))
+  drawLines(convertCoordinates(guideLine.getPath().getArray()));
 }
 
 function polylineChanged(index) {
-  drawLines(convertCoordinates(guideLine.getPath().getArray()))
+  drawLines(convertCoordinates(guideLine.getPath().getArray()));
   // drawLines(guideLine.getPath().getArray());
   // console.log("drawing lines : ", guideLine.getPath().getArray());
 }
@@ -427,11 +455,14 @@ function convertCoordinates(coordsToConvert) {
 //Calculate distance between two points
 function distance(lat1, lon1, lat2, lon2) {
   var R = 6371; // km (change this constant to get miles)
-  var dLat = (lat2 - lat1) * Math.PI / 180;
-  var dLon = (lon2 - lon1) * Math.PI / 180;
-  var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  var dLat = ((lat2 - lat1) * Math.PI) / 180;
+  var dLon = ((lon2 - lon1) * Math.PI) / 180;
+  var a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos((lat1 * Math.PI) / 180) *
+      Math.cos((lat2 * Math.PI) / 180) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
   var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   var d = R * c;
 
@@ -444,49 +475,51 @@ function distance(lat1, lon1, lat2, lon2) {
   return d * 1000;
 }
 
-socket.on("receive-tap", function(){
-      console.log("vibrate")
-      if(window.navigator.vibrate){
-        window.navigator.vibrate(500);
-      }
-      // var key = "arrival1";
-      spriteSound.play(); //key
-})
+socket.on("receive-tap", function() {
+  console.log("vibrate");
+  if (window.navigator.vibrate) {
+    window.navigator.vibrate(500);
+  }
+  // var key = "arrival1";
+  spriteSound.play(); //key
+});
 
-socket.on("clear-markers", function (number) {
-  clearMarkers(number)
-})
+socket.on("clear-markers", function(number) {
+  clearMarkers(number);
+});
 
-socket.on("receive-id", function (id) {
-  setCookie("id", id, 1)
+socket.on("receive-id", function(id) {
+  setCookie("id", id, 1);
   console.log("setting id cookie to : " + id);
   // cookieID = id;
-})
+});
 
-socket.on('connect', function () {
-  socket.emit('new-client', 'mobile')
+socket.on("connect", function() {
+  socket.emit("new-client", "mobile");
   sessionID = socket.id;
-  console.log('connected', socket.connected, sessionID);
+  console.log("connected", socket.connected, sessionID);
   askForLocation();
+});
 
-})
-
-socket.on("receive-group-coordinates", function (groupCoords) {
+socket.on("receive-group-coordinates", function(groupCoords) {
   // console.log(groupCoords);
   drawLines(groupCoords);
   if (showArrows) {
     drawMarkers(groupCoords);
   }
-})
+});
 
 function updateHomeMarkerPosition(position) {
-  var latlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+  var latlng = new google.maps.LatLng(
+    position.coords.latitude,
+    position.coords.longitude
+  );
   homeMarker.setPosition(latlng);
 }
 
 function updateHomeMarkerRotation(data) {
   compassOrientation = data.z;
-  compassOrientation = (compassOrientation + 0);
+  compassOrientation = compassOrientation + 0;
   if (compassOrientation > 360) {
     compassOrientation = compassOrientation - 360;
   }
@@ -495,7 +528,8 @@ function updateHomeMarkerRotation(data) {
     // $("#compassInfo").html(data.info + ": " + Math.round(compassOrientation) + ". event: " + event);
     homeMarker.setIcon({
       // path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
-      path: 'M39.167,30c0,5.062-4.104,9.167-9.166,9.167c-5.063,0-9.167-4.104-9.167-9.167c0-9.125,8.416-18,9.167-18 C30.75,12,39.167,20.875,39.167,30z',
+      path:
+        "M39.167,30c0,5.062-4.104,9.167-9.166,9.167c-5.063,0-9.167-4.104-9.167-9.167c0-9.125,8.416-18,9.167-18 C30.75,12,39.167,20.875,39.167,30z",
       strokeWeight: 2,
       strokeColor: "#29ABE2",
       fillColor: "#29ABE2",
@@ -515,9 +549,8 @@ function updateHomeMarkerRotation(data) {
     // });
 
     //Only sending rotation updates with location updates
-    socket.emit('update-heading', compassOrientation);
+    socket.emit("update-heading", compassOrientation);
     lastCompassOrientation = compassOrientation;
-
   } else {
     // $("#compassInfo").html("no change");
   }
@@ -526,51 +559,57 @@ function updateHomeMarkerRotation(data) {
 //setup sensor listeners
 //// TODO:  detect if ios12 and user needs to turn on sensor access
 function setupSensorListeners() {
-
-  window.addEventListener('deviceorientation', (event) => {
+  window.addEventListener("deviceorientation", event => {
     hasSensorAccess = true;
     var data = "";
     if ("webkitCompassHeading" in event) {
       data = {
-        info: "Received from deviceorientation webkitCompassHeading - iOS Safari,  Chrome, Firefox",
+        info:
+          "Received from deviceorientation webkitCompassHeading - iOS Safari,  Chrome, Firefox",
         z: event.webkitCompassHeading
-      }
+      };
       // Android - Chrome <50
     } else if (event.absolute) {
       data = {
         info: "Received from deviceorientation with absolute=true & alpha val",
         z: event.alpha
-      }
+      };
     } else {
       data = {
         info: "absolute=false, heading might not be absolute to magnetic north",
         z: 360 - event.alpha
-      }
+      };
     }
     updateHomeMarkerRotation(data);
     // alert("listener added");
-  })
+  });
   // alert("Can't access compass! You can enable permission at Settings -> Safari -> Motion & Orientation Access.")
 }
 
 //Check if we need to request access to sensors
-if (typeof (DeviceOrientationEvent) !== "undefined" && typeof (DeviceOrientationEvent.requestPermission) === "function") {
-  if (window.confirm("We need to access the compass sensor to show your orientation on the map")) {
+if (
+  typeof DeviceOrientationEvent !== "undefined" &&
+  typeof DeviceOrientationEvent.requestPermission === "function"
+) {
+  if (
+    window.confirm(
+      "We need to access the compass sensor to show your orientation on the map"
+    )
+  ) {
     DeviceOrientationEvent.requestPermission()
       .then(response => {
-        if (response == 'granted') {
+        if (response == "granted") {
           setupSensorListeners();
         }
       })
-      .catch(function (err) {
+      .catch(function(err) {
         $("#errorInfo").html("Cannot get permission", err.toString());
-      })
+      });
   }
-//if not then we just setup the listeners
+  //if not then we just setup the listeners
 } else {
   setupSensorListeners();
 }
-
 
 //Function called by async script call at bottom of index.html
 function initMap() {
@@ -578,152 +617,195 @@ function initMap() {
     lat: -25.363,
     lng: 131.044
   };
-  map = new google.maps.Map(document.getElementById('map'), {
+  map = new google.maps.Map(document.getElementById("map"), {
     zoom: 13,
     center: {
       lat: 45.536384,
       lng: -73.628949
     },
     disableDefaultUI: true,
-    styles: [{
-      "elementType": "geometry",
-      "stylers": [{
-        "color": "#f5f5f5"
-      }]
-    },
+    styles: [
       {
-        "elementType": "labels",
-        "stylers": [{
-          "visibility": "off"
-        }]
+        elementType: "geometry",
+        stylers: [
+          {
+            color: "#f5f5f5"
+          }
+        ]
       },
       {
-        "elementType": "labels.icon",
-        "stylers": [{
-          "visibility": "off"
-        }]
+        elementType: "labels",
+        stylers: [
+          {
+            visibility: "off"
+          }
+        ]
       },
       {
-        "elementType": "labels.text.fill",
-        "stylers": [{
-          "color": "#616161"
-        }]
+        elementType: "labels.icon",
+        stylers: [
+          {
+            visibility: "off"
+          }
+        ]
       },
       {
-        "elementType": "labels.text.stroke",
-        "stylers": [{
-          "color": "#f5f5f5"
-        }]
+        elementType: "labels.text.fill",
+        stylers: [
+          {
+            color: "#616161"
+          }
+        ]
       },
       {
-        "featureType": "administrative.land_parcel",
-        "stylers": [{
-          "visibility": "off"
-        }]
+        elementType: "labels.text.stroke",
+        stylers: [
+          {
+            color: "#f5f5f5"
+          }
+        ]
       },
       {
-        "featureType": "administrative.land_parcel",
-        "elementType": "labels.text.fill",
-        "stylers": [{
-          "color": "#bdbdbd"
-        }]
+        featureType: "administrative.land_parcel",
+        stylers: [
+          {
+            visibility: "off"
+          }
+        ]
       },
       {
-        "featureType": "administrative.neighborhood",
-        "stylers": [{
-          "visibility": "off"
-        }]
+        featureType: "administrative.land_parcel",
+        elementType: "labels.text.fill",
+        stylers: [
+          {
+            color: "#bdbdbd"
+          }
+        ]
       },
       {
-        "featureType": "poi",
-        "elementType": "geometry",
-        "stylers": [{
-          "color": "#eeeeee"
-        }]
+        featureType: "administrative.neighborhood",
+        stylers: [
+          {
+            visibility: "off"
+          }
+        ]
       },
       {
-        "featureType": "poi",
-        "elementType": "labels.text.fill",
-        "stylers": [{
-          "color": "#757575"
-        }]
+        featureType: "poi",
+        elementType: "geometry",
+        stylers: [
+          {
+            color: "#eeeeee"
+          }
+        ]
       },
       {
-        "featureType": "poi.park",
-        "elementType": "geometry",
-        "stylers": [{
-          "color": "#e5e5e5"
-        }]
+        featureType: "poi",
+        elementType: "labels.text.fill",
+        stylers: [
+          {
+            color: "#757575"
+          }
+        ]
       },
       {
-        "featureType": "poi.park",
-        "elementType": "labels.text.fill",
-        "stylers": [{
-          "color": "#9e9e9e"
-        }]
+        featureType: "poi.park",
+        elementType: "geometry",
+        stylers: [
+          {
+            color: "#e5e5e5"
+          }
+        ]
       },
       {
-        "featureType": "road",
-        "elementType": "geometry",
-        "stylers": [{
-          "color": "#ffffff"
-        }]
+        featureType: "poi.park",
+        elementType: "labels.text.fill",
+        stylers: [
+          {
+            color: "#9e9e9e"
+          }
+        ]
       },
       {
-        "featureType": "road.arterial",
-        "elementType": "labels.text.fill",
-        "stylers": [{
-          "color": "#757575"
-        }]
+        featureType: "road",
+        elementType: "geometry",
+        stylers: [
+          {
+            color: "#ffffff"
+          }
+        ]
       },
       {
-        "featureType": "road.highway",
-        "elementType": "geometry",
-        "stylers": [{
-          "color": "#dadada"
-        }]
+        featureType: "road.arterial",
+        elementType: "labels.text.fill",
+        stylers: [
+          {
+            color: "#757575"
+          }
+        ]
       },
       {
-        "featureType": "road.highway",
-        "elementType": "labels.text.fill",
-        "stylers": [{
-          "color": "#616161"
-        }]
+        featureType: "road.highway",
+        elementType: "geometry",
+        stylers: [
+          {
+            color: "#dadada"
+          }
+        ]
       },
       {
-        "featureType": "road.local",
-        "elementType": "labels.text.fill",
-        "stylers": [{
-          "color": "#9e9e9e"
-        }]
+        featureType: "road.highway",
+        elementType: "labels.text.fill",
+        stylers: [
+          {
+            color: "#616161"
+          }
+        ]
       },
       {
-        "featureType": "transit.line",
-        "elementType": "geometry",
-        "stylers": [{
-          "color": "#e5e5e5"
-        }]
+        featureType: "road.local",
+        elementType: "labels.text.fill",
+        stylers: [
+          {
+            color: "#9e9e9e"
+          }
+        ]
       },
       {
-        "featureType": "transit.station",
-        "elementType": "geometry",
-        "stylers": [{
-          "color": "#eeeeee"
-        }]
+        featureType: "transit.line",
+        elementType: "geometry",
+        stylers: [
+          {
+            color: "#e5e5e5"
+          }
+        ]
       },
       {
-        "featureType": "water",
-        "elementType": "geometry",
-        "stylers": [{
-          "color": "#c9c9c9"
-        }]
+        featureType: "transit.station",
+        elementType: "geometry",
+        stylers: [
+          {
+            color: "#eeeeee"
+          }
+        ]
       },
       {
-        "featureType": "water",
-        "elementType": "labels.text.fill",
-        "stylers": [{
-          "color": "#9e9e9e"
-        }]
+        featureType: "water",
+        elementType: "geometry",
+        stylers: [
+          {
+            color: "#c9c9c9"
+          }
+        ]
+      },
+      {
+        featureType: "water",
+        elementType: "labels.text.fill",
+        stylers: [
+          {
+            color: "#9e9e9e"
+          }
+        ]
       }
     ]
   });
@@ -731,7 +813,7 @@ function initMap() {
   //Uncomment below for debugging mode - add 'location' points with mouse click
 
   guideLine = new google.maps.Polyline({
-    strokeColor: '#989898',
+    strokeColor: "#989898",
     strokeOpacity: 0.1,
     strokeWeight: 5,
     editable: true
@@ -740,14 +822,15 @@ function initMap() {
 
   guideLine.setMap(map);
 
-  google.maps.event.addListener(guideLine.getPath(), 'insert_at', insertAt);
-  google.maps.event.addListener(guideLine.getPath(), 'remove_at', removeAt);
-  google.maps.event.addListener(guideLine.getPath(), 'set_at', setAt);
+  google.maps.event.addListener(guideLine.getPath(), "insert_at", insertAt);
+  google.maps.event.addListener(guideLine.getPath(), "remove_at", removeAt);
+  google.maps.event.addListener(guideLine.getPath(), "set_at", setAt);
 
-  map.addListener('click', addLatLng);
+  map.addListener("click", addLatLng);
 
   var image = {
-    path: 'M39.167,30c0,5.062-4.104,9.167-9.166,9.167c-5.063,0-9.167-4.104-9.167-9.167c0-9.125,8.416-18,9.167-18 C30.75,12,39.167,20.875,39.167,30z',
+    path:
+      "M39.167,30c0,5.062-4.104,9.167-9.166,9.167c-5.063,0-9.167-4.104-9.167-9.167c0-9.125,8.416-18,9.167-18 C30.75,12,39.167,20.875,39.167,30z",
     strokeWeight: 2,
     strokeColor: "#29ABE2",
     fillColor: "#29ABE2",
@@ -762,21 +845,20 @@ function initMap() {
     //   lat: lat,
     //   lng: lng
     // },
-    title: 'Home',
+    title: "Home",
     icon: image
   });
-
 
   var imageBounds = {
     north: 45.536384,
     south: 45.535557,
     west: -73.629249,
     east: -73.628002
-  }
+  };
 
   homeMarker.setMap(map);
 
-  google.maps.event.addListener( homeMarker, 'mouseup', function (event) {
+  google.maps.event.addListener(homeMarker, "mouseup", function(event) {
     spriteSound.play();
     // console.log("tapping : ", this.getTitle());
     // socket.emit("send-tap", this.getTitle() );
@@ -788,24 +870,24 @@ function initMap() {
     cookieID = id;
   } else {
     console.log("has no id : " + id);
-    socket.emit('request-id');
+    socket.emit("request-id");
   }
 }
 
 //Print errors as they happen
-window.onerror = function (msg, url, lineNo, columnNo, error) {
+window.onerror = function(msg, url, lineNo, columnNo, error) {
   var string = msg.toLowerCase();
   var substring = "script error";
   if (string.indexOf(substring) > -1) {
-    alert('Script Error: See Browser Console for Detail');
+    alert("Script Error: See Browser Console for Detail");
   } else {
     var message = [
-      'Message: ' + msg,
-      'URL: ' + url,
-      'Line: ' + lineNo,
-      'Column: ' + columnNo,
-      'Error object: ' + JSON.stringify(error)
-    ].join(' - ');
+      "Message: " + msg,
+      "URL: " + url,
+      "Line: " + lineNo,
+      "Column: " + columnNo,
+      "Error object: " + JSON.stringify(error)
+    ].join(" - ");
 
     console.log("captured error:", message);
     // alert(message);
