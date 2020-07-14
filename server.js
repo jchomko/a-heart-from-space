@@ -179,6 +179,7 @@ io.on('connection', function(socket) {
         groupCoords[i].lat = coords.lat
         groupCoords[i].lng = coords.lng
         groupCoords[i].heading = coords.heading
+        groupCoords[i].done = coords.done
         exists = true
       }
     }
@@ -190,7 +191,8 @@ io.on('connection', function(socket) {
         lat: coords.lat,
         lng: coords.lng,
         seqentialID: coords.seqentialID,
-        heading: coords.heading
+        heading: coords.heading,
+        done: coords.done
       }
       groupCoords.push(person)
     }

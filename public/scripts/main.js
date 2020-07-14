@@ -89,7 +89,9 @@ function center() {
 function doneSection(){
   drawDone = !drawDone;
   console.log(drawDone);
-
+  // we need to trigger the drawing immediately here, and then let it update with location for the others
+  // how do you distinguish which heart section is yours?
+  // it shoouuld be equally drawn between the sections so it's centered on you.
   // socket.emit("update-done", drawDone)
 }
 
@@ -105,7 +107,8 @@ var browserGeolocationSuccess = function(position) {
     currLatLng = {
       lat: position.coords.latitude,
       lng: position.coords.longitude,
-      heading: compassOrientation
+      heading: compassOrientation,
+      done: drawDone
     };
     updateHomeMarkerPosition(position);
     // console.log("accurate coordinates: " + JSON.stringify(myLatLng))
@@ -184,12 +187,14 @@ function drawLines(groupCoords) {
     const angles = groupCoords.map(({
       lat,
       lng,
-      id
+      id,
+      done
     }) => {
       return {
         lat,
         lng,
         id,
+        done,
         angle: Math.atan2(lat - center.lat, lng - center.lng) * 180 / Math.PI
       };
     });
@@ -212,22 +217,9 @@ function drawLines(groupCoords) {
 
     groupPolyLines.push(polyline);
 
+    for(var i = 0; i < groupCoordsSorted.length; i ++){
+      if(groupCoordsSorted[i].done === true){
 
-    //Drawing single triangle for I'm done visualization
-    if (drawDone) {
-      //find which index you are on the sorted list
-      //then just increment one up or down on the list to get the next point
-      //but that means we need to keep the id in the coordinates
-      console.log(groupCoordsSorted)
-
-      let matchIndex = -1;
-      for(var i = 0; i < groupCoordsSorted.length; i ++){
-        if(groupCoordsSorted[i].id === sessionID){
-          matchIndex = i;
-        }
-      }
-
-      if(matchIndex != -1){
         var trianglePolyline = new google.maps.Polygon({
           strokeColor: '#f70000',
           strokeOpacity: 1,
@@ -240,13 +232,13 @@ function drawLines(groupCoords) {
 
         var path = trianglePolyline.getPath();
 
-        var a = new google.maps.LatLng(groupCoordsSorted[matchIndex].lat, groupCoordsSorted[matchIndex].lng);
+        var a = new google.maps.LatLng(groupCoordsSorted[i].lat, groupCoordsSorted[i].lng);
         path.push(a);
 
         var b = new google.maps.LatLng(center.lat, center.lng);
         path.push(b);
 
-        let nextIndex = matchIndex +1;
+        let nextIndex = i +1;
         if(nextIndex > groupCoordsSorted.length-1){
           nextIndex = 1;
         }
@@ -254,13 +246,57 @@ function drawLines(groupCoords) {
         path.push(c);
 
         groupPolyLines.push(trianglePolyline);
-
-        //once we've drawn our triangle we need to send a signal to others that we've drawn our triangles!
-        //then that needs to get embedded in the data that streams to the phone
-        //and so if an ID has a marker of being finished we draw a triangle for it
-        //(or include it in our triangle if it's adjacent)
       }
     }
+
+    // //Drawing single triangle for I'm done visualization
+    // if (drawDone) {
+    //   //find which index you are on the sorted list
+    //   //then just increment one up or down on the list to get the next point
+    //   //but that means we need to keep the id in the coordinates
+    //   console.log(groupCoordsSorted)
+    //
+    //   let matchIndex = -1;
+    //   for(var i = 0; i < groupCoordsSorted.length; i ++){
+    //     if(groupCoordsSorted[i].id === sessionID){
+    //       matchIndex = i;
+    //     }
+    //   }
+    //
+    //   if(matchIndex != -1){
+    //     var trianglePolyline = new google.maps.Polygon({
+    //       strokeColor: '#f70000',
+    //       strokeOpacity: 1,
+    //       strokeOpacity: 1,
+    //       strokeWeight: 5,
+    //       fillColor: '#f70000',
+    //       fillOpacity: 1.0
+    //     })
+    //     trianglePolyline.setMap(map);
+    //
+    //     var path = trianglePolyline.getPath();
+    //
+    //     var a = new google.maps.LatLng(groupCoordsSorted[matchIndex].lat, groupCoordsSorted[matchIndex].lng);
+    //     path.push(a);
+    //
+    //     var b = new google.maps.LatLng(center.lat, center.lng);
+    //     path.push(b);
+    //
+    //     let nextIndex = matchIndex +1;
+    //     if(nextIndex > groupCoordsSorted.length-1){
+    //       nextIndex = 1;
+    //     }
+    //     var c = new google.maps.LatLng(groupCoordsSorted[nextIndex].lat, groupCoordsSorted[nextIndex].lng);
+    //     path.push(c);
+    //
+    //     groupPolyLines.push(trianglePolyline);
+    //
+    //     //once we've drawn our triangle we need to send a signal to others that we've drawn our triangles!
+    //     //then that needs to get embedded in the data that streams to the phone
+    //     //and so if an ID has a marker of being finished we draw a triangle for it
+    //     //(or include it in our triangle if it's adjacent)
+    //   }
+    // }
 
   }
 }
