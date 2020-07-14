@@ -17,7 +17,7 @@ var homeMarker;
 var lastCompassOrientation = 0;
 var showArrows = true;
 var guideLine;
-
+var drawDone = false;
 
 var spriteSound = new Howl({
   src: ['Ticket-machine-sound.mp3'] //,
@@ -84,6 +84,13 @@ function togArrows() {
 //Center map to current position (if it's been set)
 function center() {
   map.panTo(new google.maps.LatLng(currLatLng.lat, currLatLng.lng));
+}
+
+function doneSection(){
+  drawDone = !drawDone;
+  console.log(drawDone);
+
+  // socket.emit("update-done", drawDone)
 }
 
 //Geolocation success callback
@@ -207,7 +214,7 @@ function drawLines(groupCoords) {
 
 
     //Drawing single triangle for I'm done visualization
-    // if (drawDone) {
+    if (drawDone) {
       //find which index you are on the sorted list
       //then just increment one up or down on the list to get the next point
       //but that means we need to keep the id in the coordinates
@@ -253,120 +260,11 @@ function drawLines(groupCoords) {
         //and so if an ID has a marker of being finished we draw a triangle for it
         //(or include it in our triangle if it's adjacent)
       }
-    // }
-    /*for (var i = 0; i < groupCoords.length; i++) {
+    }
 
-        var pairId = -1;
-        var thirdPairId = -1;
-        var secondPairId = -1;
-
-        var minDist = 10000000;
-        var secondMinDist = 10000000;
-        var thirdMinDist = 10000000;
-
-        for (var j = 0; j < groupCoords.length; j++) {
-            if (i != j) {
-
-                dist = distance(groupCoords[i].lat, groupCoords[i].lng, groupCoords[j].lat, groupCoords[j].lng);
-                //debug sends google formatting lat lng which requires funciton call - when using live data we don't need function call
-                //// TODO: send debug commands in same format as live data , ie .lat
-                // dist = distance(groupCoords[i].lat(), groupCoords[i].lng(), groupCoords[j].lat(), groupCoords[j].lng());
-                // console.log(dist);
-                if (dist < minDist) { //&& p1.numConnections < 1 && p2.numConnections < 2  &&  // j != (int)p2.lineStartId && j != (int)p2.lineEndId
-                    //these will be the secondary values because they will always be one cycle delayed
-                    minDist = dist;
-                    pairId = j;
-                }
-            }
-        }
-
-        for (var j = 0; j < groupCoords.length; j++) {
-            if (i != j) {
-                dist = distance(groupCoords[i].lat, groupCoords[i].lng, groupCoords[j].lat, groupCoords[j].lng);
-                // dist = distance(groupCoords[i].lat(), groupCoords[i].lng(), groupCoords[j].lat(), groupCoords[j].lng());
-                // console.log(dist);
-                if (dist < secondMinDist && dist > minDist) {
-                    secondMinDist = dist;
-                    secondPairId = j;
-                }
-            }
-        }
-
-        //Draw first line
-        if (pairId != -1) {
-            //make new polyline
-            var pl = new google.maps.Polyline({
-                strokeColor: '#f70000',
-                strokeOpacity: 1,
-                strokeWeight: 5
-                // editable: true
-            })
-            //set it to the map
-            pl.setMap(map);
-
-            //get it's path
-            var path = pl.getPath();
-
-            var startPoint = new google.maps.LatLng(groupCoords[i].lat, groupCoords[i].lng);
-            path.push(startPoint);
-
-            var endPoint = new google.maps.LatLng(groupCoords[pairId].lat, groupCoords[pairId].lng);
-            path.push(endPoint);
-            //group is just a way to keep track of all the lines we're making so we can clear them
-            groupPolyLines.push(pl);
-        }
-
-        //Draws second line
-        if (secondPairId != -1) {
-            //make new polyline
-            var pl = new google.maps.Polyline({
-                strokeColor: '#f70000',
-                strokeOpacity: 1,
-                strokeWeight: 5
-                // editable: true
-            })
-
-            pl.setMap(map);
-
-            var path = pl.getPath();
-            var startPoint = new google.maps.LatLng(groupCoords[i].lat, groupCoords[i].lng);
-            path.push(startPoint);
-            var endPoint = new google.maps.LatLng(groupCoords[secondPairId].lat, groupCoords[secondPairId].lng);
-            path.push(endPoint);
-
-            //this array is just a way to keep track of all the lines we're making so we can clear them
-            groupPolyLines.push(pl);
-        }
-    }*/
   }
 }
 
-// Original line drawing function that requires untangling
-// function drawFixedLines(groupCoords){
-
-//Line drawing code for original version with untangling
-// var path = polyLine.getPath();
-// path.clear()
-//
-// //Draw users current position
-// // var currll =  new google.maps.LatLng(currLat, currLong);
-// // path.push(currll);
-// //Add positions of other people
-// for(var i=0; i<groupCoords.length; i ++){
-//    var ll =  new google.maps.LatLng(groupCoords[i].lat,groupCoords[i].lng);
-//    // console.log("adding new coordinate");
-//    path.push(ll);
-// }
-//
-// //close shape by bringing it back to the first person
-// if(groupCoords.length > 1){
-//   var ll =  new google.maps.LatLng(groupCoords[0].lat,groupCoords[0].lng);
-//   path.push(ll);
-// }
-// //Close line by bringing it back to current position
-// // path.push(currll);
-// //every time this is updated re-draw the polyline from scratch
-// }
 
 //Called every time a socket is disconnected
 function clearMarkers(numberToClear) {
