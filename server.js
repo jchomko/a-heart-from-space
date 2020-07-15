@@ -86,46 +86,13 @@ io.on('connection', function(socket) {
       groupCoords.splice(index, 1)
       // console.log("coord array length : ", groupCoords.length)
       // coordinatesChanged = true;
-      io.emit("clear-markers", 1 ) //groupCoords
+      io.emit("clear-markers", 1) //groupCoords
 
     }
 
   })
 
-  // //This can manually called when we want a device to go offline
-  // socket.on('removeclient', function(){
-  //   // var disconnectedClientIndex = usersList.indexOf(this.id)
-  //   // if (disconnectedClientIndex >= 0){
-  //   //   usersList.splice(disconnectedClientIndex, 1)
-  //   //   console.log("removing client from list of active users: ", this.id," - updated list: " + usersList)
-  //   // }
-  //
-  //   var exists = false
-  //   var index = -1
-  //
-  //   for( var i=0; i < groupCoords.length; i ++){
-  //
-  //     //if we find a match
-  //     if(groupCoords[i].id === this.id){
-  //         groupCoords[i].lat = coords.lat
-  //         groupCoords[i].lng = coords.lng
-  //         exists = true
-  //         index = i
-  //      }
-  //    }
-  //
-  //    //if we have a match
-  //    //remove that match from the list of coordinates
-  //    if(exists == true){
-  //      groupCoords.splice(index, 1)
-  //    }
-  //
-  //
-  //
-  //
-  // })
-
-  socket.on('send-tap', function(targetSocketId){
+  socket.on('send-tap', function(targetSocketId) {
     io.to(targetSocketId).emit('receive-tap');
     console.log("sending tap to :", targetSocketId);
   })
@@ -159,7 +126,7 @@ io.on('connection', function(socket) {
     coordinatesChanged = true;
     //Update happens on timer now
     // if (exists) {
-      // io.emit("receive-group-coordinates", groupCoords)
+    // io.emit("receive-group-coordinates", groupCoords)
     // }
   })
 
@@ -201,11 +168,16 @@ io.on('connection', function(socket) {
     // io.emit("receive-group-coordinates", groupCoords)
     coordinatesChanged = true;
   })
+
+  // socket.on("draw-triangle", function(state) {
+  //
+  //
+  // })
 })
 
 
-function sendGroupCoordinates(){
-  if(coordinatesChanged){
+function sendGroupCoordinates() {
+  if (coordinatesChanged) {
     coordinatesChanged = false;
     io.emit("receive-group-coordinates", groupCoords)
     // console.log("coord array length : ", groupCoords.length)
