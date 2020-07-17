@@ -17,9 +17,13 @@ var homeMarker;
 var lastCompassOrientation = 0;
 var showArrows = true;
 var guideLine;
+var drawDone = false;
+
+var trianglePolylineTemp;
+var lastSortedCoords = [];
 
 var spriteSound = new Howl({
-  src: ["Ticket-machine-sound.mp3"] //,
+  src: ['Ticket-machine-sound.mp3'] //,
   // sprite: {
   //   arrival1: [0, 2500],
   //   arrival2: [4500, 2500],
@@ -85,6 +89,24 @@ function center() {
   map.panTo(new google.maps.LatLng(currLatLng.lat, currLatLng.lng));
 }
 
+function doneSection(){
+
+  if(!drawDone){
+    drawTriangle();
+    // socket.emit("draw-triangle", true)
+  }else{
+    trianglePolylineTemp.setMap(null);
+    // socket.emit("draw-triangle", false)
+  }
+
+  drawDone = !drawDone;
+  console.log(drawDone);
+  // we need to trigger the drawing immediately here, and then let it update with location for the others
+  // how do you distinguish which heart section is yours?
+  // it shoouuld be equally drawn between the sections so it's centered on you.
+  // socket.emit("update-done", drawDone)
+}
+
 //Geolocation success callback
 var browserGeolocationSuccess = function(position) {
   if (position.coords.accuracy < bestAccuracy) {
@@ -93,12 +115,12 @@ var browserGeolocationSuccess = function(position) {
   }
   // if we have a high accuracy reading
   // if using simulated position the accuracy will be fixed at 150
-  if (position.coords.accuracy < bestAccuracy + 10) {
-    //|| position.coords.accuracy === 150
+  if (position.coords.accuracy < bestAccuracy + 10 ) { //|| position.coords.accuracy === 150
     currLatLng = {
       lat: position.coords.latitude,
       lng: position.coords.longitude,
-      heading: compassOrientation
+      heading: compassOrientation,
+      done: drawDone
     };
     updateHomeMarkerPosition(position);
     // console.log("accurate coordinates: " + JSON.stringify(myLatLng))
@@ -152,7 +174,10 @@ function askForLocation() {
   }
 }
 
-const calculateCentroid = (acc, { lat, lng }, idx, src) => {
+const calculateCentroid = (acc, {
+  lat,
+  lng
+}, idx, src) => {
   acc.lat += lat / src.length;
   acc.lng += lng / src.length;
   return acc;
@@ -173,10 +198,13 @@ function calculateSimilarity(groupCoordsSorted) {
 
 //Draw lines between the received points
 function drawLines(groupCoords) {
+
   var dist = 0;
 
   // console.log("num lines: ", groupPolyLines.length);
   if (groupCoords.length > 1) {
+
+    console.log(groupCoords);
     //clear polylines
     for (var i = 0; i < groupPolyLines.length; i++) {
       groupPolyLines[i].setMap(null);
@@ -184,22 +212,35 @@ function drawLines(groupCoords) {
     //clear all polylines
     groupPolyLines.splice(0, groupPolyLines.length);
 
-    const center = groupCoords.reduce(calculateCentroid, { lat: 0, lng: 0 });
+    const center = groupCoords.reduce(calculateCentroid, {
+      lat: 0,
+      lng: 0
+    });
 
-    const angles = groupCoords.map(({ lat, lng }) => {
+    const angles = groupCoords.map(({
+      lat,
+      lng,
+      id,
+      done
+    }) => {
       return {
         lat,
         lng,
-        angle: (Math.atan2(lat - center.lat, lng - center.lng) * 180) / Math.PI
+        id,
+        done,
+        angle: Math.atan2(lat - center.lat, lng - center.lng) * 180 / Math.PI
       };
     });
 
     let groupCoordsSorted = angles.sort(sortByAngle);
 
+    //closing the loop
     groupCoordsSorted.push(groupCoordsSorted[0]);
 
-    var polyline = new google.maps.Polygon({
-      strokeColor: "#f70000",
+    lastSortedCoords = groupCoordsSorted;
+
+    var polyline = new google.maps.Polyline({
+      strokeColor: '#f70000',
       strokeOpacity: 1,
       strokeOpacity: 1,
       strokeWeight: 5,
@@ -213,119 +254,96 @@ function drawLines(groupCoords) {
 
     groupPolyLines.push(polyline);
 
-    /*for (var i = 0; i < groupCoords.length; i++) {
+    for(var i = 0; i < groupCoordsSorted.length; i ++){
+      if(groupCoordsSorted[i].done === true){
 
-        var pairId = -1;
-        var thirdPairId = -1;
-        var secondPairId = -1;
+        var trianglePolyline = new google.maps.Polygon({
+          strokeColor: '#f70000',
+          strokeOpacity: 1,
+          strokeOpacity: 1,
+          strokeWeight: 5,
+          fillColor: '#f70000',
+          fillOpacity: 1.0
+        })
+        trianglePolyline.setMap(map);
 
-        var minDist = 10000000;
-        var secondMinDist = 10000000;
-        var thirdMinDist = 10000000;
+        var path = trianglePolyline.getPath();
 
-        for (var j = 0; j < groupCoords.length; j++) {
-            if (i != j) {
+        var a = new google.maps.LatLng(groupCoordsSorted[i].lat, groupCoordsSorted[i].lng);
+        path.push(a);
 
-                dist = distance(groupCoords[i].lat, groupCoords[i].lng, groupCoords[j].lat, groupCoords[j].lng);
-                //debug sends google formatting lat lng which requires funciton call - when using live data we don't need function call
-                //// TODO: send debug commands in same format as live data , ie .lat
-                // dist = distance(groupCoords[i].lat(), groupCoords[i].lng(), groupCoords[j].lat(), groupCoords[j].lng());
-                // console.log(dist);
-                if (dist < minDist) { //&& p1.numConnections < 1 && p2.numConnections < 2  &&  // j != (int)p2.lineStartId && j != (int)p2.lineEndId
-                    //these will be the secondary values because they will always be one cycle delayed
-                    minDist = dist;
-                    pairId = j;
-                }
-            }
+        var b = new google.maps.LatLng(center.lat, center.lng);
+        path.push(b);
+
+        let nextIndex = i +1;
+        if(nextIndex > groupCoordsSorted.length-1){
+          nextIndex = 1;
         }
+        var c = new google.maps.LatLng(groupCoordsSorted[nextIndex].lat, groupCoordsSorted[nextIndex].lng);
+        path.push(c);
 
-        for (var j = 0; j < groupCoords.length; j++) {
-            if (i != j) {
-                dist = distance(groupCoords[i].lat, groupCoords[i].lng, groupCoords[j].lat, groupCoords[j].lng);
-                // dist = distance(groupCoords[i].lat(), groupCoords[i].lng(), groupCoords[j].lat(), groupCoords[j].lng());
-                // console.log(dist);
-                if (dist < secondMinDist && dist > minDist) {
-                    secondMinDist = dist;
-                    secondPairId = j;
-                }
-            }
-        }
+        groupPolyLines.push(trianglePolyline);
+      }
+    }
 
-        //Draw first line
-        if (pairId != -1) {
-            //make new polyline
-            var pl = new google.maps.Polyline({
-                strokeColor: '#f70000',
-                strokeOpacity: 1,
-                strokeWeight: 5
-                // editable: true
-            })
-            //set it to the map
-            pl.setMap(map);
-
-            //get it's path
-            var path = pl.getPath();
-
-            var startPoint = new google.maps.LatLng(groupCoords[i].lat, groupCoords[i].lng);
-            path.push(startPoint);
-
-            var endPoint = new google.maps.LatLng(groupCoords[pairId].lat, groupCoords[pairId].lng);
-            path.push(endPoint);
-            //group is just a way to keep track of all the lines we're making so we can clear them
-            groupPolyLines.push(pl);
-        }
-
-        //Draws second line
-        if (secondPairId != -1) {
-            //make new polyline
-            var pl = new google.maps.Polyline({
-                strokeColor: '#f70000',
-                strokeOpacity: 1,
-                strokeWeight: 5
-                // editable: true
-            })
-
-            pl.setMap(map);
-
-            var path = pl.getPath();
-            var startPoint = new google.maps.LatLng(groupCoords[i].lat, groupCoords[i].lng);
-            path.push(startPoint);
-            var endPoint = new google.maps.LatLng(groupCoords[secondPairId].lat, groupCoords[secondPairId].lng);
-            path.push(endPoint);
-
-            //this array is just a way to keep track of all the lines we're making so we can clear them
-            groupPolyLines.push(pl);
-        }
-    }*/
+    // //Drawing single triangle for I'm done visualization
   }
 }
 
-// Original line drawing function that requires untangling
-// function drawFixedLines(groupCoords){
+function drawTriangle(){
 
-//Line drawing code for original version with untangling
-// var path = polyLine.getPath();
-// path.clear()
-//
-// //Draw users current position
-// // var currll =  new google.maps.LatLng(currLat, currLong);
-// // path.push(currll);
-// //Add positions of other people
-// for(var i=0; i<groupCoords.length; i ++){
-//    var ll =  new google.maps.LatLng(groupCoords[i].lat,groupCoords[i].lng);
-//    // console.log("adding new coordinate");
-//    path.push(ll);
-// }
-//
-// //close shape by bringing it back to the first person
-// if(groupCoords.length > 1){
-//   var ll =  new google.maps.LatLng(groupCoords[0].lat,groupCoords[0].lng);
-//   path.push(ll);
-// }
-// //Close line by bringing it back to current position
-// // path.push(currll);
-// //every time this is updated re-draw the polyline from scratch
-// }
+    //find which index you are on the sorted list
+    //then just increment one up or down on the list to get the next point
+    //but that means we need to keep the id in the coordinates
+    console.log("last sorted coords :" ,lastSortedCoords)
+
+    let matchIndex = -1;
+    for(var i = 0; i < lastSortedCoords.length; i ++){
+      if(lastSortedCoords[i].id === sessionID){
+        matchIndex = i;
+      }
+    }
+
+    if(matchIndex != -1){
+      console.log("drawing line, id: ", matchIndex)
+      trianglePolylineTemp = new google.maps.Polygon({
+        strokeColor: '#f70000',
+        strokeOpacity: 1,
+        strokeOpacity: 1,
+        strokeWeight: 5,
+        fillColor: '#f70000',
+        fillOpacity: 1.0
+      })
+      trianglePolylineTemp.setMap(map);
+
+      var path = trianglePolylineTemp.getPath();
+
+      const center = lastSortedCoords.reduce(calculateCentroid, {
+        lat: 0,
+        lng: 0
+      });
+
+      var a = new google.maps.LatLng(lastSortedCoords[matchIndex].lat, lastSortedCoords[matchIndex].lng);
+      path.push(a);
+
+      var b = new google.maps.LatLng(center.lat, center.lng);
+      path.push(b);
+
+      let nextIndex = matchIndex +1;
+      if(nextIndex > lastSortedCoords.length-1){
+        nextIndex = 1;
+      }
+      var c = new google.maps.LatLng(lastSortedCoords[nextIndex].lat, lastSortedCoords[nextIndex].lng);
+      path.push(c);
+
+      groupPolyLines.push(trianglePolylineTemp);
+
+      //once we've drawn our triangle we need to send a signal to others that we've drawn our triangles!
+      //then that needs to get embedded in the data that streams to the phone
+      //and so if an ID has a marker of being finished we draw a triangle for it
+      //(or include it in our triangle if it's adjacent)
+    }
+}
 
 //Called every time a socket is disconnected
 function clearMarkers(numberToClear) {
@@ -368,7 +386,7 @@ function drawMarkers(groupCoords) {
       icon: image
     });
 
-    google.maps.event.addListener(marker, "mouseup", function(event) {
+    google.maps.event.addListener(marker, 'mouseup', function(event) {
       console.log("tapping : ", this.getTitle());
       socket.emit("send-tap", this.getTitle());
     });
@@ -476,30 +494,32 @@ function distance(lat1, lon1, lat2, lon2) {
 }
 
 socket.on("receive-tap", function() {
-  console.log("vibrate");
+  console.log("vibrate")
   if (window.navigator.vibrate) {
     window.navigator.vibrate(500);
   }
   // var key = "arrival1";
   spriteSound.play(); //key
-});
+})
 
 socket.on("clear-markers", function(number) {
-  clearMarkers(number);
-});
+  clearMarkers(number)
+})
 
 socket.on("receive-id", function(id) {
-  setCookie("id", id, 1);
+  setCookie("id", id, 1)
   console.log("setting id cookie to : " + id);
   // cookieID = id;
 });
 
-socket.on("connect", function() {
-  socket.emit("new-client", "mobile");
+socket.on('connect', function() {
+  socket.emit('new-client', 'mobile')
   sessionID = socket.id;
   console.log("connected", socket.connected, sessionID);
   askForLocation();
 });
+
+})
 
 socket.on("receive-group-coordinates", function(groupCoords) {
   // console.log(groupCoords);
@@ -587,15 +607,8 @@ function setupSensorListeners() {
 }
 
 //Check if we need to request access to sensors
-if (
-  typeof DeviceOrientationEvent !== "undefined" &&
-  typeof DeviceOrientationEvent.requestPermission === "function"
-) {
-  if (
-    window.confirm(
-      "We need to access the compass sensor to show your orientation on the map"
-    )
-  ) {
+if (typeof(DeviceOrientationEvent) !== "undefined" && typeof(DeviceOrientationEvent.requestPermission) === "function") {
+  if (window.confirm("We need to access the compass sensor to show your orientation on the map")) {
     DeviceOrientationEvent.requestPermission()
       .then(response => {
         if (response == "granted") {
@@ -624,7 +637,12 @@ function initMap() {
       lng: -73.628949
     },
     disableDefaultUI: true,
-    styles: [
+    styles: [{
+        "elementType": "geometry",
+        "stylers": [{
+          "color": "#f5f5f5"
+        }]
+      },
       {
         elementType: "geometry",
         stylers: [
@@ -858,7 +876,7 @@ function initMap() {
 
   homeMarker.setMap(map);
 
-  google.maps.event.addListener(homeMarker, "mouseup", function(event) {
+  google.maps.event.addListener(homeMarker, 'mouseup', function(event) {
     spriteSound.play();
     // console.log("tapping : ", this.getTitle());
     // socket.emit("send-tap", this.getTitle() );
