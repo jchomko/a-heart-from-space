@@ -123,7 +123,7 @@ io.on('connection', function(socket) {
       }
     }
 
-    coordinatesChanged = true;
+    // coordinatesChanged = true;
     //Update happens on timer now
     // if (exists) {
     // io.emit("receive-group-coordinates", groupCoords)
