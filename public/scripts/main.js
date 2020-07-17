@@ -253,6 +253,7 @@ function drawLines(groupCoords) {
 
     groupPolyLines.push(polyline);
 
+    //Draw filled-in heart
     for (var i = 0; i < groupCoordsSorted.length; i++) {
       if (groupCoordsSorted[i].done === true) {
 
@@ -816,7 +817,7 @@ function initMap() {
   google.maps.event.addListener(guideLine.getPath(), "remove_at", removeAt);
   google.maps.event.addListener(guideLine.getPath(), "set_at", setAt);
 
-  map.addListener("click", addLatLng);
+  // map.addListener("click", addLatLng);
 
   var image = {
     path: "M39.167,30c0,5.062-4.104,9.167-9.166,9.167c-5.063,0-9.167-4.104-9.167-9.167c0-9.125,8.416-18,9.167-18 C30.75,12,39.167,20.875,39.167,30z",
@@ -830,10 +831,6 @@ function initMap() {
   };
 
   homeMarker = new google.maps.Marker({
-    // position: {
-    //   lat: lat,
-    //   lng: lng
-    // },
     title: "Home",
     icon: image
   });
@@ -849,57 +846,12 @@ function initMap() {
 
   google.maps.event.addListener(homeMarker, 'mouseup', function(event) {
     spriteSound.play();
-    // this.setAnimation(null);
-    // this.setAnimation(google.maps.Animation.DROP);
-    // drawTapResponse(sessionID);
-    // console.log(homeMarker.icon)
-    // var count = 0;
-    // var animation = setInterval(function() {
-    //   count = (count + 1) % 100;
-    //   // var icons = line.get("icons");
-    //   // console.log(count);
-    //   // var icon = homeMarker.getIcon();
-    //   /* icons[0].offset = count / 2 + "%" */;
-    //   var s = 0.75 + Math.abs( 5 * Math.sin((50-count)/100) );
-    //   var icon = homeMarker.getIcon();
-    //   // icon.image
-    //   icon.scale = s;
-    //
-    //   console.log(icon.scale);
-    //
-    //   homeMarker.setIcon(icon);
-    //
-    //   // var image = {
-    //   //   path:
-    //   //     "M39.167,30c0,5.062-4.104,9.167-9.166,9.167c-5.063,0-9.167-4.104-9.167-9.167c0-9.125,8.416-18,9.167-18 C30.75,12,39.167,20.875,39.167,30z",
-    //   //   strokeWeight: 2,
-    //   //   strokeColor: "#29ABE2",
-    //   //   fillColor: "#29ABE2",
-    //   //   fillOpacity: 1.0,
-    //   //   scale: s,
-    //   //   anchor: new google.maps.Point(30, 30),
-    //   //   // rotation: 0
-    //   // };
-    //
-    //   // homeMarker.setIcon(image);
-    //   // line.set("icons", icons);
-    //
-    //
-    // }, 20);
-    //
-    // setTimeout(function(){
-    //   clearInterval(animation)
-    // },1000)
 
     homeMarker.setAnimation(google.maps.Animation.BOUNCE);
-
     setTimeout(function() {
       homeMarker.setAnimation(null)
     }, 600);
 
-
-    // console.log("tapping : ", this.getTitle());
-    // socket.emit("send-tap", this.getTitle() );
   });
 
   var id = getCookie("id");
