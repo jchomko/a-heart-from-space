@@ -93,8 +93,13 @@ function doneSection() {
 
   if (!drawDone) {
     drawTriangle();
+    $("#doneSection").html("Fill On");
+    $("#doneSection").css("background-color", "rgb(220,180,180)")
     // socket.emit("draw-triangle", true)
   } else {
+    $("#doneSection").html("Fill Off");
+    $("#doneSection").css("background-color", "rgb(150,150,150)")
+
     trianglePolylineTemp.setMap(null);
     // socket.emit("draw-triangle", false)
   }
@@ -544,8 +549,6 @@ socket.on('connect', function() {
   }
 });
 
-
-
 socket.on("receive-group-coordinates", function(groupCoords) {
   // console.log(groupCoords);
   drawLines(groupCoords);
@@ -555,7 +558,7 @@ socket.on("receive-group-coordinates", function(groupCoords) {
 });
 
 function updateHomeMarkerPosition(position) {
-  if (google != null) {
+  if (google.maps != null) {
     var latlng = new google.maps.LatLng(
       position.coords.latitude,
       position.coords.longitude
