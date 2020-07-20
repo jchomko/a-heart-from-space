@@ -104,7 +104,8 @@ function doneSection() {
   // we need to trigger the drawing immediately here, and then let it update with location for the others
   // how do you distinguish which heart section is yours?
   // it shoouuld be equally drawn between the sections so it's centered on you.
-  // socket.emit("update-done", drawDone)
+  socket.emit("draw-triangle", drawDone)
+
 }
 
 //Geolocation success callback
@@ -538,6 +539,9 @@ socket.on('connect', function() {
   sessionID = socket.id;
   console.log("connected", socket.connected, sessionID);
   askForLocation();
+  if (currLatLng != null) {
+    socket.emit("update-coordinates", currLatLng);
+  }
 });
 
 
@@ -551,11 +555,13 @@ socket.on("receive-group-coordinates", function(groupCoords) {
 });
 
 function updateHomeMarkerPosition(position) {
-  var latlng = new google.maps.LatLng(
-    position.coords.latitude,
-    position.coords.longitude
-  );
-  homeMarker.setPosition(latlng);
+  if (google != null) {
+    var latlng = new google.maps.LatLng(
+      position.coords.latitude,
+      position.coords.longitude
+    );
+    homeMarker.setPosition(latlng);
+  }
 }
 
 function updateHomeMarkerRotation(data) {

@@ -109,6 +109,21 @@ io.on('connection', function(socket) {
     } else {
       console.log("Client Already Exists: ", this.id)
     }
+
+  })
+
+  socket.on("draw-triangle", function(drawDone){
+    var sID = this.id
+    var exists = false
+
+    for (var i = 0; i < groupCoords.length; i++) {
+      //if we find a match, we update the existing coordinate
+      if (groupCoords[i].id === this.id) {
+        groupCoords[i].done = drawDone
+        exists = true
+      }
+    }
+    coordinatesChanged = true;
   })
 
   socket.on("update-heading", function(heading) {
