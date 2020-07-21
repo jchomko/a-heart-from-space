@@ -20,6 +20,7 @@ html, body {
   right: 0px;
   width: 80px;
   height: 50px;
+  background-color: rgb(220,220,220);
   /* background-image: "images/center.png"; */
 }
 
@@ -31,4 +32,5 @@ html, body {
   left: 0;
   width: 80px;
   height: 50px;
+  background-color: rgb(220,220,220);
 }

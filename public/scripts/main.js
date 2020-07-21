@@ -93,12 +93,12 @@ function doneSection() {
 
   if (!drawDone) {
     drawTriangle();
-    $("#doneSection").html("Fill On");
-    $("#doneSection").css("background-color", "rgb(220,180,180)")
+    $("#doneSection").html("Fill Off");
+    $("#doneSection").css("background-color", "rgb(250,180,180)")
     // socket.emit("draw-triangle", true)
   } else {
-    $("#doneSection").html("Fill Off");
-    $("#doneSection").css("background-color", "rgb(150,150,150)")
+    $("#doneSection").html("Fill On");
+    $("#doneSection").css("background-color", "rgb(220,220,220)")
 
     trianglePolylineTemp.setMap(null);
     // socket.emit("draw-triangle", false)
