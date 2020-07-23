@@ -86,6 +86,7 @@ function togArrows() {
 
 //Center map to current position (if it's been set)
 function center() {
+  requestDeviceOrientation();
   map.panTo(new google.maps.LatLng(currLatLng.lat, currLatLng.lng));
 }
 
@@ -631,26 +632,27 @@ function setupSensorListeners() {
 }
 
 function requestDeviceOrientation() {
-  DeviceOrientationEvent.requestPermission()
-      .then(response => {
-        if (response == "granted") {
-          setupSensorListeners();
-        }
-      })
-      .catch(function(err) {
-        $("#errorInfo").html("Cannot get permission", err.toString());
-      });
+  //Check if we need to request access to sensors
+  if (typeof(DeviceOrientationEvent) !== "undefined" && typeof(DeviceOrientationEvent.requestPermission) === "function") {
+    DeviceOrientationEvent.requestPermission()
+        .then(response => {
+          console.log("DeviceOrientationEvent response:", response);
+          if (response == "granted") {
+            setupSensorListeners();
+          }
+        })
+        .catch(function (err) {
+          console.log("DeviceOrientationEvent error:", err);
+          $("#errorInfo").html("Cannot get permission", err.toString());
+        });
+  } else {
+    setupSensorListeners();
+  }
 }
 
-//Check if we need to request access to sensors
-if (typeof(DeviceOrientationEvent) !== "undefined" && typeof(DeviceOrientationEvent.requestPermission) === "function") {
-  if (window.confirm("We need to access the compass sensor to show your orientation on the map")) {
-    requestDeviceOrientation();
-  }
-  //if not then we just setup the listeners
-} else {
-  setupSensorListeners();
-}
+/*if (window.confirm("We need to access the compass sensor to show your orientation on the map")) {
+  requestDeviceOrientation();
+}*/
 
 //Function called by async script call at bottom of index.html
 function initMap() {
