@@ -630,10 +630,8 @@ function setupSensorListeners() {
   // alert("Can't access compass! You can enable permission at Settings -> Safari -> Motion & Orientation Access.")
 }
 
-//Check if we need to request access to sensors
-if (typeof(DeviceOrientationEvent) !== "undefined" && typeof(DeviceOrientationEvent.requestPermission) === "function") {
-  if (window.confirm("We need to access the compass sensor to show your orientation on the map")) {
-    DeviceOrientationEvent.requestPermission()
+function requestDeviceOrientation() {
+  DeviceOrientationEvent.requestPermission()
       .then(response => {
         if (response == "granted") {
           setupSensorListeners();
@@ -642,6 +640,12 @@ if (typeof(DeviceOrientationEvent) !== "undefined" && typeof(DeviceOrientationEv
       .catch(function(err) {
         $("#errorInfo").html("Cannot get permission", err.toString());
       });
+}
+
+//Check if we need to request access to sensors
+if (typeof(DeviceOrientationEvent) !== "undefined" && typeof(DeviceOrientationEvent.requestPermission) === "function") {
+  if (window.confirm("We need to access the compass sensor to show your orientation on the map")) {
+    requestDeviceOrientation();
   }
   //if not then we just setup the listeners
 } else {
