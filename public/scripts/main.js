@@ -18,6 +18,9 @@ var lastCompassOrientation = 0;
 var showArrows = true;
 var guideLine;
 var drawDone = false;
+var sensorsActive = false;
+var gpsActive = false;
+var sensorsActive = false;
 
 var trianglePolylineTemp;
 var lastSortedCoords = [];
@@ -86,22 +89,44 @@ function togArrows() {
 
 //Center map to current position (if it's been set)
 function center() {
-  requestDeviceOrientation();
+  // requestDeviceOrientation();
   map.panTo(new google.maps.LatLng(currLatLng.lat, currLatLng.lng));
 }
+
+function activateSensors(){
+  if(!sensorsActive){
+    requestDeviceOrientation();
+    $("#activateSensors").html("Sensors On");
+  }else{
+    $("#activateSensors").html("Activate Sensors");
+  }
+  sensorsActive = !sensorsActive;
+}
+
+function activateGPS(){
+  if(!gpsActive){
+    tryGeolocation();
+    $("#activateGPS").html("GPS On");
+  }else{
+    $("#activateGPS").html("Activate GPS");
+  }
+  gpsActive = !gpsActive;
+}
+
 
 function doneSection() {
 
   if (!drawDone) {
     drawTriangle();
-    $("#doneSection").html("Fill Off");
+    $("#doneSection").html("Fill On");
     $("#doneSection").css("background-color", "rgb(250,180,180)")
     // socket.emit("draw-triangle", true)
   } else {
-    $("#doneSection").html("Fill On");
+    $("#doneSection").html("Activate Fill");
     $("#doneSection").css("background-color", "rgb(220,220,220)")
-
-    trianglePolylineTemp.setMap(null);
+    if(trianglePolylineTemp != null){
+      trianglePolylineTemp.setMap(null);
+    }
     // socket.emit("draw-triangle", false)
   }
 
@@ -116,6 +141,7 @@ function doneSection() {
 
 //Geolocation success callback
 var browserGeolocationSuccess = function(position) {
+  $("#activateGPS").html("GPS On");
   if (position.coords.accuracy < bestAccuracy) {
     bestAccuracy = position.coords.accuracy;
     console.log("bestAccuracy: " + bestAccuracy);
@@ -544,7 +570,9 @@ socket.on('connect', function() {
   socket.emit('new-client', 'mobile')
   sessionID = socket.id;
   console.log("connected", socket.connected, sessionID);
-  askForLocation();
+  // askForLocation();
+  tryGeolocation();
+  requestDeviceOrientation();
   if (currLatLng != null) {
     socket.emit("update-coordinates", currLatLng);
   }
@@ -647,6 +675,7 @@ function requestDeviceOrientation() {
         });
   } else {
     setupSensorListeners();
+    $("#activateSensors").html("Sensors On");
   }
 }
 
