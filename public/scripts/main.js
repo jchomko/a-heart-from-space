@@ -1,7 +1,7 @@
 var socket = io();
 
-var output = document.querySelector(".output");
-var arr = document.getElementById("arrow");
+// var output = document.querySelector(".output");
+// var arr = document.getElementById("arrow");
 
 var currLatLng;
 var map;
@@ -70,22 +70,22 @@ function getCookie(c_name) {
 }
 
 //Show / hide arrows
-function togArrows() {
-  showArrows = !showArrows;
-  if (!showArrows) {
-    $("#toggleArrows").html("Arrows On");
-    for (var i = 0; i < groupMarkers.length; i++) {
-      groupMarkers[i].setMap(null);
-    }
-  } else {
-    $("#toggleArrows").html("Arrows Off");
-    if (map != null) {
-      for (var i = 0; i < groupMarkers.length; i++) {
-        groupMarkers[i].setMap(map);
-      }
-    }
-  }
-}
+// function togArrows() {
+//   showArrows = !showArrows;
+//   if (!showArrows) {
+//     $("#toggleArrows").html("Arrows On");
+//     for (var i = 0; i < groupMarkers.length; i++) {
+//       groupMarkers[i].setMap(null);
+//     }
+//   } else {
+//     $("#toggleArrows").html("Arrows Off");
+//     if (map != null) {
+//       for (var i = 0; i < groupMarkers.length; i++) {
+//         groupMarkers[i].setMap(map);
+//       }
+//     }
+//   }
+// }
 
 //Center map to current position (if it's been set)
 function center() {
@@ -93,26 +93,30 @@ function center() {
   map.panTo(new google.maps.LatLng(currLatLng.lat, currLatLng.lng));
 }
 
-function activateSensors(){
-  if(!sensorsActive){
+function activateSensors() {
+  if (!sensorsActive) {
     requestDeviceOrientation();
     $("#activateSensors").html("Sensors On");
-  }else{
-    $("#activateSensors").html("Activate Sensors");
   }
-  sensorsActive = !sensorsActive;
+  // else{
+  //   $("#activateSensors").html("Activate Sensors");
+  // }
+  // sensorsActive = !sensorsActive;
+  sensorsActive = true;
+
 }
 
-function activateGPS(){
-  if(!gpsActive){
+function activateGPS() {
+  if (!gpsActive) {
     tryGeolocation();
     $("#activateGPS").html("GPS On");
-  }else{
-    $("#activateGPS").html("Activate GPS");
   }
-  gpsActive = !gpsActive;
+  // else{
+  //   $("#activateGPS").html("Activate GPS");
+  // }
+  // gpsActive = !gpsActive;
+  gpsActive = true;
 }
-
 
 function doneSection() {
 
@@ -124,7 +128,7 @@ function doneSection() {
   } else {
     $("#doneSection").html("Activate Fill");
     $("#doneSection").css("background-color", "rgb(220,220,220)")
-    if(trianglePolylineTemp != null){
+    if (trianglePolylineTemp != null) {
       trianglePolylineTemp.setMap(null);
     }
     // socket.emit("draw-triangle", false)
@@ -141,7 +145,9 @@ function doneSection() {
 
 //Geolocation success callback
 var browserGeolocationSuccess = function(position) {
-  $("#activateGPS").html("GPS On");
+  // $("#activateGPS").html("GPS On");
+  activateGPS();
+
   if (position.coords.accuracy < bestAccuracy) {
     bestAccuracy = position.coords.accuracy;
     console.log("bestAccuracy: " + bestAccuracy);
@@ -283,7 +289,6 @@ function drawLines(groupCoords) {
     polyline.setMap(map);
 
     // calculateSimilarity(groupCoordsSorted);
-
     groupPolyLines.push(polyline);
 
     //Draw filled-in heart
@@ -318,8 +323,6 @@ function drawLines(groupCoords) {
         groupPolyLines.push(trianglePolyline);
       }
     }
-
-    // //Drawing single triangle for I'm done visualization
   }
 }
 
@@ -415,13 +418,11 @@ function clearMarkers(numberToClear) {
   }
 }
 
-//add a marker for each incoming coordinate
+
 function drawMarkers(groupCoords) {
-  //add new markers to list if we need any
+
   var index = 0;
   while (groupMarkers.length < groupCoords.length) {
-    //no rotation
-    //Arrow
 
     var image = {
       path: "M39.167,30c0,5.062-4.104,9.167-9.166,9.167c-5.063,0-9.167-4.104-9.167-9.167c0-9.125,8.416-18,9.167-18 C30.75,12,39.167,20.875,39.167,30z",
@@ -484,7 +485,7 @@ function drawMarkers(groupCoords) {
   }
 }
 
-//Debug function - Fired on map click - disabled for normal operation
+//Start debug drawing functions - Fired on map click - disabled for normal operation
 function addLatLng(event) {
   var path = guideLine.getPath();
   path.push(event.latLng);
@@ -511,6 +512,7 @@ function removeAt(index) {
 function setAt(index) {
   polylineChanged();
 }
+//End debug drawing functions
 
 function convertCoordinates(coordsToConvert) {
   var formattedCoords = [];
@@ -552,6 +554,11 @@ socket.on("receive-tap", function() {
   if (window.navigator.vibrate) {
     window.navigator.vibrate(500);
   }
+
+  homeMarker.setAnimation(google.maps.Animation.BOUNCE);
+  setTimeout(function() {
+    homeMarker.setAnimation(null)
+  }, 600);
   // var key = "arrival1";
   spriteSound.play(); //key
 })
@@ -570,7 +577,7 @@ socket.on('connect', function() {
   socket.emit('new-client', 'mobile')
   sessionID = socket.id;
   console.log("connected", socket.connected, sessionID);
-  // askForLocation();
+
   tryGeolocation();
   requestDeviceOrientation();
   if (currLatLng != null) {
@@ -604,20 +611,6 @@ function updateHomeMarkerRotation(data) {
   }
 
   if (compassOrientation != lastCompassOrientation) {
-    // $("#compassInfo").html(data.info + ": " + Math.round(compassOrientation) + ". event: " + event);
-    // homeMarker.setIcon({
-    //   // path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
-    //   path:
-    //     "M39.167,30c0,5.062-4.104,9.167-9.166,9.167c-5.063,0-9.167-4.104-9.167-9.167c0-9.125,8.416-18,9.167-18 C30.75,12,39.167,20.875,39.167,30z",
-    //   strokeWeight: 2,
-    //   strokeColor: "#29ABE2",
-    //   fillColor: "#29ABE2",
-    //   fillOpacity: 1.0,
-    //   scale: 0.75,
-    //   anchor: new google.maps.Point(30, 30),
-    //   rotation: compassOrientation
-    // });
-
     var icon = homeMarker.getIcon();
     icon.rotation = compassOrientation;
     homeMarker.setIcon(icon);
@@ -625,8 +618,6 @@ function updateHomeMarkerRotation(data) {
     //Only sending rotation updates with location updates
     socket.emit("update-heading", compassOrientation);
     lastCompassOrientation = compassOrientation;
-  } else {
-    // $("#compassInfo").html("no change");
   }
 }
 
@@ -654,7 +645,6 @@ function setupSensorListeners() {
       };
     }
     updateHomeMarkerRotation(data);
-    // alert("listener added");
   });
   // alert("Can't access compass! You can enable permission at Settings -> Safari -> Motion & Orientation Access.")
 }
@@ -663,25 +653,22 @@ function requestDeviceOrientation() {
   //Check if we need to request access to sensors
   if (typeof(DeviceOrientationEvent) !== "undefined" && typeof(DeviceOrientationEvent.requestPermission) === "function") {
     DeviceOrientationEvent.requestPermission()
-        .then(response => {
-          console.log("DeviceOrientationEvent response:", response);
-          if (response == "granted") {
-            setupSensorListeners();
-          }
-        })
-        .catch(function (err) {
-          console.log("DeviceOrientationEvent error:", err);
-          $("#errorInfo").html("Cannot get permission", err.toString());
-        });
+      .then(response => {
+        console.log("DeviceOrientationEvent response:", response);
+        if (response == "granted") {
+          setupSensorListeners();
+          $("#activateSensors").html("Sensors On");
+        }
+      })
+      .catch(function(err) {
+        console.log("DeviceOrientationEvent error:", err);
+        $("#errorInfo").html("Cannot get permission", err.toString());
+      });
   } else {
     setupSensorListeners();
     $("#activateSensors").html("Sensors On");
   }
 }
-
-/*if (window.confirm("We need to access the compass sensor to show your orientation on the map")) {
-  requestDeviceOrientation();
-}*/
 
 //Function called by async script call at bottom of index.html
 function initMap() {
