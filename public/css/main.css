@@ -1,30 +1,45 @@
 #map {
   height: 100%;
+  /* zoom: 200%; */
+  /* height: 400%;
+  top: -100%;
+  left: -100%;
+  width: 400%; */
 }
+
 html, body {
   height: 100%;
   margin: 0;
   padding: 0;
 }
 
-#toggleArrows{
+#toggleArrows {
   position: absolute;
   top: 0;
   width: 80px;
   height: 40px;
 }
 
-#centerMap{
+#centerMap {
   position: absolute;
-  bottom:0px;
+  bottom: 0px;
   right: 0px;
   width: 80px;
   height: 50px;
-  background-color: rgb(220,220,220);
+  background-color: rgb(220, 220, 220);
   /* background-image: "images/center.png"; */
 }
 
-#doneSection{
+#readyButton{
+  position: absolute;
+  top: 0;
+  left: 80px;
+  height: 50px;
+  background-color: rgb(220, 220, 220);
+  width: 80px;
+}
+
+#doneSection {
   position: absolute;
   /* bottom:0; */
   /* left: 0; */
@@ -32,10 +47,10 @@ html, body {
   left: 0;
   width: 80px;
   height: 50px;
-  background-color: rgb(220,220,220);
+  background-color: rgb(220, 220, 220);
 }
 
-#activateSensors{
+#activateSensors {
   position: absolute;
   /* bottom:0; */
   /* left: 0; */
@@ -43,10 +58,10 @@ html, body {
   right: 0px;
   width: 80px;
   height: 50px;
-  background-color: rgb(220,220,220);
+  background-color: rgb(220, 220, 220);
 }
 
-#activateGPS{
+#activateGPS {
   position: absolute;
   /* bottom:0; */
   /* left: 0; */
@@ -54,5 +69,5 @@ html, body {
   right: 80px;
   width: 80px;
   height: 50px;
-  background-color: rgb(220,220,220);
+  background-color: rgb(220, 220, 220);
 }

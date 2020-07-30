@@ -1,8 +1,5 @@
 var socket = io();
 
-// var output = document.querySelector(".output");
-// var arr = document.getElementById("arrow");
-
 var currLatLng;
 var map;
 var groupMarkers = [];
@@ -26,22 +23,10 @@ var trianglePolylineTemp;
 var lastSortedCoords = [];
 
 var spriteSound = new Howl({
-  src: ['Ticket-machine-sound.mp3'] //,
+  src: ['Ticket-machine-sound.mp3']
+  //,
   // sprite: {
   //   arrival1: [0, 2500],
-  //   arrival2: [4500, 2500],
-  //   arrival3: [9000, 2500],
-  //   arrival4: [13400, 2500],
-  //   arrival5: [18000, 2500],
-  //   arrival6: [22500, 2500],
-  //   arrival7: [27300, 2500],
-  //   arrival8: [31500, 2500],
-  //   arrival9: [36200, 2500],
-  //   arrival10: [40400, 2500],
-  //   arrival11: [45350, 2500],
-  //   arrival12: [49600, 2500],
-  //   arrival13: [54100, 2500],
-  //   arrival14: [58800, 2500],
   //   arrival15: [63000, 2500]
   // }
 });
@@ -86,7 +71,11 @@ function getCookie(c_name) {
 //     }
 //   }
 // }
-
+function readyToStart(){
+  //remove ready dialogue
+  
+  socket.emit("ready-to-start", true)
+}
 //Center map to current position (if it's been set)
 function center() {
   // requestDeviceOrientation();
@@ -559,6 +548,7 @@ socket.on("receive-tap", function() {
   setTimeout(function() {
     homeMarker.setAnimation(null)
   }, 600);
+
   // var key = "arrival1";
   spriteSound.play(); //key
 })

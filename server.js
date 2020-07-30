@@ -15,6 +15,7 @@ var headingChangedFlag = false;
 var coordinatesChanged = false;
 
 
+
 //Development section
 if (process.env.NODE_ENV != 'production') {
   var https = require('https').createServer({
@@ -56,7 +57,6 @@ io.on('connection', function(socket) {
   socket.on("request-id", function() {
     io.to(this.id).emit("receive-id", idCounter)
     idCounter += 1;
-
   })
 
   //detect new client
@@ -124,6 +124,36 @@ io.on('connection', function(socket) {
       }
     }
     coordinatesChanged = true;
+  })
+
+  socket.on("ready-to-start", function(status){
+
+    console.log("number of active users : ", groupCoords.length, );
+    var sID = this.id
+    var exists = false
+
+    for (var i = 0; i < groupCoords.length; i++) {
+      //if we find a match, we update the existing coordinate
+      if (groupCoords[i].id === this.id) {
+        groupCoords[i].ready = status
+        exists = true
+      }
+    }
+    var readyCounter = 0;
+    for (var i = 0; i < groupCoords.length; i++) {
+      if(groupCoords[i].ready === true){
+        readyCounter ++;
+      }
+    }
+
+    console.log("number of ready users: ", readyCounter);
+
+    //we need to break this into a separate function and then check it
+    //when the disconnect function is fired
+    
+    //If the person hasn't been registered then nothing will happen
+    //But that is really an edge case
+
   })
 
   socket.on("update-heading", function(heading) {
