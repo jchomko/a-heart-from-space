@@ -88,6 +88,7 @@ io.on('connection', function(socket) {
       // coordinatesChanged = true;
       io.emit("clear-markers", 1) //groupCoords
 
+      isGroupReady();
     }
 
   })
@@ -139,18 +140,17 @@ io.on('connection', function(socket) {
         exists = true
       }
     }
-    var readyCounter = 0;
-    for (var i = 0; i < groupCoords.length; i++) {
-      if(groupCoords[i].ready === true){
-        readyCounter ++;
-      }
-    }
 
-    console.log("number of ready users: ", readyCounter);
+    isGroupReady();
 
     //we need to break this into a separate function and then check it
-    //when the disconnect function is fired
-    
+    //when the disconnect function is fired.
+    // we also need to make a note that pops up when people first come to the Websites
+    // but what happens when they reload?
+    // maybe this button thing is too much, too complicated
+    // maybe we just go square -> circle -> heart and use the completion as the next trigger
+
+
     //If the person hasn't been registered then nothing will happen
     //But that is really an edge case
 
@@ -220,6 +220,39 @@ io.on('connection', function(socket) {
   // })
 })
 
+
+function isGroupReady(){
+
+  var readyCounter = 0;
+  for (var i = 0; i < groupCoords.length; i++) {
+    if(groupCoords[i].ready === true){
+      readyCounter ++;
+    }
+  }
+
+  console.log("number of ready users: ", readyCounter);
+
+  if(readyCounter >= groupCoords.length){
+
+    //clear the ready flags
+    for (var i = 0; i < groupCoords.length; i++) {
+      groupCoords[i].ready = false;
+    }
+
+    io.emit("start-next", true);
+    console.log("sending start");
+
+  }
+
+
+  let counts = {
+    users: groupCoords.length,
+    ready: readyCounter
+  }
+
+  io.emit("ready-status", counts);
+
+}
 
 function sendGroupCoordinates() {
   if (coordinatesChanged) {

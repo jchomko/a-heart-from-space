@@ -54,26 +54,10 @@ function getCookie(c_name) {
   }
 }
 
-//Show / hide arrows
-// function togArrows() {
-//   showArrows = !showArrows;
-//   if (!showArrows) {
-//     $("#toggleArrows").html("Arrows On");
-//     for (var i = 0; i < groupMarkers.length; i++) {
-//       groupMarkers[i].setMap(null);
-//     }
-//   } else {
-//     $("#toggleArrows").html("Arrows Off");
-//     if (map != null) {
-//       for (var i = 0; i < groupMarkers.length; i++) {
-//         groupMarkers[i].setMap(map);
-//       }
-//     }
-//   }
-// }
+
 function readyToStart(){
   //remove ready dialogue
-  
+
   socket.emit("ready-to-start", true)
 }
 //Center map to current position (if it's been set)
@@ -231,7 +215,7 @@ function drawLines(groupCoords) {
   // console.log("num lines: ", groupPolyLines.length);
   if (groupCoords.length > 1) {
 
-    console.log(groupCoords);
+    // console.log(groupCoords);
     //clear polylines
     for (var i = 0; i < groupPolyLines.length; i++) {
       groupPolyLines[i].setMap(null);
@@ -582,6 +566,16 @@ socket.on("receive-group-coordinates", function(groupCoords) {
     drawMarkers(groupCoords);
   }
 });
+
+socket.on("ready-status", function(counts){
+  console.log(counts);
+  $("#compassInfo").html("Users Ready: " + counts.users + "/" + counts.ready);
+});
+
+socket.on("start-next", function(data){
+
+  console.log("start : ", data);
+})
 
 function updateHomeMarkerPosition(position) {
   if (google.maps != null) {
