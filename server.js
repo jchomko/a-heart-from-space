@@ -51,9 +51,7 @@ app.get('/', function(request, response) {
 })
 
 
-
 io.on('connection', function(socket) {
-
   socket.on("request-id", function() {
     io.to(this.id).emit("receive-id", idCounter)
     idCounter += 1;
@@ -63,7 +61,7 @@ io.on('connection', function(socket) {
   //client is added to list only when it sends some coordinates
   socket.on("new-client", function(data) {
     console.log("new client : ", data);
-    io.to(this.id).emit("receive-start-status", started)
+    // io.to(this.id).emit("receive-start-status", started)
   })
 
   //this happens automatically when the socket connection breaks
@@ -88,8 +86,7 @@ io.on('connection', function(socket) {
       // console.log("coord array length : ", groupCoords.length)
       // coordinatesChanged = true;
       io.emit("clear-markers", 1) //groupCoords
-
-      isGroupReady();
+      // isGroupReady();
     }
 
   })
@@ -131,7 +128,8 @@ io.on('connection', function(socket) {
 
   socket.on("ready-to-start", function(status) {
 
-    console.log("number of active users : ", groupCoords.length, );
+    console.log("number of active users : ", groupCoords.length );
+    console.log("receiving : ", status, "from :", this.id);
     var sID = this.id
     var exists = false
 
@@ -142,8 +140,9 @@ io.on('connection', function(socket) {
         exists = true
       }
     }
+    console.log("exists: ", exists);
 
-    isGroupReady();
+    // isGroupReady();
 
     //we need to break this into a separate function and then check it
     //when the disconnect function is fired.
@@ -207,6 +206,7 @@ io.on('connection', function(socket) {
         seqentialID: coords.seqentialID,
         heading: coords.heading,
         done: coords.done
+
       }
       groupCoords.push(person)
     }
@@ -233,6 +233,7 @@ function isGroupReady() {
   }
 
   console.log("number of ready users: ", readyCounter);
+  // console.log(groupCoords);
 
   if (readyCounter >= groupCoords.length) {
 
@@ -251,8 +252,8 @@ function isGroupReady() {
     started = false;
   }
 
-  console.log("started ? :", started);
-  
+  // console.log("started :", started);
+
   let counts = {
     users: groupCoords.length,
     ready: readyCounter

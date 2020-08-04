@@ -57,8 +57,7 @@ function getCookie(c_name) {
 
 function readyToStart(){
   //remove ready dialogue
-
-  socket.emit("ready-to-start", true)
+  socket.emit("ready-to-start", true);
 }
 //Center map to current position (if it's been set)
 function center() {
@@ -551,7 +550,7 @@ socket.on("receive-start-status", function(startStatus){
   console.log(" is started already ? :", startStatus);
   if(startStatus === false){
     // show dialog
-    $("#dialog-content").html("Hello");
+    $("#dialog-content").html("Hello, welcome. This is an experiment in digitally mediated collective action. When you press start, you'll receive some requests for sensor access, please accept them.");
     $("#dialog-content").css("visibility", "visible");
 
     $("#dialog-message").dialog({
@@ -566,12 +565,12 @@ socket.on("receive-start-status", function(startStatus){
         })
       },
       buttons: {
-        Close: function() {
-          $(this).dialog("close");
-        },
         "Start": function() {
           $(this).dialog("close");
           // window.location.href = target
+          // readyToStart();
+
+          socket.emit("ready-to-start", true);
           tryGeolocation();
           requestDeviceOrientation();
         }
@@ -593,15 +592,17 @@ socket.on("receive-start-status", function(startStatus){
 })
 
 socket.on('connect', function() {
+
   socket.emit('new-client', 'mobile')
   sessionID = socket.id;
   console.log("connected", socket.connected, sessionID);
 
-  // tryGeolocation();
-  // requestDeviceOrientation();
+  tryGeolocation();
+  requestDeviceOrientation();
   if (currLatLng != null) {
     socket.emit("update-coordinates", currLatLng);
   }
+
 });
 
 socket.on("receive-group-coordinates", function(groupCoords) {
@@ -614,7 +615,7 @@ socket.on("receive-group-coordinates", function(groupCoords) {
 
 socket.on("ready-status", function(counts){
   console.log(counts);
-  $("#compassInfo").html("Users Ready: " + counts.users + "/" + counts.ready);
+  // $("#compassInfo").html("Users Ready: " + counts.users + "/" + counts.ready);
 });
 
 socket.on("start-next", function(data){
