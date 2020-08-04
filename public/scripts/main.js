@@ -547,13 +547,58 @@ socket.on("receive-id", function(id) {
   // cookieID = id;
 });
 
+socket.on("receive-start-status", function(startStatus){
+  console.log(" is started already ? :", startStatus);
+  if(startStatus === false){
+    // show dialog
+    $("#dialog-content").html("Hello");
+    $("#dialog-content").css("visibility", "visible");
+
+    $("#dialog-message").dialog({
+      autoOpen: true,
+      modal: true,
+      closeOnEscape: true,
+      open: function() {
+        //Click anywhere to close
+        $('.ui-widget-overlay').bind('click', function() {
+          $('#dialog-message').dialog('close');
+
+        })
+      },
+      buttons: {
+        Close: function() {
+          $(this).dialog("close");
+        },
+        "Start": function() {
+          $(this).dialog("close");
+          // window.location.href = target
+          tryGeolocation();
+          requestDeviceOrientation();
+        }
+      },
+      position: {
+        my: "center center",
+        at: "center center",
+        of: window
+      }
+    });
+
+    $("#dialog-message").siblings('.ui-dialog-buttonpane').find('button:eq(1)').focus();
+
+  }else{
+    // don't show dialog
+    tryGeolocation();
+    requestDeviceOrientation();
+  }
+})
+
 socket.on('connect', function() {
   socket.emit('new-client', 'mobile')
   sessionID = socket.id;
   console.log("connected", socket.connected, sessionID);
 
-  tryGeolocation();
-  requestDeviceOrientation();
+  // tryGeolocation();
+  // requestDeviceOrientation();
   if (currLatLng != null) {
     socket.emit("update-coordinates", currLatLng);
   }

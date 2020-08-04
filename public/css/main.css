@@ -71,3 +71,19 @@ html, body {
   height: 50px;
   background-color: rgb(220, 220, 220);
 }
+
+#dialog-message {
+  display: none;
+  /* position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: auto; */
+  /* font-size: 19px; */
+  /* background: #fdf7f3ed */
+}
+
+#dialog-content {
+  /* font-size: 19px; */
+  /* background: #fdf7f3ed */
+}

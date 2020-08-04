@@ -13,7 +13,7 @@ var groupCoords = [];
 var idCounter = 0;
 var headingChangedFlag = false;
 var coordinatesChanged = false;
-
+var started = false;
 
 
 //Development section
@@ -63,6 +63,7 @@ io.on('connection', function(socket) {
   //client is added to list only when it sends some coordinates
   socket.on("new-client", function(data) {
     console.log("new client : ", data);
+    io.to(this.id).emit("receive-start-status", started)
   })
 
   //this happens automatically when the socket connection breaks
@@ -113,7 +114,7 @@ io.on('connection', function(socket) {
 
   })
 
-  socket.on("draw-triangle", function(drawDone){
+  socket.on("draw-triangle", function(drawDone) {
     var sID = this.id
     var exists = false
 
@@ -124,10 +125,11 @@ io.on('connection', function(socket) {
         exists = true
       }
     }
+    isGroupDone();
     coordinatesChanged = true;
   })
 
-  socket.on("ready-to-start", function(status){
+  socket.on("ready-to-start", function(status) {
 
     console.log("number of active users : ", groupCoords.length, );
     var sID = this.id
@@ -221,36 +223,68 @@ io.on('connection', function(socket) {
 })
 
 
-function isGroupReady(){
+function isGroupReady() {
 
   var readyCounter = 0;
   for (var i = 0; i < groupCoords.length; i++) {
-    if(groupCoords[i].ready === true){
-      readyCounter ++;
+    if (groupCoords[i].ready === true) {
+      readyCounter++;
     }
   }
 
   console.log("number of ready users: ", readyCounter);
 
-  if(readyCounter >= groupCoords.length){
+  if (readyCounter >= groupCoords.length) {
 
     //clear the ready flags
     for (var i = 0; i < groupCoords.length; i++) {
       groupCoords[i].ready = false;
     }
 
-    io.emit("start-next", true);
-    console.log("sending start");
+    if (!started) {
+      io.emit("start-next", true);
+      console.log("sending start");
+      started = true;
+    }
 
+  }else{
+    started = false;
   }
 
-
+  console.log("started ? :", started);
+  
   let counts = {
     users: groupCoords.length,
     ready: readyCounter
   }
 
   io.emit("ready-status", counts);
+
+}
+
+function isGroupDone(){
+  var doneCounter = 0;
+  for (var i = 0; i < groupCoords.length; i++) {
+    if (groupCoords[i].done === true) {
+      doneCounter++;
+    }
+  }
+
+  if (doneCounter >= groupCoords.length) {
+
+    //clear the ready flags
+    for (var i = 0; i < groupCoords.length; i++) {
+      groupCoords[i].ready = false;
+    }
+
+    started = false;
+    console.log("started : ", started);
+    // if (!started) {
+    //   io.emit("start-next", true);
+    //   console.log("sending start");
+    //   started = true;
+    // }
+  }
 
 }
 
