@@ -13,8 +13,8 @@ var groupCoords = [];
 var idCounter = 0;
 var headingChangedFlag = false;
 var coordinatesChanged = false;
-var started = false;
-
+// var started = false;
+var currentMode = 0;
 
 //Development section
 if (process.env.NODE_ENV != 'production') {
@@ -61,7 +61,7 @@ io.on('connection', function(socket) {
   //client is added to list only when it sends some coordinates
   socket.on("new-client", function(data) {
     console.log("new client : ", data);
-    // io.to(this.id).emit("receive-start-status", started)
+    // io.to(this.id).emit("receive-start-status", currentMode)
   })
 
   //this happens automatically when the socket connection breaks
@@ -86,7 +86,7 @@ io.on('connection', function(socket) {
       // console.log("coord array length : ", groupCoords.length)
       // coordinatesChanged = true;
       io.emit("clear-markers", 1) //groupCoords
-      // isGroupReady();
+      isGroupReady();
     }
 
   })
@@ -118,17 +118,20 @@ io.on('connection', function(socket) {
     for (var i = 0; i < groupCoords.length; i++) {
       //if we find a match, we update the existing coordinate
       if (groupCoords[i].id === this.id) {
-        groupCoords[i].done = drawDone
+        // groupCoords[i].done = drawDone
+        groupCoords[i].ready = drawDone;
         exists = true
       }
     }
-    isGroupDone();
-    coordinatesChanged = true;
+    // isGroupDone();
+    isGroupReady();
+
+
   })
 
   socket.on("ready-to-start", function(status) {
 
-    console.log("number of active users : ", groupCoords.length );
+    console.log("number of active users : ", groupCoords.length);
     console.log("receiving : ", status, "from :", this.id);
     var sID = this.id
     var exists = false
@@ -142,7 +145,7 @@ io.on('connection', function(socket) {
     }
     console.log("exists: ", exists);
 
-    // isGroupReady();
+    isGroupReady();
 
     //we need to break this into a separate function and then check it
     //when the disconnect function is fired.
@@ -192,7 +195,7 @@ io.on('connection', function(socket) {
         groupCoords[i].lat = coords.lat
         groupCoords[i].lng = coords.lng
         groupCoords[i].heading = coords.heading
-        groupCoords[i].done = coords.done
+        // groupCoords[i].done = coords.done
         exists = true
       }
     }
@@ -204,8 +207,8 @@ io.on('connection', function(socket) {
         lat: coords.lat,
         lng: coords.lng,
         seqentialID: coords.seqentialID,
-        heading: coords.heading,
-        done: coords.done
+        heading: coords.heading
+        // done: coords.done
 
       }
       groupCoords.push(person)
@@ -232,25 +235,43 @@ function isGroupReady() {
     }
   }
 
-  console.log("number of ready users: ", readyCounter);
+  console.log("number of ready users: ", readyCounter, "/", groupCoords.length);
   // console.log(groupCoords);
 
+  //maybe not everyone needs to click just the majority of the group
+  //then we auto-close the dialogue when we receive the number
   if (readyCounter >= groupCoords.length) {
 
     //clear the ready flags
-    for (var i = 0; i < groupCoords.length; i++) {
-      groupCoords[i].ready = false;
+    currentMode += 1;
+
+    if (currentMode > 3) {
+      currentMode = 1;
     }
 
-    if (!started) {
-      io.emit("start-next", true);
-      console.log("sending start");
-      started = true;
+    if (currentMode <= 2) {
+      //this keeps the heart filled but when one person presses done in this mode
+      //the heart will be emptied
+      
+      for (var i = 0; i < groupCoords.length; i++) {
+        groupCoords[i].ready = false;
+      }
     }
 
-  }else{
-    started = false;
+    console.log("sending :", currentMode);
+    io.emit("receive-start-status", currentMode);
+
+    // if (!currentMode) {
+    //   io.emit("start-next", true);
+    //   console.log("sending start");
+    //   started = true;
+    // }
+
+  } else {
+    // currentMode = 0;
   }
+
+  coordinatesChanged = true;
 
   // console.log("started :", started);
 
@@ -263,31 +284,42 @@ function isGroupReady() {
 
 }
 
-function isGroupDone(){
-  var doneCounter = 0;
-  for (var i = 0; i < groupCoords.length; i++) {
-    if (groupCoords[i].done === true) {
-      doneCounter++;
-    }
-  }
-
-  if (doneCounter >= groupCoords.length) {
-
-    //clear the ready flags
-    for (var i = 0; i < groupCoords.length; i++) {
-      groupCoords[i].ready = false;
-    }
-
-    started = false;
-    console.log("started : ", started);
-    // if (!started) {
-    //   io.emit("start-next", true);
-    //   console.log("sending start");
-    //   started = true;
-    // }
-  }
-
-}
+// function isGroupDone(){
+//   var doneCounter = 0;
+//   for (var i = 0; i < groupCoords.length; i++) {
+//     if (groupCoords[i].done === true) {
+//       doneCounter++;
+//     }
+//   }
+//
+//   if (doneCounter >= groupCoords.length) {
+//
+//     //clear the ready flags
+//     for (var i = 0; i < groupCoords.length; i++) {
+//       groupCoords[i].done = false;
+//     }
+//
+//     started = false;
+//     console.log("started : ", started);
+//
+//     currentMode += 1;
+//
+//     if(currentMode > 3){
+//       currentMode = 0;
+//     }
+//
+//     io.emit("receive-start-status", currentMode);
+//     console.log("sending mode: ", currentMode);
+//
+//
+//     // if (!started) {
+//     //   io.emit("start-next", true);
+//     //   console.log("sending start");
+//     //   started = true;
+//     // }
+//   }
+//
+// }
 
 function sendGroupCoordinates() {
   if (coordinatesChanged) {

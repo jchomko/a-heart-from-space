@@ -18,6 +18,7 @@ var drawDone = false;
 var sensorsActive = false;
 var gpsActive = false;
 var sensorsActive = false;
+var lastMode = null;
 
 var trianglePolylineTemp;
 var lastSortedCoords = [];
@@ -55,10 +56,10 @@ function getCookie(c_name) {
 }
 
 
-function readyToStart(){
-  //remove ready dialogue
-  socket.emit("ready-to-start", true);
-}
+// function readyToStart(){
+//   //remove ready dialogue
+//   socket.emit("ready-to-start", true);
+// }
 //Center map to current position (if it's been set)
 function center() {
   // requestDeviceOrientation();
@@ -90,28 +91,37 @@ function activateGPS() {
   gpsActive = true;
 }
 
-function doneSection() {
+function toggleSection() {
 
   if (!drawDone) {
+
     drawTriangle();
-    $("#doneSection").html("Fill On");
-    $("#doneSection").css("background-color", "rgb(250,180,180)")
+    $("#doneSection").html("Done!");
+    $("#doneSection").css("background-color", "rgb(180,260,180)")
     // socket.emit("draw-triangle", true)
+
+    // drawDone = true;
+    socket.emit("draw-triangle", true)
+
   } else {
-    $("#doneSection").html("Activate Fill");
+
+    $("#doneSection").html("Done");
     $("#doneSection").css("background-color", "rgb(220,220,220)")
+
     if (trianglePolylineTemp != null) {
       trianglePolylineTemp.setMap(null);
+      console.log("clearing triangle");
     }
+
     // socket.emit("draw-triangle", false)
   }
 
   drawDone = !drawDone;
-  console.log(drawDone);
+  // console.log(drawDone);
   // we need to trigger the drawing immediately here, and then let it update with location for the others
   // how do you distinguish which heart section is yours?
   // it shoouuld be equally drawn between the sections so it's centered on you.
-  socket.emit("draw-triangle", drawDone)
+
 
 }
 
@@ -130,8 +140,8 @@ var browserGeolocationSuccess = function(position) {
     currLatLng = {
       lat: position.coords.latitude,
       lng: position.coords.longitude,
-      heading: compassOrientation,
-      done: drawDone
+      heading: compassOrientation
+      // done: drawDone
     };
     updateHomeMarkerPosition(position);
     // console.log("accurate coordinates: " + JSON.stringify(myLatLng))
@@ -231,13 +241,13 @@ function drawLines(groupCoords) {
       lat,
       lng,
       id,
-      done
+      ready
     }) => {
       return {
         lat,
         lng,
         id,
-        done,
+        ready,
         angle: Math.atan2(lat - center.lat, lng - center.lng) * 180 / Math.PI
       };
     });
@@ -265,7 +275,7 @@ function drawLines(groupCoords) {
 
     //Draw filled-in heart
     for (var i = 0; i < groupCoordsSorted.length; i++) {
-      if (groupCoordsSorted[i].done === true) {
+      if (groupCoordsSorted[i].ready === true) {
 
         var trianglePolyline = new google.maps.Polygon({
           strokeColor: '#f70000',
@@ -333,7 +343,7 @@ function drawTriangle() {
   }
 
   if (matchIndex != -1) {
-    console.log("drawing line, id: ", matchIndex)
+    console.log("drawing triangle, id: ", matchIndex)
     trianglePolylineTemp = new google.maps.Polygon({
       strokeColor: '#f70000',
       strokeOpacity: 1,
@@ -342,6 +352,8 @@ function drawTriangle() {
       fillColor: '#f70000',
       fillOpacity: 1.0
     })
+
+
     trianglePolylineTemp.setMap(map);
 
     var path = trianglePolylineTemp.getPath();
@@ -546,50 +558,110 @@ socket.on("receive-id", function(id) {
   // cookieID = id;
 });
 
-socket.on("receive-start-status", function(startStatus){
-  console.log(" is started already ? :", startStatus);
-  if(startStatus === false){
+if(lastMode === 0 || lastMode === null){
+  createDialogue("Hello! First we'll try a making a square. When you think the square is good enough, press the 'Done' button, which will fill your section. When the square is full of colour, we'll receive the next instruction.")
+}
+
+socket.on("receive-start-status", function(currentMode){
+
+  console.log("current mode :", currentMode);
+
+  if( currentMode === 0 && lastMode != currentMode  ){
     // show dialog
-    $("#dialog-content").html("Hello, welcome. This is an experiment in digitally mediated collective action. When you press start, you'll receive some requests for sensor access, please accept them.");
-    $("#dialog-content").css("visibility", "visible");
 
-    $("#dialog-message").dialog({
-      autoOpen: true,
-      modal: true,
-      closeOnEscape: true,
-      open: function() {
-        //Click anywhere to close
-        $('.ui-widget-overlay').bind('click', function() {
-          $('#dialog-message').dialog('close');
+    createDialogue("Hello! First we'll try a making a square. When you think the square is good enough, press the 'Done' button, which will fill your section. When the square is full of colour, we'll receive the next instruction.")
 
-        })
-      },
-      buttons: {
-        "Start": function() {
-          $(this).dialog("close");
-          // window.location.href = target
-          // readyToStart();
+    $("#doneSection").html("Done");
+    $("#doneSection").css("background-color", "rgb(220,220,220)")
 
-          socket.emit("ready-to-start", true);
-          tryGeolocation();
-          requestDeviceOrientation();
-        }
-      },
-      position: {
-        my: "center center",
-        at: "center center",
-        of: window
-      }
-    });
+    if (trianglePolylineTemp != null) {
+      trianglePolylineTemp.setMap(null);
+    }
+    drawDone = false;
 
-    $("#dialog-message").siblings('.ui-dialog-buttonpane').find('button:eq(1)').focus();
 
-  }else{
-    // don't show dialog
-    tryGeolocation();
-    requestDeviceOrientation();
+  }else if(currentMode === 1 && lastMode != currentMode){
+    //show dialog to create square
+    createDialogue("Great! Now let's try to make a circle.")
+    // toggleSection();
+
+    $("#doneSection").html("Done");
+    $("#doneSection").css("background-color", "rgb(220,220,220)")
+
+    if (trianglePolylineTemp != null) {
+      trianglePolylineTemp.setMap(null);
+    }
+    drawDone = false;
+
+
+  }else if(currentMode === 2 && lastMode != currentMode){
+
+    createDialogue("Lovely! Now let's make our heart.")
+    // toggleSection();
+    $("#doneSection").html("Done");
+    $("#doneSection").css("background-color", "rgb(220,220,220)")
+
+    if (trianglePolylineTemp != null) {
+      trianglePolylineTemp.setMap(null);
+    }
+    drawDone = false;
+
+    //show dialog to create circle
+
+  }else if(currentMode === 3 && lastMode != currentMode){
+    //show dialog to create circle
+    createDialogue("Thank you <3");
+    // toggleSection();
+    $("#doneSection").html("Done");
+    $("#doneSection").css("background-color", "rgb(220,220,220)")
+
+    // if (trianglePolylineTemp != null) {
+    //   trianglePolylineTemp.setMap(null);
+    // }
+    drawDone = false;
   }
+
+  lastMode = currentMode;
+    // don't show dialog
+    // tryGeolocation();
+    // requestDeviceOrientation();
+
 })
+
+function createDialogue(dialogueText){
+
+  $("#dialog-content").html(dialogueText);
+  $("#dialog-content").css("visibility", "visible");
+  $("#dialog-message").dialog({
+    autoOpen: true,
+    modal: true,
+    closeOnEscape: true,
+    open: function() {
+      //Click anywhere to close
+      $('.ui-widget-overlay').bind('click', function() {
+        $('#dialog-message').dialog('close');
+      })
+    },
+    buttons: {
+      "OK": function() {
+        $(this).dialog("close");
+        // window.location.href = target
+        // readyToStart();
+        // socket.emit("ready-to-start", true);
+        // tryGeolocation();
+        // requestDeviceOrientation();
+      }
+    },
+    position: {
+      my: "center center",
+      at: "center center",
+      of: window
+    }
+  });
+
+  $("#dialog-message").siblings('.ui-dialog-buttonpane').find('button:eq(1)').focus();
+
+}
 
 socket.on('connect', function() {
 
@@ -613,8 +685,9 @@ socket.on("receive-group-coordinates", function(groupCoords) {
   }
 });
 
+//These two don't do anything anymore
 socket.on("ready-status", function(counts){
-  console.log(counts);
+  // console.log(counts);
   // $("#compassInfo").html("Users Ready: " + counts.users + "/" + counts.ready);
 });
 
