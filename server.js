@@ -3,6 +3,8 @@ var path = require('path')
 var app = express()
 var fs = require('fs')
 var useragent = require('express-useragent')
+var secure = require('express-force-https');
+
 require('dotenv').config();
 
 
@@ -13,7 +15,6 @@ var groupCoords = [];
 var idCounter = 0;
 var headingChangedFlag = false;
 var coordinatesChanged = false;
-// var started = false;
 var currentMode = 0;
 
 //Development section
@@ -42,6 +43,7 @@ if (process.env.NODE_ENV != 'production') {
 }
 
 app.use(express.static('public'));
+app.use(secure);
 
 app.get('/', function(request, response) {
   // response.redirect('/index.html')
