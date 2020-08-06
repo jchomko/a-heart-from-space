@@ -691,7 +691,7 @@ socket.on("receive-group-coordinates", function(groupCoords) {
 //These two don't do anything anymore
 socket.on("ready-status", function(counts) {
   // console.log(counts);
-  // $("#compassInfo").html("Users Ready: " + counts.users + "/" + counts.ready);
+  $("#compassInfo").html("Done: " + counts.ready + "/" + counts.users + " Mode: " + lastMode);
 });
 
 socket.on("start-next", function(data) {

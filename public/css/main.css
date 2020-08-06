@@ -13,6 +13,14 @@ html, body {
   padding: 0;
 }
 
+#compassInfo{
+  z-index: 10;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 20px;
+}
+
 #toggleArrows {
   position: absolute;
   top: 0;
