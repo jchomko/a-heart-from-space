@@ -387,16 +387,18 @@ function drawTriangle() {
 
 //Called every time a socket is disconnected
 function clearMarkers(numberToClear) {
+  console.log("clear ", numberToClear, " markers");
   var index = 0;
   while (index < numberToClear) {
     console.log(
-      "removing marker: ",
-      groupMarkers[groupMarkers.length - 1].getTitle()
+      "removing marker: "
+      // groupMarkers[groupMarkers.length - 1].getTitle()
     );
-    groupMarkers[groupMarkers.length - 1].setMap(null);
-    // groupPolyLines.splice(groupMarkers.length-1,1);
-    groupMarkers.pop();
-
+    if (groupMarkers.length - 1 > 0) {
+      groupMarkers[groupMarkers.length - 1].setMap(null);
+      // groupPolyLines.splice(groupMarkers.length-1,1);
+      groupMarkers.pop();
+    }
     index++;
     console.log("total markers : ", groupMarkers.length);
   }
@@ -558,15 +560,15 @@ socket.on("receive-id", function(id) {
   // cookieID = id;
 });
 
-if(lastMode === 0 || lastMode === null){
+if (lastMode === 0 || lastMode === null) {
   createDialogue("Hello, welcome. First let's try a making a square. When you think the square is good enough, press the 'Done' button, which will fill your section. When the square is full of colour, we'll receive the next instruction.")
 }
 
-socket.on("receive-start-status", function(currentMode){
+socket.on("receive-start-status", function(currentMode) {
 
   console.log("current mode :", currentMode);
 
-  if( currentMode === 0 && lastMode != currentMode  ){
+  if (currentMode === 0 && lastMode != currentMode) {
     // show dialog
 
     createDialogue("Hello, welcome. First we'll try a making a square. When you think the square is good enough, press the 'Done' button, which will fill your section. When the square is full of colour, we'll receive the next instruction.")
@@ -580,7 +582,7 @@ socket.on("receive-start-status", function(currentMode){
     drawDone = false;
 
 
-  }else if(currentMode === 1 && lastMode != currentMode){
+  } else if (currentMode === 1 && lastMode != currentMode) {
     //show dialog to create square
     createDialogue("Great! Now let's try to make a circle. When you're happy with the circle, press the 'Done' button.")
     // toggleSection();
@@ -594,7 +596,7 @@ socket.on("receive-start-status", function(currentMode){
     drawDone = false;
 
 
-  }else if(currentMode === 2 && lastMode != currentMode){
+  } else if (currentMode === 2 && lastMode != currentMode) {
 
     createDialogue("Lovely! Now let's make our heart. When you're happy with our heart, press the 'Done' button.")
     // toggleSection();
@@ -608,13 +610,13 @@ socket.on("receive-start-status", function(currentMode){
 
     //show dialog to create circle
 
-  }else if(currentMode === 3 && lastMode != currentMode){
+  } else if (currentMode === 3 && lastMode != currentMode) {
     //show dialog to create circle
     createDialogue("Thank you, that was beautiful. Take a screenshot if you like.");
     // toggleSection();
     $("#doneSection").html("Done?");
     $("#doneSection").css("background-color", "rgb(220,220,220)")
-    $("#doneSection").css("visibility","hidden");
+    $("#doneSection").css("visibility", "hidden");
     // if (trianglePolylineTemp != null) {
     //   trianglePolylineTemp.setMap(null);
     // }
@@ -623,13 +625,13 @@ socket.on("receive-start-status", function(currentMode){
   }
 
   lastMode = currentMode;
-    // don't show dialog
-    // tryGeolocation();
-    // requestDeviceOrientation();
+  // don't show dialog
+  // tryGeolocation();
+  // requestDeviceOrientation();
 
 })
 
-function createDialogue(dialogueText){
+function createDialogue(dialogueText) {
 
   $("#dialog-content").html(dialogueText);
   $("#dialog-content").css("visibility", "visible");
@@ -687,12 +689,12 @@ socket.on("receive-group-coordinates", function(groupCoords) {
 });
 
 //These two don't do anything anymore
-socket.on("ready-status", function(counts){
+socket.on("ready-status", function(counts) {
   // console.log(counts);
   // $("#compassInfo").html("Users Ready: " + counts.users + "/" + counts.ready);
 });
 
-socket.on("start-next", function(data){
+socket.on("start-next", function(data) {
 
   console.log("start : ", data);
 })
