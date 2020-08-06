@@ -249,14 +249,14 @@ function isGroupReady() {
       currentMode = 1;
     }
 
-    if (currentMode <= 2) {
+    // if (currentMode <= 2) {
       //this keeps the heart filled but when one person presses done in this mode
       //the heart will be emptied
-      
+
       for (var i = 0; i < groupCoords.length; i++) {
         groupCoords[i].ready = false;
       }
-    }
+    // }
 
     console.log("sending :", currentMode);
     io.emit("receive-start-status", currentMode);

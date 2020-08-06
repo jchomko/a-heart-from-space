@@ -275,7 +275,7 @@ function drawLines(groupCoords) {
 
     //Draw filled-in heart
     for (var i = 0; i < groupCoordsSorted.length; i++) {
-      if (groupCoordsSorted[i].ready === true) {
+      if (groupCoordsSorted[i].ready === true || lastMode === 3) {
 
         var trianglePolyline = new google.maps.Polygon({
           strokeColor: '#f70000',
@@ -559,7 +559,7 @@ socket.on("receive-id", function(id) {
 });
 
 if(lastMode === 0 || lastMode === null){
-  createDialogue("Hello! First we'll try a making a square. When you think the square is good enough, press the 'Done' button, which will fill your section. When the square is full of colour, we'll receive the next instruction.")
+  createDialogue("Hello, welcome. First let's try a making a square. When you think the square is good enough, press the 'Done' button, which will fill your section. When the square is full of colour, we'll receive the next instruction.")
 }
 
 socket.on("receive-start-status", function(currentMode){
@@ -569,9 +569,9 @@ socket.on("receive-start-status", function(currentMode){
   if( currentMode === 0 && lastMode != currentMode  ){
     // show dialog
 
-    createDialogue("Hello! First we'll try a making a square. When you think the square is good enough, press the 'Done' button, which will fill your section. When the square is full of colour, we'll receive the next instruction.")
+    createDialogue("Hello, welcome. First we'll try a making a square. When you think the square is good enough, press the 'Done' button, which will fill your section. When the square is full of colour, we'll receive the next instruction.")
 
-    $("#doneSection").html("Done");
+    $("#doneSection").html("Done?");
     $("#doneSection").css("background-color", "rgb(220,220,220)")
 
     if (trianglePolylineTemp != null) {
@@ -582,10 +582,10 @@ socket.on("receive-start-status", function(currentMode){
 
   }else if(currentMode === 1 && lastMode != currentMode){
     //show dialog to create square
-    createDialogue("Great! Now let's try to make a circle.")
+    createDialogue("Great! Now let's try to make a circle. When you're happy with the circle, press the 'Done' button.")
     // toggleSection();
 
-    $("#doneSection").html("Done");
+    $("#doneSection").html("Done?");
     $("#doneSection").css("background-color", "rgb(220,220,220)")
 
     if (trianglePolylineTemp != null) {
@@ -596,9 +596,9 @@ socket.on("receive-start-status", function(currentMode){
 
   }else if(currentMode === 2 && lastMode != currentMode){
 
-    createDialogue("Lovely! Now let's make our heart.")
+    createDialogue("Lovely! Now let's make our heart. When you're happy with our heart, press the 'Done' button.")
     // toggleSection();
-    $("#doneSection").html("Done");
+    $("#doneSection").html("Done?");
     $("#doneSection").css("background-color", "rgb(220,220,220)")
 
     if (trianglePolylineTemp != null) {
@@ -610,15 +610,16 @@ socket.on("receive-start-status", function(currentMode){
 
   }else if(currentMode === 3 && lastMode != currentMode){
     //show dialog to create circle
-    createDialogue("Thank you <3");
+    createDialogue("Thank you, that was beautiful. Take a screenshot if you like.");
     // toggleSection();
-    $("#doneSection").html("Done");
+    $("#doneSection").html("Done?");
     $("#doneSection").css("background-color", "rgb(220,220,220)")
-
+    $("#doneSection").css("visibility","hidden");
     // if (trianglePolylineTemp != null) {
     //   trianglePolylineTemp.setMap(null);
     // }
     drawDone = false;
+
   }
 
   lastMode = currentMode;
@@ -775,10 +776,11 @@ function requestDeviceOrientation() {
 
 //Function called by async script call at bottom of index.html
 function initMap() {
-  var myLatLng = {
-    lat: -25.363,
-    lng: 131.044
-  };
+  // var myLatLng = {
+  //   lat: -25.363,
+  //   lng: 131.044
+  // };
+
   map = new google.maps.Map(document.getElementById("map"), {
     zoom: 13,
     center: {
