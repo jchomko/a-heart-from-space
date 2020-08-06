@@ -3,7 +3,7 @@ var path = require('path')
 var app = express()
 var fs = require('fs')
 var useragent = require('express-useragent')
-var secure = require('express-force-https');
+var sslRedirect = require('heroku-ssl-redirect');
 
 require('dotenv').config();
 
@@ -34,6 +34,7 @@ if (process.env.NODE_ENV != 'production') {
 } else {
 
   var http = require('http').createServer(app);
+  app.use(sslRedirect());
   io = require('socket.io').listen(http);
   http.listen((process.env.PORT || 5000), function() {
     console.log("Node app is running at localhost: " + app.get('port'))
@@ -43,7 +44,7 @@ if (process.env.NODE_ENV != 'production') {
 }
 
 app.use(express.static('public'));
-app.use(secure);
+// app.use(secure);
 
 app.get('/', function(request, response) {
   // response.redirect('/index.html')

@@ -11,6 +11,7 @@
     "express": "^4.16.4",
     "express-force-https": "^1.0.0",
     "express-useragent": "^1.0.12",
+    "heroku-ssl-redirect": "0.0.4",
     "socket.io": "^2.1.1"
   },
   "engines": {
