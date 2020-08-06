@@ -238,9 +238,8 @@ function isGroupReady() {
   console.log("number of ready users: ", readyCounter, "/", groupCoords.length);
   // console.log(groupCoords);
 
-  //maybe not everyone needs to click just the majority of the group
-  //then we auto-close the dialogue when we receive the number
-  if (readyCounter >= groupCoords.length) {
+  //Make sure not just one person can advance the mode selector
+  if (readyCounter >= groupCoords.length && groupCoords.length > 1) {
 
     //clear the ready flags
     currentMode += 1;
@@ -249,27 +248,15 @@ function isGroupReady() {
       currentMode = 1;
     }
 
-    // if (currentMode <= 2) {
-      //this keeps the heart filled but when one person presses done in this mode
-      //the heart will be emptied
-
-      for (var i = 0; i < groupCoords.length; i++) {
-        groupCoords[i].ready = false;
-      }
-    // }
+    for (var i = 0; i < groupCoords.length; i++) {
+      groupCoords[i].ready = false;
+    }
 
     console.log("sending :", currentMode);
     io.emit("receive-start-status", currentMode);
 
-    // if (!currentMode) {
-    //   io.emit("start-next", true);
-    //   console.log("sending start");
-    //   started = true;
-    // }
-
-  } else {
-    // currentMode = 0;
   }
+
 
   coordinatesChanged = true;
 

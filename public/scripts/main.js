@@ -612,7 +612,7 @@ socket.on("receive-start-status", function(currentMode) {
 
   } else if (currentMode === 3 && lastMode != currentMode) {
     //show dialog to create circle
-    createDialogue("Thank you, that was beautiful. Take a screenshot if you like.");
+    createDialogue("Thank you for taking part! Take a screenshot and share with #aheartfromspace :)");
     // toggleSection();
     $("#doneSection").html("Done?");
     $("#doneSection").css("background-color", "rgb(220,220,220)")
