@@ -561,68 +561,68 @@ socket.on("receive-id", function(id) {
 });
 
 if (lastMode === 0 || lastMode === null) {
-  createDialogue("Hello, welcome. First let's try a making a square. When you think the square is good enough, press the 'Done' button, which will fill your section. When the square is full of colour, we'll receive the next instruction.")
+  // createDialogue("Hello, welcome. Let's first get a acquainted with your location and the compass.")
 }
 
 socket.on("receive-start-status", function(currentMode) {
 
   console.log("current mode :", currentMode);
-
-  if (currentMode === 0 && lastMode != currentMode) {
-    // show dialog
-
-    createDialogue("Hello, welcome. First we'll try a making a square. When you think the square is good enough, press the 'Done' button, which will fill your section. When the square is full of colour, we'll receive the next instruction.")
-
-    $("#doneSection").html("Done?");
-    $("#doneSection").css("background-color", "rgb(220,220,220)")
-
-    if (trianglePolylineTemp != null) {
-      trianglePolylineTemp.setMap(null);
-    }
-    drawDone = false;
-
-
-  } else if (currentMode === 1 && lastMode != currentMode) {
-    //show dialog to create square
-    createDialogue("Great! Now let's try to make a circle. When you're happy with the circle, press the 'Done' button.")
-    // toggleSection();
-
-    $("#doneSection").html("Done?");
-    $("#doneSection").css("background-color", "rgb(220,220,220)")
-
-    if (trianglePolylineTemp != null) {
-      trianglePolylineTemp.setMap(null);
-    }
-    drawDone = false;
-
-
-  } else if (currentMode === 2 && lastMode != currentMode) {
-
-    createDialogue("Lovely! Now let's make our heart. When you're happy with our heart, press the 'Done' button.")
-    // toggleSection();
-    $("#doneSection").html("Done?");
-    $("#doneSection").css("background-color", "rgb(220,220,220)")
-
-    if (trianglePolylineTemp != null) {
-      trianglePolylineTemp.setMap(null);
-    }
-    drawDone = false;
-
-    //show dialog to create circle
-
-  } else if (currentMode === 3 && lastMode != currentMode) {
-    //show dialog to create circle
-    createDialogue("Thank you for taking part! Take a screenshot and share with #aheartfromspace :)");
-    // toggleSection();
-    $("#doneSection").html("Done?");
-    $("#doneSection").css("background-color", "rgb(220,220,220)")
-    $("#doneSection").css("visibility", "hidden");
-    // if (trianglePolylineTemp != null) {
-    //   trianglePolylineTemp.setMap(null);
-    // }
-    drawDone = false;
-
-  }
+  
+  // if (currentMode === 0 && lastMode != currentMode) {
+  //   // show dialog
+  //
+  //   createDialogue("Hello, welcome. First we'll try a making a square. When you think the square is good enough, press the 'Done' button, which will fill your section. When the square is full of colour, we'll receive the next instruction.")
+  //
+  //   $("#doneSection").html("Done?");
+  //   $("#doneSection").css("background-color", "rgb(220,220,220)")
+  //
+  //   if (trianglePolylineTemp != null) {
+  //     trianglePolylineTemp.setMap(null);
+  //   }
+  //   drawDone = false;
+  //
+  //
+  // } else if (currentMode === 1 && lastMode != currentMode) {
+  //   //show dialog to create square
+  //   createDialogue("Great! Now let's try to make a circle. When you're happy with the circle, press the 'Done' button.")
+  //   // toggleSection();
+  //
+  //   $("#doneSection").html("Done?");
+  //   $("#doneSection").css("background-color", "rgb(220,220,220)")
+  //
+  //   if (trianglePolylineTemp != null) {
+  //     trianglePolylineTemp.setMap(null);
+  //   }
+  //   drawDone = false;
+  //
+  //
+  // } else if (currentMode === 2 && lastMode != currentMode) {
+  //
+  //   createDialogue("Lovely! Now let's make our heart. When you're happy with our heart, press the 'Done' button.")
+  //   // toggleSection();
+  //   $("#doneSection").html("Done?");
+  //   $("#doneSection").css("background-color", "rgb(220,220,220)")
+  //
+  //   if (trianglePolylineTemp != null) {
+  //     trianglePolylineTemp.setMap(null);
+  //   }
+  //   drawDone = false;
+  //
+  //   //show dialog to create circle
+  //
+  // } else if (currentMode === 3 && lastMode != currentMode) {
+  //   //show dialog to create circle
+  //   createDialogue("Thank you for taking part! Take a screenshot and share with #aheartfromspace :)");
+  //   // toggleSection();
+  //   $("#doneSection").html("Done?");
+  //   $("#doneSection").css("background-color", "rgb(220,220,220)")
+  //   $("#doneSection").css("visibility", "hidden");
+  //   // if (trianglePolylineTemp != null) {
+  //   //   trianglePolylineTemp.setMap(null);
+  //   // }
+  //   drawDone = false;
+  //
+  // }
 
   lastMode = currentMode;
   // don't show dialog

@@ -247,12 +247,13 @@ function isGroupReady() {
     //clear the ready flags
     currentMode += 1;
 
-    if (currentMode > 3) {
-      currentMode = 1;
-    }
+    if (currentMode > 1) {
 
-    for (var i = 0; i < groupCoords.length; i++) {
-      groupCoords[i].ready = false;
+      for (var i = 0; i < groupCoords.length; i++) {
+        groupCoords[i].ready = false;
+      }
+
+      currentMode = 0;
     }
 
     console.log("sending :", currentMode);
