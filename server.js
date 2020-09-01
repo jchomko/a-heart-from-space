@@ -12,6 +12,8 @@ var io = null
 var usersList = []
 var debugList = []
 var groupCoords = [];
+var sortList = [];
+
 var idCounter = 0;
 var orderCounter = 0;
 var headingChangedFlag = false;
@@ -57,8 +59,11 @@ app.get('/', function(request, response) {
 
 io.on('connection', function(socket) {
   socket.on("request-id", function() {
-    io.to(this.id).emit("receive-id", idCounter)
-    idCounter += 1;
+    // io.to(this.id).emit("receive-id", idCounter)
+    // idCounter += 1;
+    //Giving this via server is a bit weird but probably better than getting it from browser as browser can be off depending on timezone of phone maybe?
+    io.to(this.id).emit("receive-id", Date.now())
+
   })
 
   //detect new client
@@ -85,7 +90,7 @@ io.on('connection', function(socket) {
     //if we have a match
     //remove that match from the list of coordinates
     if (exists == true) {
-      console.log("removing :" + JSON.stringify(groupCoords[index]))
+      // console.log("removing :" + JSON.stringify(groupCoords[index]))
       groupCoords.splice(index, 1)
       // console.log("coord array length : ", groupCoords.length)
       // coordinatesChanged = true;
@@ -202,25 +207,43 @@ io.on('connection', function(socket) {
         // groupCoords[i].done = coords.done
         exists = true
       }
+
+      // if (groupCoords[i].firstSocketID === coords.firstSocketID) {
+      //   groupCoords[i].lat = coords.lat
+      //   groupCoords[i].lng = coords.lng
+      //   groupCoords[i].heading = coords.heading
+      //   // groupCoords[i].done = coords.done
+      //   exists = true
+      // }
     }
 
     //If ID doesn't match with existing IDs
-    if (exists == false) {
+    if (exists === false) {
+
       var person = {
         id: this.id,
+        firstSocketID: coords.firstSocketID,
         lat: coords.lat,
         lng: coords.lng,
-        // seqentialID: coords.seqentialID,
-        orderId: orderCounter,
+        // sortID: coords.sortID,
+        sortID: orderCounter,
+        connectTimestamp: coords.connectTimestamp,
         heading: coords.heading
         // done: coords.done
-
       }
+
+      console.log("new:")
+      console.log(person);
       orderCounter ++;
       groupCoords.push(person)
+
     }
 
-    
+    groupCoords.sort(function (a, b){
+      return parseInt(a.connectTimestamp) - parseInt(b.connectTimestamp)
+    });
+
+
     //Sending coordinates on an interval timer
     // io.emit("receive-group-coordinates", groupCoords)
     coordinatesChanged = true;
@@ -324,4 +347,4 @@ function sendGroupCoordinates() {
   }
 }
 
-setInterval(sendGroupCoordinates, 150);
+setInterval(sendGroupCoordinates, 250);

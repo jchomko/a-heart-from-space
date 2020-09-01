@@ -24,6 +24,9 @@ var watchPositionId = null;
 
 var trianglePolylineTemp;
 var lastSortedCoords = [];
+var cookieID;
+var firstSocketID;
+var firstConnectTimestamp;
 
 var spriteSound = new Howl({
   src: ['Ticket-machine-sound.mp3']
@@ -142,7 +145,10 @@ var browserGeolocationSuccess = function(position) {
     currLatLng = {
       lat: position.coords.latitude,
       lng: position.coords.longitude,
-      heading: compassOrientation
+      heading: compassOrientation,
+      // sortID: cookieID,
+      // firstSocketID: firstSocketID,
+      connectTimestamp: firstConnectTimestamp
       // done: drawDone
     };
     updateHomeMarkerPosition(position);
@@ -591,8 +597,10 @@ socket.on("clear-markers", function(number) {
 })
 
 socket.on("receive-id", function(id) {
-  setCookie("id", id, 1)
+  // setCookie("id", id, 1)
+  setCookie("timestamp", id, 1)
   console.log("setting id cookie to : " + id);
+  firstConnectTimestamp = id;
   // cookieID = id;
 });
 
@@ -710,10 +718,36 @@ socket.on('connect', function() {
 
   tryGeolocation();
   requestDeviceOrientation();
+
   if (currLatLng != null) {
     socket.emit("update-coordinates", currLatLng);
   }
 
+  firstSocketID = getCookie("firstsocket");
+
+  if(firstSocketID == null){
+      setCookie("firstsocket", sessionID, 1);
+  }
+
+  //Get sequential id from cookie
+  // var id = getCookie("id");
+  // if (id != null) {
+  //   console.log("has cookie id: " + id);
+  //   cookieID = id;
+  // } else {
+  //   console.log("has no id : " + id);
+  //   socket.emit("request-id");
+  // }
+
+  var ct = getCookie("timestamp");
+  if (ct != null) {
+    console.log("has timestamp : " + ct);
+    firstConnectTimestamp = ct;
+
+  } else {
+    console.log("no timestamp saved in cookies ");
+    socket.emit("request-id");
+  }
 });
 
 socket.on("receive-group-coordinates", function(groupCoords) {
@@ -1038,14 +1072,6 @@ function initMap() {
 
   });
 
-  var id = getCookie("id");
-  if (id != null) {
-    console.log("has id: " + id);
-    cookieID = id;
-  } else {
-    console.log("has no id : " + id);
-    socket.emit("request-id");
-  }
 }
 
 //Print errors as they happen
