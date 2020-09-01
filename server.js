@@ -120,54 +120,55 @@ io.on('connection', function(socket) {
 
   })
 
-  socket.on("draw-triangle", function(drawDone) {
-    var sID = this.id
+  socket.on("draw-triangle", function(timestamp) {
+    // var sID = this.id
     var exists = false
 
     for (var i = 0; i < groupCoords.length; i++) {
       //if we find a match, we update the existing coordinate
       if (groupCoords[i].id === this.id) {
         // groupCoords[i].done = drawDone
-        groupCoords[i].ready = drawDone;
+        groupCoords[i].ready = true;
         exists = true
       }
     }
-    // isGroupDone();
-    isGroupReady();
+    coordinatesChanged = exists;
+    console.log("drawing heart for: ", this.id);
+    // isGroupReady();
 
 
   })
 
-  socket.on("ready-to-start", function(status) {
-
-    console.log("number of active users : ", groupCoords.length);
-    console.log("receiving : ", status, "from :", this.id);
-    var sID = this.id
-    var exists = false
-
-    for (var i = 0; i < groupCoords.length; i++) {
-      //if we find a match, we update the existing coordinate
-      if (groupCoords[i].id === this.id) {
-        groupCoords[i].ready = status
-        exists = true
-      }
-    }
-    console.log("exists: ", exists);
-
-    isGroupReady();
-
-    //we need to break this into a separate function and then check it
-    //when the disconnect function is fired.
-    // we also need to make a note that pops up when people first come to the Websites
-    // but what happens when they reload?
-    // maybe this button thing is too much, too complicated
-    // maybe we just go square -> circle -> heart and use the completion as the next trigger
-
-
-    //If the person hasn't been registered then nothing will happen
-    //But that is really an edge case
-
-  })
+  // socket.on("ready-to-start", function(status) {
+  //
+  //   console.log("number of active users : ", groupCoords.length);
+  //   console.log("receiving : ", status, "from :", this.id);
+  //   var sID = this.id
+  //   var exists = false
+  //
+  //   for (var i = 0; i < groupCoords.length; i++) {
+  //     //if we find a match, we update the existing coordinate
+  //     if (groupCoords[i].id === this.id) {
+  //       groupCoords[i].ready = status
+  //       exists = true
+  //     }
+  //   }
+  //   console.log("exists: ", exists);
+  //
+  //   isGroupReady();
+  //
+  //   //we need to break this into a separate function and then check it
+  //   //when the disconnect function is fired.
+  //   // we also need to make a note that pops up when people first come to the Websites
+  //   // but what happens when they reload?
+  //   // maybe this button thing is too much, too complicated
+  //   // maybe we just go square -> circle -> heart and use the completion as the next trigger
+  //
+  //
+  //   //If the person hasn't been registered then nothing will happen
+  //   //But that is really an edge case
+  //
+  // })
 
   socket.on("update-heading", function(heading) {
     var sID = this.id
@@ -222,7 +223,7 @@ io.on('connection', function(socket) {
 
       var person = {
         id: this.id,
-        firstSocketID: coords.firstSocketID,
+        // firstSocketID: coords.firstSocketID,
         lat: coords.lat,
         lng: coords.lng,
         // sortID: coords.sortID,
@@ -232,9 +233,9 @@ io.on('connection', function(socket) {
         // done: coords.done
       }
 
-      console.log("new:")
+
       console.log(person);
-      orderCounter ++;
+      // orderCounter ++;
       groupCoords.push(person)
 
     }
@@ -243,7 +244,10 @@ io.on('connection', function(socket) {
       return parseInt(a.connectTimestamp) - parseInt(b.connectTimestamp)
     });
 
-
+    if (exists === false) {
+      console.log("new addition:")
+      console.log(groupCoords);
+    }
     //Sending coordinates on an interval timer
     // io.emit("receive-group-coordinates", groupCoords)
     coordinatesChanged = true;

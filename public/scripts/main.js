@@ -106,7 +106,8 @@ function toggleSection() {
     // socket.emit("draw-triangle", true)
 
     // drawDone = true;
-    socket.emit("draw-triangle", true)
+    // socket.emit("draw-triangle", true)
+    socket.emit("draw-triangle", firstConnectTimestamp)
 
   } else {
 
@@ -182,7 +183,7 @@ function tryGeolocation() {
     if(watchPositionId != null){
       navigator.geolocation.clearWatch(watchPositionId);
     }
-    
+
     watchPositionId = navigator.geolocation.watchPosition(
       browserGeolocationSuccess,
       browserGeolocationFail, {
@@ -325,25 +326,64 @@ function drawFixedLines(groupCoords) {
   //Line drawing code for original version with untangling
   var path = fixedPolyLine.getPath();
   path.clear()
-  //
-  //Draw users current position
-  // var currll =  new google.maps.LatLng(currLat, currLong);
-  // path.push(currll);
+
   //Add positions of other people
   for (var i = 0; i < groupCoords.length; i++) {
     var ll = new google.maps.LatLng(groupCoords[i].lat, groupCoords[i].lng);
     // console.log("adding new coordinate");
     path.push(ll);
   }
-  //
+
   // //close shape by bringing it back to the first person
   if (groupCoords.length > 1) {
     var ll = new google.maps.LatLng(groupCoords[0].lat, groupCoords[0].lng);
     path.push(ll);
   }
-  // //Close line by bringing it back to current position
-  // path.push(currll);
-  // //every time this is updated re-draw the polyline from scratch
+
+  //Draw done triangles
+  for (var i = 0; i < groupPolyLines.length; i++) {
+    groupPolyLines[i].setMap(null);
+  }
+  //clear all polylines
+  groupPolyLines.splice(0, groupPolyLines.length);
+
+  const center = groupCoords.reduce(calculateCentroid, {
+    lat: 0,
+    lng: 0
+  });
+
+  for (var i = 0; i < groupCoords.length; i++) {
+    if (groupCoords[i].ready === true ) { //|| lastMode === 3
+
+      var trianglePolyline = new google.maps.Polygon({
+        strokeColor: '#f70000',
+        strokeOpacity: 1,
+        // strokeOpacity: 1,
+        strokeWeight: 5,
+        fillColor: '#f70000',
+        fillOpacity: 0.2
+      })
+
+      trianglePolyline.setMap(map);
+
+      var path = trianglePolyline.getPath();
+
+      var a = new google.maps.LatLng(groupCoords[i].lat, groupCoords[i].lng);
+      path.push(a);
+
+      var b = new google.maps.LatLng(center.lat, center.lng);
+      path.push(b);
+
+      let nextIndex = i + 1;
+      if (nextIndex > groupCoords.length - 1) {
+        nextIndex = 0;
+      }
+      var c = new google.maps.LatLng(groupCoords[nextIndex].lat, groupCoords[nextIndex].lng);
+      path.push(c);
+
+      groupPolyLines.push(trianglePolyline);
+    }
+  }
 
 }
 
@@ -715,6 +755,7 @@ socket.on('connect', function() {
   socket.emit('new-client', 'mobile')
   sessionID = socket.id;
   console.log("connected", socket.connected, sessionID);
+  $("#compassInfo").html(sessionID);
 
   tryGeolocation();
   requestDeviceOrientation();
@@ -763,7 +804,7 @@ socket.on("receive-group-coordinates", function(groupCoords) {
 //These two don't do anything anymore
 socket.on("ready-status", function(counts) {
   // console.log(counts);
-  $("#compassInfo").html("Done: " + counts.ready + "/" + counts.users + " Mode: " + lastMode);
+  // $("#compassInfo").html("Done: " + counts.ready + "/" + counts.users + " Mode: " + lastMode);
 });
 
 socket.on("start-next", function(data) {
