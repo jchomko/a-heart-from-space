@@ -58,11 +58,11 @@ app.get('/', function(request, response) {
 
 
 io.on('connection', function(socket) {
-  socket.on("request-id", function() {
+  socket.on("request-timestamp", function() {
     // io.to(this.id).emit("receive-id", idCounter)
     // idCounter += 1;
     //Giving this via server is a bit weird but probably better than getting it from browser as browser can be off depending on timezone of phone maybe?
-    io.to(this.id).emit("receive-id", Date.now())
+    io.to(this.id).emit("receive-timestamp", Date.now())
 
   })
 
@@ -347,4 +347,4 @@ function sendGroupCoordinates() {
   }
 }
 
-setInterval(sendGroupCoordinates, 250);
+setInterval(sendGroupCoordinates, 500);

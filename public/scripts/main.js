@@ -146,8 +146,6 @@ var browserGeolocationSuccess = function(position) {
       lat: position.coords.latitude,
       lng: position.coords.longitude,
       heading: compassOrientation,
-      // sortID: cookieID,
-      // firstSocketID: firstSocketID,
       connectTimestamp: firstConnectTimestamp
       // done: drawDone
     };
@@ -180,9 +178,11 @@ var browserGeolocationFail = function(error) {
 //Get location of device  - navigator is just an html5 access for the browser
 function tryGeolocation() {
   if (navigator.geolocation) {
+
     if(watchPositionId != null){
       navigator.geolocation.clearWatch(watchPositionId);
     }
+    
     watchPositionId = navigator.geolocation.watchPosition(
       browserGeolocationSuccess,
       browserGeolocationFail, {
@@ -596,11 +596,11 @@ socket.on("clear-markers", function(number) {
   clearMarkers(number)
 })
 
-socket.on("receive-id", function(id) {
+socket.on("receive-timestamp", function(ts) {
   // setCookie("id", id, 1)
-  setCookie("timestamp", id, 1)
-  console.log("setting id cookie to : " + id);
-  firstConnectTimestamp = id;
+  setCookie("timestamp", ts, 1)
+  console.log("setting id cookie to : " + ts);
+  firstConnectTimestamp = ts;
   // cookieID = id;
 });
 
@@ -746,7 +746,7 @@ socket.on('connect', function() {
 
   } else {
     console.log("no timestamp saved in cookies ");
-    socket.emit("request-id");
+    socket.emit("request-timestamp");
   }
 });
 
