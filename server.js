@@ -13,6 +13,7 @@ var usersList = []
 var debugList = []
 var groupCoords = [];
 var idCounter = 0;
+var orderCounter = 0;
 var headingChangedFlag = false;
 var coordinatesChanged = false;
 var currentMode = 0;
@@ -209,14 +210,17 @@ io.on('connection', function(socket) {
         id: this.id,
         lat: coords.lat,
         lng: coords.lng,
-        seqentialID: coords.seqentialID,
+        // seqentialID: coords.seqentialID,
+        orderId: orderCounter,
         heading: coords.heading
         // done: coords.done
 
       }
+      orderCounter ++;
       groupCoords.push(person)
     }
 
+    
     //Sending coordinates on an interval timer
     // io.emit("receive-group-coordinates", groupCoords)
     coordinatesChanged = true;

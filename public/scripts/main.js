@@ -4,6 +4,7 @@ var currLatLng;
 var map;
 var groupMarkers = [];
 var groupPolyLines = [];
+var fixedPolyLine;
 var homeMarkerID;
 var sessionID;
 var bestAccuracy = 1000;
@@ -19,6 +20,7 @@ var sensorsActive = false;
 var gpsActive = false;
 var sensorsActive = false;
 var lastMode = null;
+var watchPositionId = null;
 
 var trianglePolylineTemp;
 var lastSortedCoords = [];
@@ -172,12 +174,15 @@ var browserGeolocationFail = function(error) {
 //Get location of device  - navigator is just an html5 access for the browser
 function tryGeolocation() {
   if (navigator.geolocation) {
-    navigator.geolocation.watchPosition(
+    if(watchPositionId != null){
+      navigator.geolocation.clearWatch(watchPositionId);
+    }
+    watchPositionId = navigator.geolocation.watchPosition(
       browserGeolocationSuccess,
       browserGeolocationFail, {
         enableHighAccuracy: true,
         timeout: 10000,
-        maximumAge: 5000
+        maximumAge: 0
       }
     );
   }
@@ -307,6 +312,35 @@ function drawLines(groupCoords) {
     }
   }
 }
+
+// Original line drawing function that requires untangling
+function drawFixedLines(groupCoords) {
+
+  //Line drawing code for original version with untangling
+  var path = fixedPolyLine.getPath();
+  path.clear()
+  //
+  //Draw users current position
+  // var currll =  new google.maps.LatLng(currLat, currLong);
+  // path.push(currll);
+  //Add positions of other people
+  for (var i = 0; i < groupCoords.length; i++) {
+    var ll = new google.maps.LatLng(groupCoords[i].lat, groupCoords[i].lng);
+    // console.log("adding new coordinate");
+    path.push(ll);
+  }
+  //
+  // //close shape by bringing it back to the first person
+  if (groupCoords.length > 1) {
+    var ll = new google.maps.LatLng(groupCoords[0].lat, groupCoords[0].lng);
+    path.push(ll);
+  }
+  // //Close line by bringing it back to current position
+  // path.push(currll);
+  // //every time this is updated re-draw the polyline from scratch
+
+}
+
 
 function drawTapResponse(markerId) {
 
@@ -476,11 +510,13 @@ function addLatLng(event) {
   var path = guideLine.getPath();
   path.push(event.latLng);
   // drawLines(guideLine.getPath().getArray());
-  drawLines(convertCoordinates(guideLine.getPath().getArray()));
+  drawFixedLines(convertCoordinates(guideLine.getPath().getArray()));
+  // drawLines(convertCoordinates(guideLine.getPath().getArray()));
 }
 
 function polylineChanged(index) {
-  drawLines(convertCoordinates(guideLine.getPath().getArray()));
+  // drawLines(convertCoordinates(guideLine.getPath().getArray()));
+  drawFixedLines(convertCoordinates(guideLine.getPath().getArray()));
   // drawLines(guideLine.getPath().getArray());
   // console.log("drawing lines : ", guideLine.getPath().getArray());
 }
@@ -567,7 +603,7 @@ if (lastMode === 0 || lastMode === null) {
 socket.on("receive-start-status", function(currentMode) {
 
   console.log("current mode :", currentMode);
-  
+
   // if (currentMode === 0 && lastMode != currentMode) {
   //   // show dialog
   //
@@ -682,7 +718,9 @@ socket.on('connect', function() {
 
 socket.on("receive-group-coordinates", function(groupCoords) {
   // console.log(groupCoords);
-  drawLines(groupCoords);
+  // drawLines(groupCoords);
+  drawFixedLines(groupCoords);
+
   if (showArrows) {
     drawMarkers(groupCoords);
   }
@@ -940,7 +978,6 @@ function initMap() {
   });
 
   //Uncomment below for debugging mode - add 'location' points with mouse click
-
   guideLine = new google.maps.Polyline({
     strokeColor: "#989898",
     strokeOpacity: 0.1,
@@ -950,6 +987,15 @@ function initMap() {
   });
 
   guideLine.setMap(map);
+
+
+  fixedPolyLine = new google.maps.Polyline({
+    strokeColor: "#f70000",
+    strokeOpacity: 1,
+    strokeWeight: 5
+  });
+
+  fixedPolyLine.setMap(map);
 
   google.maps.event.addListener(guideLine.getPath(), "insert_at", insertAt);
   google.maps.event.addListener(guideLine.getPath(), "remove_at", removeAt);
