@@ -127,7 +127,7 @@ io.on('connection', function(socket) {
 
   })
 
-  socket.on("draw-triangle", function(timestamp) {
+  socket.on("draw-triangle", function(state) {
     // var sID = this.id
     var exists = false
 
@@ -135,15 +135,13 @@ io.on('connection', function(socket) {
       //if we find a match, we update the existing coordinate
       if (groupCoords[i].id === this.id) {
         // groupCoords[i].done = drawDone
-        groupCoords[i].ready = true;
+        groupCoords[i].ready = state;
         exists = true
       }
     }
     coordinatesChanged = exists;
     console.log("drawing heart for: ", this.id);
     // isGroupReady();
-
-
   })
 
   // socket.on("ready-to-start", function(status) {
@@ -222,7 +220,7 @@ io.on('connection', function(socket) {
     }
 
     //If ID doesn't match with existing IDs
-    if (exists === false && coords.connectTimestamp != "undefined") {
+    if (exists === false && typeof coords.connectTimestamp != "undefined") {
 
       var person = {
         id: this.id,
@@ -231,10 +229,6 @@ io.on('connection', function(socket) {
         connectTimestamp: coords.connectTimestamp,
         heading: coords.heading
       }
-
-
-      // console.log(person);
-      // orderCounter ++;
       groupCoords.push(person)
     }
 

@@ -110,7 +110,7 @@ function toggleSection() {
 
     // drawDone = true;
     // socket.emit("draw-triangle", true)
-    socket.emit("draw-triangle", firstConnectTimestamp)
+    socket.emit("draw-triangle", true)
 
   } else {
 
@@ -122,7 +122,8 @@ function toggleSection() {
       console.log("clearing triangle");
     }
 
-    // socket.emit("draw-triangle", false)
+    socket.emit("draw-triangle", false)
+
   }
 
   drawDone = !drawDone;
@@ -186,6 +187,7 @@ function tryGeolocation() {
 
     if(watchPositionId != null){
       navigator.geolocation.clearWatch(watchPositionId);
+      console.log("clearing watchPosition: ", watchPositionId);
     }
 
     watchPositionId = navigator.geolocation.watchPosition(
@@ -546,10 +548,11 @@ function drawMarkers(groupCoords) {
     //Set marker position
     groupMarkers[c].setPosition(latlng);
     groupMarkers[c].setIcon(image);
-    groupMarkers[c].setTitle(groupCoords[c].id);
-
+    // groupMarkers[c].setTitle(groupCoords[c].id);
+    groupMarkers[c].setTitle(groupCoords[c].connectTimestamp);
     //Hide the marker if it's our own sessionId
-    if (groupMarkers[c].getTitle() != sessionID) {
+    // if (groupMarkers[c].getTitle() != sessionID) {
+    if (groupMarkers[c].getTitle() != firstConnectTimestamp) {
       groupMarkers[c].setMap(map);
     } else {
       groupMarkers[c].setMap(null);
@@ -763,13 +766,35 @@ function createDialogue(dialogueText) {
 tryGeolocation();
 requestDeviceOrientation();
 
+var ct = getCookie("timestamp");
+if (ct != null) {
+  console.log("has timestamp : " + ct);
+  firstConnectTimestamp = ct;
+  $("#compassInfo").html(firstConnectTimestamp);
+} else {
+  console.log("no timestamp saved in cookies ");
+  socket.emit("request-timestamp");
+}
 
 socket.on('connect', function() {
+
+  var ct = getCookie("timestamp");
+  if (ct != null) {
+    console.log("has timestamp : " + ct);
+    firstConnectTimestamp = ct;
+    $("#compassInfo").html(firstConnectTimestamp);
+  } else {
+    console.log("no timestamp saved in cookies ");
+    socket.emit("request-timestamp");
+  }
+
+  // clearMarkers();
 
   socket.emit('new-client', 'mobile')
   sessionID = socket.id;
   console.log("connected", socket.connected, sessionID);
   // $("#compassInfo").html(sessionID);
+
 
   tryGeolocation();
   requestDeviceOrientation();
@@ -778,11 +803,11 @@ socket.on('connect', function() {
     socket.emit("update-coordinates", currLatLng);
   }
 
-  firstSocketID = getCookie("firstsocket");
+  // firstSocketID = getCookie("firstsocket");
 
-  if(firstSocketID == null){
-      setCookie("firstsocket", sessionID, 1);
-  }
+  // if(firstSocketID == null){
+      // setCookie("firstsocket", sessionID, 1);
+  // }
 
   //Get sequential id from cookie
   // var id = getCookie("id");
@@ -794,15 +819,7 @@ socket.on('connect', function() {
   //   socket.emit("request-id");
   // }
 
-  var ct = getCookie("timestamp");
-  if (ct != null) {
-    console.log("has timestamp : " + ct);
-    firstConnectTimestamp = ct;
-    $("#compassInfo").html(firstConnectTimestamp);
-  } else {
-    console.log("no timestamp saved in cookies ");
-    socket.emit("request-timestamp");
-  }
+
 });
 
 socket.on("receive-group-coordinates", function(groupCoords) {
@@ -1120,15 +1137,15 @@ function initMap() {
 
   homeMarker.setMap(map);
 
-  google.maps.event.addListener(homeMarker, 'mouseup', function(event) {
-    spriteSound.play();
-
-    homeMarker.setAnimation(google.maps.Animation.BOUNCE);
-    setTimeout(function() {
-      homeMarker.setAnimation(null)
-    }, 600);
-
-  });
+  //Turn off self tap because it doesn't make any sense
+  // google.maps.event.addListener(homeMarker, 'mouseup', function(event) {
+  //   spriteSound.play();
+  //
+  //   homeMarker.setAnimation(google.maps.Animation.BOUNCE);
+  //   setTimeout(function() {
+  //     homeMarker.setAnimation(null)
+  //   }, 600);
+  // });
 
 }
 
