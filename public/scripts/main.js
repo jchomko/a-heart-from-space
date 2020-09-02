@@ -85,15 +85,18 @@ function activateSensors() {
 }
 
 function activateGPS() {
+
   if (!gpsActive) {
     tryGeolocation();
     $("#activateGPS").html("GPS On");
+    center();
+    gpsActive = true;
   }
   // else{
   //   $("#activateGPS").html("Activate GPS");
   // }
   // gpsActive = !gpsActive;
-  gpsActive = true;
+
 }
 
 function toggleSection() {
@@ -134,7 +137,7 @@ function toggleSection() {
 //Geolocation success callback
 var browserGeolocationSuccess = function(position) {
   // $("#activateGPS").html("GPS On");
-  activateGPS();
+
 
   if (position.coords.accuracy < bestAccuracy) {
     bestAccuracy = position.coords.accuracy;
@@ -153,6 +156,7 @@ var browserGeolocationSuccess = function(position) {
     updateHomeMarkerPosition(position);
     // console.log("accurate coordinates: " + JSON.stringify(myLatLng))
     socket.emit("update-coordinates", currLatLng);
+    activateGPS();
   }
 };
 
@@ -165,7 +169,7 @@ var browserGeolocationFail = function(error) {
     case error.PERMISSION_DENIED:
       // alert("Permission Denied" + error.message);
       alert(
-        "No location access - you might need to enable this in Settings -> Privacy -> Location Services -> Safari Websites. Change from 'Never' to 'While Usingthe App'"
+        "No location access - please enable access in Settings -> Privacy -> Location Services -> Safari Websites. Change from 'Never' to 'While Using the App' "
       );
       break;
     case error.POSITION_UNAVAILABLE:
@@ -644,9 +648,10 @@ socket.on("receive-timestamp", function(ts) {
   // cookieID = id;
 });
 
-if (lastMode === 0 || lastMode === null) {
-  // createDialogue("Hello, welcome. Let's first get a acquainted with your location and the compass.")
-}
+
+// if (lastMode === 0 || lastMode === null) {
+//   createDialogue("Hello, welcome. A Heart from Space is a tool that allows you to draw shapes with others.")
+// }
 
 socket.on("receive-start-status", function(currentMode) {
 
@@ -871,6 +876,8 @@ function setupSensorListeners() {
 function requestDeviceOrientation() {
   //Check if we need to request access to sensors
   if (typeof(DeviceOrientationEvent) !== "undefined" && typeof(DeviceOrientationEvent.requestPermission) === "function") {
+    //instruction to tap the 'active sensors button'
+
     DeviceOrientationEvent.requestPermission()
       .then(response => {
         console.log("DeviceOrientationEvent response:", response);
@@ -880,6 +887,7 @@ function requestDeviceOrientation() {
         }
       })
       .catch(function(err) {
+        createDialogue("Please tap the 'Activate Sensors' button in the top right corner to set up the compass.")
         console.log("DeviceOrientationEvent error:", err);
         $("#errorInfo").html("Cannot get permission", err.toString());
       });
@@ -897,11 +905,11 @@ function initMap() {
   // };
 
   map = new google.maps.Map(document.getElementById("map"), {
-    zoom: 13,
-    center: {
-      lat: 45.536384,
-      lng: -73.628949
-    },
+    zoom: 18,
+    // center: {
+    //   lat: 45.536384,
+    //   lng: -73.628949
+    // },
     disableDefaultUI: true,
     styles: [{
         "elementType": "geometry",
