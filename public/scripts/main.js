@@ -471,6 +471,7 @@ function drawTriangle() {
 
 //Called every time a socket is disconnected
 function clearMarkers(numberToClear) {
+
   console.log("clear ", numberToClear, " markers");
   var index = 0;
   while (index < numberToClear) {
@@ -486,6 +487,7 @@ function clearMarkers(numberToClear) {
     index++;
     console.log("total markers : ", groupMarkers.length);
   }
+
 }
 
 
@@ -755,12 +757,19 @@ function createDialogue(dialogueText) {
 
 }
 
+//Makes sure we request sensor access
+//Sometimes the connect function triggers before load is completed?
+//so this makes sure that it loads properly
+tryGeolocation();
+requestDeviceOrientation();
+
+
 socket.on('connect', function() {
 
   socket.emit('new-client', 'mobile')
   sessionID = socket.id;
   console.log("connected", socket.connected, sessionID);
-  $("#compassInfo").html(sessionID);
+  // $("#compassInfo").html(sessionID);
 
   tryGeolocation();
   requestDeviceOrientation();
@@ -789,7 +798,7 @@ socket.on('connect', function() {
   if (ct != null) {
     console.log("has timestamp : " + ct);
     firstConnectTimestamp = ct;
-
+    $("#compassInfo").html(firstConnectTimestamp);
   } else {
     console.log("no timestamp saved in cookies ");
     socket.emit("request-timestamp");

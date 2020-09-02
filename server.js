@@ -56,6 +56,11 @@ app.get('/', function(request, response) {
   })
 })
 
+app.get('/view', function(request, response){
+  response.sendFile('/public/view.html',{
+    "root": __dirname
+  })
+})
 
 io.on('connection', function(socket) {
   socket.on("request-timestamp", function() {
@@ -91,6 +96,8 @@ io.on('connection', function(socket) {
     //remove that match from the list of coordinates
     if (exists == true) {
       // console.log("removing :" + JSON.stringify(groupCoords[index]))
+      console.log("removing ", this.id);
+
       groupCoords.splice(index, 1)
       // console.log("coord array length : ", groupCoords.length)
       // coordinatesChanged = true;
@@ -198,46 +205,37 @@ io.on('connection', function(socket) {
 
     //If we don't have this ID already
     var exists = false
+    var existsInDisconnected = false
     for (var i = 0; i < groupCoords.length; i++) {
 
       //if we find a match, we update the existing coordinate
-      if (groupCoords[i].id === this.id) {
+      //using timestamps means that we update any duplicate markers that are hanging around
+      if (groupCoords[i].connectTimestamp === coords.connectTimestamp) {
         groupCoords[i].lat = coords.lat
         groupCoords[i].lng = coords.lng
         groupCoords[i].heading = coords.heading
+
         // groupCoords[i].done = coords.done
         exists = true
       }
 
-      // if (groupCoords[i].firstSocketID === coords.firstSocketID) {
-      //   groupCoords[i].lat = coords.lat
-      //   groupCoords[i].lng = coords.lng
-      //   groupCoords[i].heading = coords.heading
-      //   // groupCoords[i].done = coords.done
-      //   exists = true
-      // }
     }
 
     //If ID doesn't match with existing IDs
-    if (exists === false) {
+    if (exists === false && coords.connectTimestamp != "undefined") {
 
       var person = {
         id: this.id,
-        // firstSocketID: coords.firstSocketID,
         lat: coords.lat,
         lng: coords.lng,
-        // sortID: coords.sortID,
-        sortID: orderCounter,
         connectTimestamp: coords.connectTimestamp,
         heading: coords.heading
-        // done: coords.done
       }
 
 
-      console.log(person);
+      // console.log(person);
       // orderCounter ++;
       groupCoords.push(person)
-
     }
 
     groupCoords.sort(function (a, b){
@@ -245,8 +243,10 @@ io.on('connection', function(socket) {
     });
 
     if (exists === false) {
-      console.log("new addition:")
+      console.log("new addition")
+      console.log(groupCoords.length);
       console.log(groupCoords);
+
     }
     //Sending coordinates on an interval timer
     // io.emit("receive-group-coordinates", groupCoords)
