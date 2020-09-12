@@ -89,11 +89,17 @@ body {
   /* background: #fdf7f3ed */
 }
 
-#rooms {
+.rooms {
   position: absolute;
   bottom: 10px;
   left: 10px;
+}
+
+#rooms-list {
   display: grid;
-  grid-auto-flow: row;
+  /*grid-auto-flow: row;*/
+  grid-template-columns: auto auto;
   grid-row-gap: 5px;
+  grid-column-gap: 5px;
+  align-items: center;
 }

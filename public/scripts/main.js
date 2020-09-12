@@ -23,7 +23,7 @@ var trianglePolylineTemp;
 var lastSortedCoords = [];
 
 var spriteSound = new Howl({
-  src: ["Ticket-machine-sound.mp3"]
+  src: ["Ticket-machine-sound.mp3"],
   //,
   // sprite: {
   //   arrival1: [0, 2500],
@@ -112,7 +112,7 @@ function doneSection() {
 }
 
 //Geolocation success callback
-var browserGeolocationSuccess = function(position) {
+var browserGeolocationSuccess = function (position) {
   // $("#activateGPS").html("GPS On");
   activateGPS();
 
@@ -128,7 +128,7 @@ var browserGeolocationSuccess = function(position) {
       lat: position.coords.latitude,
       lng: position.coords.longitude,
       heading: compassOrientation,
-      done: drawDone
+      done: drawDone,
     };
     updateHomeMarkerPosition(position);
     // console.log("accurate coordinates: " + JSON.stringify(myLatLng))
@@ -137,7 +137,7 @@ var browserGeolocationSuccess = function(position) {
 };
 
 //Geolocation fail callback
-var browserGeolocationFail = function(error) {
+var browserGeolocationFail = function (error) {
   switch (error.code) {
     case error.TIMEOUT:
       alert("Browser geolocation error !\n\nTimeout." + error.message);
@@ -165,7 +165,7 @@ function tryGeolocation() {
       {
         enableHighAccuracy: true,
         timeout: 10000,
-        maximumAge: 5000
+        maximumAge: 5000,
       }
     );
   }
@@ -191,12 +191,12 @@ const calculateCentroid = (acc, { lat, lng }, idx, src) => {
 const sortByAngle = (a, b) => a.angle - b.angle;
 
 function calculateSimilarity(groupCoordsSorted) {
-  const curve = groupCoordsSorted.map(coords => ({
+  const curve = groupCoordsSorted.map((coords) => ({
     x: coords.lng,
-    y: coords.lat
+    y: coords.lat,
   }));
   const similarity = curveMatcher.shapeSimilarity(curve, heartShape, {
-    rotations: 500
+    rotations: 500,
   });
   console.log("similarity", similarity);
 }
@@ -217,7 +217,7 @@ function drawLines(groupCoords) {
 
     const center = groupCoords.reduce(calculateCentroid, {
       lat: 0,
-      lng: 0
+      lng: 0,
     });
 
     const angles = groupCoords.map(({ lat, lng, id, done }) => {
@@ -226,7 +226,7 @@ function drawLines(groupCoords) {
         lng,
         id,
         done,
-        angle: (Math.atan2(lat - center.lat, lng - center.lng) * 180) / Math.PI
+        angle: (Math.atan2(lat - center.lat, lng - center.lng) * 180) / Math.PI,
       };
     });
 
@@ -244,7 +244,7 @@ function drawLines(groupCoords) {
       strokeWeight: 5,
       fillColor: "#f70000",
       fillOpacity: 0.5,
-      path: groupCoordsSorted
+      path: groupCoordsSorted,
     });
     polyline.setMap(map);
 
@@ -260,7 +260,7 @@ function drawLines(groupCoords) {
           strokeOpacity: 1,
           strokeWeight: 5,
           fillColor: "#f70000",
-          fillOpacity: 1.0
+          fillOpacity: 1.0,
         });
         trianglePolyline.setMap(map);
 
@@ -305,7 +305,7 @@ function drawTapResponse(markerId) {
   }
 
   setTimeout(
-    function() {
+    function () {
       groupMarkers[matchIndex].setAnimation(null);
     },
     600,
@@ -334,7 +334,7 @@ function drawTriangle() {
       strokeOpacity: 1,
       strokeWeight: 5,
       fillColor: "#f70000",
-      fillOpacity: 1.0
+      fillOpacity: 1.0,
     });
     trianglePolylineTemp.setMap(map);
 
@@ -342,7 +342,7 @@ function drawTriangle() {
 
     const center = lastSortedCoords.reduce(calculateCentroid, {
       lat: 0,
-      lng: 0
+      lng: 0,
     });
 
     var a = new google.maps.LatLng(
@@ -401,15 +401,15 @@ function drawMarkers(groupCoords) {
       strokeColor: "#919191",
       fillOpacity: 1.0,
       scale: 0.75,
-      anchor: new google.maps.Point(30, 30)
+      anchor: new google.maps.Point(30, 30),
       // rotation: groupCoords[c].heading
     };
 
     var marker = new google.maps.Marker({
-      icon: image
+      icon: image,
     });
 
-    google.maps.event.addListener(marker, "mouseup", function(event) {
+    google.maps.event.addListener(marker, "mouseup", function (event) {
       console.log("tapping : ", this.getTitle());
       socket.emit("send-tap", this.getTitle());
 
@@ -433,7 +433,7 @@ function drawMarkers(groupCoords) {
       fillOpacity: 1.0,
       scale: 0.75,
       anchor: new google.maps.Point(30, 30),
-      rotation: groupCoords[c].heading
+      rotation: groupCoords[c].heading,
     };
 
     //Get new coordinate
@@ -489,7 +489,7 @@ function convertCoordinates(coordsToConvert) {
   for (var i = 0; i < coordsToConvert.length; i++) {
     var formattedCoord = {
       lat: coordsToConvert[i].lat(),
-      lng: coordsToConvert[i].lng()
+      lng: coordsToConvert[i].lng(),
     };
     formattedCoords.push(formattedCoord);
   }
@@ -519,14 +519,14 @@ function distance(lat1, lon1, lat2, lon2) {
   return d * 1000;
 }
 
-socket.on("receive-tap", function() {
+socket.on("receive-tap", function () {
   console.log("vibrate");
   if (window.navigator.vibrate) {
     window.navigator.vibrate(500);
   }
 
   homeMarker.setAnimation(google.maps.Animation.BOUNCE);
-  setTimeout(function() {
+  setTimeout(function () {
     homeMarker.setAnimation(null);
   }, 600);
 
@@ -534,17 +534,17 @@ socket.on("receive-tap", function() {
   spriteSound.play(); //key
 });
 
-socket.on("clear-markers", function(number) {
+socket.on("clear-markers", function (number) {
   clearMarkers(number);
 });
 
-socket.on("receive-id", function(id) {
+socket.on("receive-id", function (id) {
   setCookie("id", id, 1);
   console.log("setting id cookie to : " + id);
   // cookieID = id;
 });
 
-socket.on("receive-start-status", function(startStatus) {
+socket.on("receive-start-status", function (startStatus) {
   console.log(" is started already ? :", startStatus);
   if (startStatus === false) {
     // show dialog
@@ -557,14 +557,14 @@ socket.on("receive-start-status", function(startStatus) {
       autoOpen: true,
       modal: true,
       closeOnEscape: true,
-      open: function() {
+      open: function () {
         //Click anywhere to close
-        $(".ui-widget-overlay").bind("click", function() {
+        $(".ui-widget-overlay").bind("click", function () {
           $("#dialog-message").dialog("close");
         });
       },
       buttons: {
-        Start: function() {
+        Start: function () {
           $(this).dialog("close");
           // window.location.href = target
           // readyToStart();
@@ -572,13 +572,13 @@ socket.on("receive-start-status", function(startStatus) {
           socket.emit("ready-to-start", true);
           tryGeolocation();
           requestDeviceOrientation();
-        }
+        },
       },
       position: {
         my: "center center",
         at: "center center",
-        of: window
-      }
+        of: window,
+      },
     });
 
     $("#dialog-message")
@@ -592,7 +592,7 @@ socket.on("receive-start-status", function(startStatus) {
   }
 });
 
-socket.on("connect", function() {
+socket.on("connect", function () {
   sessionID = socket.id;
   console.log("connected", socket.connected, sessionID);
   socket.emit("new-client", "mobile");
@@ -606,31 +606,49 @@ socket.on("connect", function() {
 var rooms = [];
 
 function displayRooms() {
-  $("#rooms").html("<div><b>Rooms</b></div>" + rooms.map(item => `<div>${item}</div>`).join(""));
+  $("#rooms-list").html(
+    rooms
+      .map((id) =>
+        sessionID === id
+          ? `<div>${id}</div><div></div>`
+          : `<div>${id}</div><button onclick="join('${id}')">Join</button>`
+      )
+      .join("")
+  );
 }
 
-socket.on("room-list", function(list) {
-  console.log("room-list", list);
+function join(id) {
+  socket.emit("room-join", id);
+  sessionID = id;
+  displayRooms();
+}
+
+function check() {
+  socket.emit("room-check");
+}
+
+socket.on("room-msg", function () {
+  console.log("room-msg");
+});
+
+socket.on("room-list", function (list) {
   rooms = list;
   displayRooms();
 });
 
-socket.on("room-add", function(room) {
+socket.on("room-add", function (room) {
   console.log("room-add", room);
   rooms.push(room);
   displayRooms();
 });
 
-socket.on("room-delete", function(room) {
+socket.on("room-delete", function (room) {
   console.log("room-delete", room);
-  var roomIndex = rooms.indexOf(room);
-  if (roomIndex !== -1) {
-    rooms.splice(roomIndex, 1);
-  }
+  rooms = rooms.filter((r) => r !== room);
   displayRooms();
 });
 
-socket.on("receive-group-coordinates", function(groupCoords) {
+socket.on("receive-group-coordinates", function (groupCoords) {
   // console.log(groupCoords);
   drawLines(groupCoords);
   if (showArrows) {
@@ -638,12 +656,12 @@ socket.on("receive-group-coordinates", function(groupCoords) {
   }
 });
 
-socket.on("ready-status", function(counts) {
+socket.on("ready-status", function (counts) {
   console.log(counts);
   // $("#compassInfo").html("Users Ready: " + counts.users + "/" + counts.ready);
 });
 
-socket.on("start-next", function(data) {
+socket.on("start-next", function (data) {
   console.log("start : ", data);
 });
 
@@ -678,25 +696,25 @@ function updateHomeMarkerRotation(data) {
 //setup sensor listeners
 //// TODO:  detect if ios12 and user needs to turn on sensor access
 function setupSensorListeners() {
-  window.addEventListener("deviceorientation", event => {
+  window.addEventListener("deviceorientation", (event) => {
     hasSensorAccess = true;
     var data = "";
     if ("webkitCompassHeading" in event) {
       data = {
         info:
           "Received from deviceorientation webkitCompassHeading - iOS Safari,  Chrome, Firefox",
-        z: event.webkitCompassHeading
+        z: event.webkitCompassHeading,
       };
       // Android - Chrome <50
     } else if (event.absolute) {
       data = {
         info: "Received from deviceorientation with absolute=true & alpha val",
-        z: event.alpha
+        z: event.alpha,
       };
     } else {
       data = {
         info: "absolute=false, heading might not be absolute to magnetic north",
-        z: 360 - event.alpha
+        z: 360 - event.alpha,
       };
     }
     updateHomeMarkerRotation(data);
@@ -711,14 +729,14 @@ function requestDeviceOrientation() {
     typeof DeviceOrientationEvent.requestPermission === "function"
   ) {
     DeviceOrientationEvent.requestPermission()
-      .then(response => {
+      .then((response) => {
         console.log("DeviceOrientationEvent response:", response);
         if (response == "granted") {
           setupSensorListeners();
           $("#activateSensors").html("Sensors On");
         }
       })
-      .catch(function(err) {
+      .catch(function (err) {
         console.log("DeviceOrientationEvent error:", err);
         $("#errorInfo").html("Cannot get permission", err.toString());
       });
@@ -732,13 +750,13 @@ function requestDeviceOrientation() {
 function initMap() {
   var myLatLng = {
     lat: -25.363,
-    lng: 131.044
+    lng: 131.044,
   };
   map = new google.maps.Map(document.getElementById("map"), {
     zoom: 13,
     center: {
       lat: 45.536384,
-      lng: -73.628949
+      lng: -73.628949,
     },
     disableDefaultUI: true,
     styles: [
@@ -746,193 +764,193 @@ function initMap() {
         elementType: "geometry",
         stylers: [
           {
-            color: "#f5f5f5"
-          }
-        ]
+            color: "#f5f5f5",
+          },
+        ],
       },
       {
         elementType: "geometry",
         stylers: [
           {
-            color: "#f5f5f5"
-          }
-        ]
+            color: "#f5f5f5",
+          },
+        ],
       },
       {
         elementType: "labels",
         stylers: [
           {
-            visibility: "off"
-          }
-        ]
+            visibility: "off",
+          },
+        ],
       },
       {
         elementType: "labels.icon",
         stylers: [
           {
-            visibility: "off"
-          }
-        ]
+            visibility: "off",
+          },
+        ],
       },
       {
         elementType: "labels.text.fill",
         stylers: [
           {
-            color: "#616161"
-          }
-        ]
+            color: "#616161",
+          },
+        ],
       },
       {
         elementType: "labels.text.stroke",
         stylers: [
           {
-            color: "#f5f5f5"
-          }
-        ]
+            color: "#f5f5f5",
+          },
+        ],
       },
       {
         featureType: "administrative.land_parcel",
         stylers: [
           {
-            visibility: "off"
-          }
-        ]
+            visibility: "off",
+          },
+        ],
       },
       {
         featureType: "administrative.land_parcel",
         elementType: "labels.text.fill",
         stylers: [
           {
-            color: "#bdbdbd"
-          }
-        ]
+            color: "#bdbdbd",
+          },
+        ],
       },
       {
         featureType: "administrative.neighborhood",
         stylers: [
           {
-            visibility: "off"
-          }
-        ]
+            visibility: "off",
+          },
+        ],
       },
       {
         featureType: "poi",
         elementType: "geometry",
         stylers: [
           {
-            color: "#eeeeee"
-          }
-        ]
+            color: "#eeeeee",
+          },
+        ],
       },
       {
         featureType: "poi",
         elementType: "labels.text.fill",
         stylers: [
           {
-            color: "#757575"
-          }
-        ]
+            color: "#757575",
+          },
+        ],
       },
       {
         featureType: "poi.park",
         elementType: "geometry",
         stylers: [
           {
-            color: "#e5e5e5"
-          }
-        ]
+            color: "#e5e5e5",
+          },
+        ],
       },
       {
         featureType: "poi.park",
         elementType: "labels.text.fill",
         stylers: [
           {
-            color: "#9e9e9e"
-          }
-        ]
+            color: "#9e9e9e",
+          },
+        ],
       },
       {
         featureType: "road",
         elementType: "geometry",
         stylers: [
           {
-            color: "#ffffff"
-          }
-        ]
+            color: "#ffffff",
+          },
+        ],
       },
       {
         featureType: "road.arterial",
         elementType: "labels.text.fill",
         stylers: [
           {
-            color: "#757575"
-          }
-        ]
+            color: "#757575",
+          },
+        ],
       },
       {
         featureType: "road.highway",
         elementType: "geometry",
         stylers: [
           {
-            color: "#dadada"
-          }
-        ]
+            color: "#dadada",
+          },
+        ],
       },
       {
         featureType: "road.highway",
         elementType: "labels.text.fill",
         stylers: [
           {
-            color: "#616161"
-          }
-        ]
+            color: "#616161",
+          },
+        ],
       },
       {
         featureType: "road.local",
         elementType: "labels.text.fill",
         stylers: [
           {
-            color: "#9e9e9e"
-          }
-        ]
+            color: "#9e9e9e",
+          },
+        ],
       },
       {
         featureType: "transit.line",
         elementType: "geometry",
         stylers: [
           {
-            color: "#e5e5e5"
-          }
-        ]
+            color: "#e5e5e5",
+          },
+        ],
       },
       {
         featureType: "transit.station",
         elementType: "geometry",
         stylers: [
           {
-            color: "#eeeeee"
-          }
-        ]
+            color: "#eeeeee",
+          },
+        ],
       },
       {
         featureType: "water",
         elementType: "geometry",
         stylers: [
           {
-            color: "#c9c9c9"
-          }
-        ]
+            color: "#c9c9c9",
+          },
+        ],
       },
       {
         featureType: "water",
         elementType: "labels.text.fill",
         stylers: [
           {
-            color: "#9e9e9e"
-          }
-        ]
-      }
-    ]
+            color: "#9e9e9e",
+          },
+        ],
+      },
+    ],
   });
 
   //Uncomment below for debugging mode - add 'location' points with mouse click
@@ -941,7 +959,7 @@ function initMap() {
     strokeColor: "#989898",
     strokeOpacity: 0.1,
     strokeWeight: 5,
-    editable: true
+    editable: true,
     // draggable: true
   });
 
@@ -962,28 +980,28 @@ function initMap() {
     fillOpacity: 1.0,
     scale: 0.75,
     anchor: new google.maps.Point(30, 30),
-    rotation: 0
+    rotation: 0,
   };
 
   homeMarker = new google.maps.Marker({
     title: "Home",
-    icon: image
+    icon: image,
   });
 
   var imageBounds = {
     north: 45.536384,
     south: 45.535557,
     west: -73.629249,
-    east: -73.628002
+    east: -73.628002,
   };
 
   homeMarker.setMap(map);
 
-  google.maps.event.addListener(homeMarker, "mouseup", function(event) {
+  google.maps.event.addListener(homeMarker, "mouseup", function (event) {
     spriteSound.play();
 
     homeMarker.setAnimation(google.maps.Animation.BOUNCE);
-    setTimeout(function() {
+    setTimeout(function () {
       homeMarker.setAnimation(null);
     }, 600);
   });
@@ -999,7 +1017,7 @@ function initMap() {
 }
 
 //Print errors as they happen
-window.onerror = function(msg, url, lineNo, columnNo, error) {
+window.onerror = function (msg, url, lineNo, columnNo, error) {
   var string = msg.toLowerCase();
   var substring = "script error";
   if (string.indexOf(substring) > -1) {
@@ -1010,7 +1028,7 @@ window.onerror = function(msg, url, lineNo, columnNo, error) {
       "URL: " + url,
       "Line: " + lineNo,
       "Column: " + columnNo,
-      "Error object: " + JSON.stringify(error)
+      "Error object: " + JSON.stringify(error),
     ].join(" - ");
 
     console.log("captured error:", message);

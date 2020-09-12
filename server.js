@@ -21,19 +21,19 @@ if (process.env.NODE_ENV != "production") {
       key: fs.readFileSync("localhost+4-key.pem"),
       cert: fs.readFileSync("localhost+4.pem"),
       requestCert: false,
-      rejectUnauthorized: false
+      rejectUnauthorized: false,
     },
     app
   );
   io = require("socket.io").listen(https);
-  https.listen(process.env.PORT || 5000, function() {
+  https.listen(process.env.PORT || 5000, function () {
     console.log("Node app is running at localhost: " + app.get("port"));
   });
   console.log("development");
 } else {
   var http = require("http").createServer(app);
   io = require("socket.io").listen(http);
-  http.listen(process.env.PORT || 5000, function() {
+  http.listen(process.env.PORT || 5000, function () {
     console.log("Node app is running at localhost: " + app.get("port"));
   });
   console.log("production");
@@ -41,25 +41,71 @@ if (process.env.NODE_ENV != "production") {
 
 app.use(express.static("public"));
 
-app.get("/", function(request, response) {
+app.get("/", function (request, response) {
   // response.redirect('/index.html')
   response.sendFile("/public/index.html", {
-    root: __dirname
+    root: __dirname,
   });
 });
 
-var rooms = [];
+var sessions = [];
 
-io.on("connection", function(socket) {
+io.on("connection", function (socket) {
+  console.log("connected", socket.id);
 
-  rooms.push(socket.id);
-  //io.to(socket.id).emit("room-list", rooms);
-  socket.emit("room-list", rooms);
+  sessions.push({ id: socket.id, users: [socket.id] });
+  // io.to(socket.id).emit("room-list", rooms);
+
+  socket.emit(
+    "room-list",
+    sessions.reduce((acc, cur) => {
+      acc.push(cur.id);
+      return acc;
+    }, [])
+  );
   socket.broadcast.emit("room-add", socket.id);
 
-  socket.on("request-id", function() {
+  socket.on("request-id", function () {
     io.to(this.id).emit("receive-id", idCounter);
     idCounter += 1;
+  });
+
+  socket.on("room-join", function (newSession) {
+    // var rooms = Object.keys(this.rooms);
+    // socket.leave(rooms[0]);
+    for (var i = 0; i < sessions.length; i++) {
+      var userIndex = sessions[i].users.findIndex((u) => u === socket.id);
+      if (userIndex !== -1) {
+        sessions[i].users.splice(userIndex, 1);
+        socket.leave(sessions[i].id, () => {
+          socket.join(newSession, () => {
+            if (sessions[i].users.length === 0) {
+              socket.broadcast.emit("room-delete", sessions[i].id);
+              socket.emit("room-delete", sessions[i].id);
+              sessions.splice(i, 1);
+            }
+            var sessionIndex = sessions.findIndex((s) => s.id === newSession);
+            sessions[sessionIndex].users.push(socket.id);
+            // rooms = Object.keys(socket.rooms);
+            // console.log("room joined", rooms[0]);
+            // io.to("room 237").emit("a new user has joined the room"); // broadcast to everyone in the room
+          });
+        });
+        break;
+      }
+    }
+  });
+
+  socket.on("room-check", function () {
+    // var rooms = Object.keys(this.rooms);
+    // console.log("room-check:", rooms[0]);
+    // socket.to(rooms[0]).emit("room-msg");
+    for (var i = 0; i < sessions.length; i++) {
+      var userIndex = sessions[i].users.findIndex((u) => u === socket.id);
+      if (userIndex !== -1) {
+        socket.to(sessions[i].id).emit("room-msg");
+      }
+    }
   });
 
   //detect new client
@@ -70,14 +116,24 @@ io.on("connection", function(socket) {
   })*/
 
   //this happens automatically when the socket connection breaks
-  socket.on("disconnect", function() {
-    socket.broadcast.emit("room-delete", this.id);
-    // socket.emit("room-list", rooms);
-
-    var roomIndex = rooms.indexOf(this.id);
-
-    if (roomIndex !== -1){
+  socket.on("disconnect", function () {
+    /*var roomIndex = sessions.indexOf(this.id);
+    if (roomIndex !== -1) {
       rooms.splice(roomIndex, 1);
+      socket.broadcast.emit("room-delete", this.id);
+    }*/
+    console.log("disconnect", socket.id);
+    for (var i = 0; i < sessions.length; i++) {
+      var userIndex = sessions[i].users.findIndex((u) => u === socket.id);
+      if (userIndex !== -1) {
+        sessions[i].users.splice(userIndex, 1);
+        if (sessions[i].users.length === 0) {
+          socket.broadcast.emit("room-delete", sessions[i].id);
+          socket.emit("room-delete", sessions[i].id);
+          sessions.splice(i, 1);
+        }
+        break;
+      }
     }
 
     var exists = false;
@@ -103,12 +159,12 @@ io.on("connection", function(socket) {
     }
   });
 
-  socket.on("send-tap", function(targetSocketId) {
+  socket.on("send-tap", function (targetSocketId) {
     io.to(targetSocketId).emit("receive-tap");
     console.log("sending tap to :", targetSocketId);
   });
 
-  socket.on("addclient", function() {
+  socket.on("addclient", function () {
     //If user doesn't already exist
     if (usersList.indexOf(this.id) == -1) {
       //Add user to our list of users
@@ -127,7 +183,7 @@ io.on("connection", function(socket) {
     }
   });
 
-  socket.on("draw-triangle", function(drawDone) {
+  socket.on("draw-triangle", function (drawDone) {
     var sID = this.id;
     var exists = false;
 
@@ -142,7 +198,7 @@ io.on("connection", function(socket) {
     coordinatesChanged = true;
   });
 
-  socket.on("ready-to-start", function(status) {
+  socket.on("ready-to-start", function (status) {
     console.log("number of active users : ", groupCoords.length);
     console.log("receiving : ", status, "from :", this.id);
     var sID = this.id;
@@ -170,7 +226,7 @@ io.on("connection", function(socket) {
     //But that is really an edge case
   });
 
-  socket.on("update-heading", function(heading) {
+  socket.on("update-heading", function (heading) {
     var sID = this.id;
     var exists = false;
 
@@ -190,7 +246,7 @@ io.on("connection", function(socket) {
   });
 
   //Receive coordinates from each participant and add them to our list
-  socket.on("update-coordinates", function(coords) {
+  socket.on("update-coordinates", function (coords) {
     var sID = this.id;
     var formattedCoords = JSON.stringify(coords);
     // console.log("received: " + formattedCoords + ", " + sID)
@@ -216,7 +272,7 @@ io.on("connection", function(socket) {
         lng: coords.lng,
         seqentialID: coords.seqentialID,
         heading: coords.heading,
-        done: coords.done
+        done: coords.done,
       };
       groupCoords.push(person);
     }
@@ -262,7 +318,7 @@ function isGroupReady() {
 
   let counts = {
     users: groupCoords.length,
-    ready: readyCounter
+    ready: readyCounter,
   };
 
   io.emit("ready-status", counts);
