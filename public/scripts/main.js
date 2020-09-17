@@ -24,7 +24,7 @@ var trianglePolylineTemp;
 var lastSortedCoords = [];
 
 var spriteSound = new Howl({
-  src: ['Ticket-machine-sound.mp3']
+  src: ["Ticket-machine-sound.mp3"],
   //,
   // sprite: {
   //   arrival1: [0, 2500],
@@ -76,7 +76,6 @@ function activateSensors() {
   // }
   // sensorsActive = !sensorsActive;
   sensorsActive = true;
-
 }
 
 function activateGPS() {
@@ -126,7 +125,7 @@ function toggleSection() {
 }
 
 //Geolocation success callback
-var browserGeolocationSuccess = function(position) {
+var browserGeolocationSuccess = function (position) {
   // $("#activateGPS").html("GPS On");
   activateGPS();
 
@@ -136,12 +135,13 @@ var browserGeolocationSuccess = function(position) {
   }
   // if we have a high accuracy reading
   // if using simulated position the accuracy will be fixed at 150
-  if (position.coords.accuracy < bestAccuracy + 10) { //|| position.coords.accuracy === 150
+  if (position.coords.accuracy < bestAccuracy + 10) {
+    //|| position.coords.accuracy === 150
     currLatLng = {
       lat: position.coords.latitude,
       lng: position.coords.longitude,
-      heading: compassOrientation
-      // done: drawDone
+      heading: compassOrientation,
+      done: drawDone,
     };
     updateHomeMarkerPosition(position);
     // console.log("accurate coordinates: " + JSON.stringify(myLatLng))
@@ -150,7 +150,7 @@ var browserGeolocationSuccess = function(position) {
 };
 
 //Geolocation fail callback
-var browserGeolocationFail = function(error) {
+var browserGeolocationFail = function (error) {
   switch (error.code) {
     case error.TIMEOUT:
       alert("Browser geolocation error !\n\nTimeout." + error.message);
@@ -174,10 +174,11 @@ function tryGeolocation() {
   if (navigator.geolocation) {
     navigator.geolocation.watchPosition(
       browserGeolocationSuccess,
-      browserGeolocationFail, {
+      browserGeolocationFail,
+      {
         enableHighAccuracy: true,
         timeout: 10000,
-        maximumAge: 5000
+        maximumAge: 5000,
       }
     );
   }
@@ -194,10 +195,7 @@ function askForLocation() {
   }
 }
 
-const calculateCentroid = (acc, {
-  lat,
-  lng
-}, idx, src) => {
+const calculateCentroid = (acc, { lat, lng }, idx, src) => {
   acc.lat += lat / src.length;
   acc.lng += lng / src.length;
   return acc;
@@ -206,24 +204,22 @@ const calculateCentroid = (acc, {
 const sortByAngle = (a, b) => a.angle - b.angle;
 
 function calculateSimilarity(groupCoordsSorted) {
-  const curve = groupCoordsSorted.map(coords => ({
+  const curve = groupCoordsSorted.map((coords) => ({
     x: coords.lng,
-    y: coords.lat
+    y: coords.lat,
   }));
   const similarity = curveMatcher.shapeSimilarity(curve, heartShape, {
-    rotations: 500
+    rotations: 500,
   });
   console.log("similarity", similarity);
 }
 
 //Draw lines between the received points
 function drawLines(groupCoords) {
-
   var dist = 0;
 
   // console.log("num lines: ", groupPolyLines.length);
   if (groupCoords.length > 1) {
-
     // console.log(groupCoords);
     //clear polylines
     for (var i = 0; i < groupPolyLines.length; i++) {
@@ -234,7 +230,7 @@ function drawLines(groupCoords) {
 
     const center = groupCoords.reduce(calculateCentroid, {
       lat: 0,
-      lng: 0
+      lng: 0,
     });
 
     const angles = groupCoords.map(({
@@ -247,8 +243,8 @@ function drawLines(groupCoords) {
         lat,
         lng,
         id,
-        ready,
-        angle: Math.atan2(lat - center.lat, lng - center.lng) * 180 / Math.PI
+        done,
+        angle: (Math.atan2(lat - center.lat, lng - center.lng) * 180) / Math.PI,
       };
     });
 
@@ -260,13 +256,13 @@ function drawLines(groupCoords) {
     lastSortedCoords = groupCoordsSorted;
 
     var polyline = new google.maps.Polyline({
-      strokeColor: '#f70000',
+      strokeColor: "#f70000",
       strokeOpacity: 1,
       strokeOpacity: 1,
       strokeWeight: 5,
       fillColor: "#f70000",
       fillOpacity: 0.5,
-      path: groupCoordsSorted
+      path: groupCoordsSorted,
     });
     polyline.setMap(map);
 
@@ -275,21 +271,23 @@ function drawLines(groupCoords) {
 
     //Draw filled-in heart
     for (var i = 0; i < groupCoordsSorted.length; i++) {
-      if (groupCoordsSorted[i].ready === true || lastMode === 3) {
-
+      if (groupCoordsSorted[i].done === true) {
         var trianglePolyline = new google.maps.Polygon({
-          strokeColor: '#f70000',
+          strokeColor: "#f70000",
           strokeOpacity: 1,
           strokeOpacity: 1,
           strokeWeight: 5,
-          fillColor: '#f70000',
-          fillOpacity: 1.0
-        })
+          fillColor: "#f70000",
+          fillOpacity: 1.0,
+        });
         trianglePolyline.setMap(map);
 
         var path = trianglePolyline.getPath();
 
-        var a = new google.maps.LatLng(groupCoordsSorted[i].lat, groupCoordsSorted[i].lng);
+        var a = new google.maps.LatLng(
+          groupCoordsSorted[i].lat,
+          groupCoordsSorted[i].lng
+        );
         path.push(a);
 
         var b = new google.maps.LatLng(center.lat, center.lng);
@@ -299,7 +297,10 @@ function drawLines(groupCoords) {
         if (nextIndex > groupCoordsSorted.length - 1) {
           nextIndex = 1;
         }
-        var c = new google.maps.LatLng(groupCoordsSorted[nextIndex].lat, groupCoordsSorted[nextIndex].lng);
+        var c = new google.maps.LatLng(
+          groupCoordsSorted[nextIndex].lat,
+          groupCoordsSorted[nextIndex].lng
+        );
         path.push(c);
 
         groupPolyLines.push(trianglePolyline);
@@ -309,7 +310,6 @@ function drawLines(groupCoords) {
 }
 
 function drawTapResponse(markerId) {
-
   let matchIndex = -1;
   for (var i = 0; i < groupMarkers.length; i++) {
     if (groupMarkers[i].getTitle() === markerId) {
@@ -322,18 +322,20 @@ function drawTapResponse(markerId) {
     groupMarkers[matchIndex].setAnimation(google.maps.Animation.BOUNCE);
   }
 
-  setTimeout(function() {
-    groupMarkers[matchIndex].setAnimation(null)
-  }, 600, matchIndex);
-
+  setTimeout(
+    function () {
+      groupMarkers[matchIndex].setAnimation(null);
+    },
+    600,
+    matchIndex
+  );
 }
 
 function drawTriangle() {
-
   //find which index you are on the sorted list
   //then just increment one up or down on the list to get the next point
   //but that means we need to keep the id in the coordinates
-  console.log("last sorted coords :", lastSortedCoords)
+  console.log("last sorted coords :", lastSortedCoords);
 
   let matchIndex = -1;
   for (var i = 0; i < lastSortedCoords.length; i++) {
@@ -345,25 +347,26 @@ function drawTriangle() {
   if (matchIndex != -1) {
     console.log("drawing triangle, id: ", matchIndex)
     trianglePolylineTemp = new google.maps.Polygon({
-      strokeColor: '#f70000',
+      strokeColor: "#f70000",
       strokeOpacity: 1,
       strokeOpacity: 1,
       strokeWeight: 5,
-      fillColor: '#f70000',
-      fillOpacity: 1.0
-    })
-
-
+      fillColor: "#f70000",
+      fillOpacity: 1.0,
+    });
     trianglePolylineTemp.setMap(map);
 
     var path = trianglePolylineTemp.getPath();
 
     const center = lastSortedCoords.reduce(calculateCentroid, {
       lat: 0,
-      lng: 0
+      lng: 0,
     });
 
-    var a = new google.maps.LatLng(lastSortedCoords[matchIndex].lat, lastSortedCoords[matchIndex].lng);
+    var a = new google.maps.LatLng(
+      lastSortedCoords[matchIndex].lat,
+      lastSortedCoords[matchIndex].lng
+    );
     path.push(a);
 
     var b = new google.maps.LatLng(center.lat, center.lng);
@@ -373,7 +376,10 @@ function drawTriangle() {
     if (nextIndex > lastSortedCoords.length - 1) {
       nextIndex = 1;
     }
-    var c = new google.maps.LatLng(lastSortedCoords[nextIndex].lat, lastSortedCoords[nextIndex].lng);
+    var c = new google.maps.LatLng(
+      lastSortedCoords[nextIndex].lat,
+      lastSortedCoords[nextIndex].lng
+    );
     path.push(c);
 
     groupPolyLines.push(trianglePolylineTemp);
@@ -404,33 +410,30 @@ function clearMarkers(numberToClear) {
   }
 }
 
-
 function drawMarkers(groupCoords) {
-
   var index = 0;
   while (groupMarkers.length < groupCoords.length) {
-
     var image = {
-      path: "M39.167,30c0,5.062-4.104,9.167-9.166,9.167c-5.063,0-9.167-4.104-9.167-9.167c0-9.125,8.416-18,9.167-18 C30.75,12,39.167,20.875,39.167,30z",
+      path:
+        "M39.167,30c0,5.062-4.104,9.167-9.166,9.167c-5.063,0-9.167-4.104-9.167-9.167c0-9.125,8.416-18,9.167-18 C30.75,12,39.167,20.875,39.167,30z",
       strokeWeight: 2,
       fillColor: "#919191",
       strokeColor: "#919191",
       fillOpacity: 1.0,
       scale: 0.75,
-      anchor: new google.maps.Point(30, 30)
+      anchor: new google.maps.Point(30, 30),
       // rotation: groupCoords[c].heading
     };
 
     var marker = new google.maps.Marker({
-      icon: image
+      icon: image,
     });
 
-    google.maps.event.addListener(marker, 'mouseup', function(event) {
+    google.maps.event.addListener(marker, "mouseup", function (event) {
       console.log("tapping : ", this.getTitle());
       socket.emit("send-tap", this.getTitle());
 
       drawTapResponse(this.getTitle());
-
     });
 
     groupMarkers.push(marker);
@@ -442,14 +445,15 @@ function drawMarkers(groupCoords) {
   for (var c = 0; c < groupCoords.length; c++) {
     //declare image, grab the heading value from the incoming array
     var image = {
-      path: "M39.167,30c0,5.062-4.104,9.167-9.166,9.167c-5.063,0-9.167-4.104-9.167-9.167c0-9.125,8.416-18,9.167-18 C30.75,12,39.167,20.875,39.167,30z",
+      path:
+        "M39.167,30c0,5.062-4.104,9.167-9.166,9.167c-5.063,0-9.167-4.104-9.167-9.167c0-9.125,8.416-18,9.167-18 C30.75,12,39.167,20.875,39.167,30z",
       strokeWeight: 2,
       fillColor: "#919191",
       strokeColor: "#919191",
       fillOpacity: 1.0,
       scale: 0.75,
       anchor: new google.maps.Point(30, 30),
-      rotation: groupCoords[c].heading
+      rotation: groupCoords[c].heading,
     };
 
     //Get new coordinate
@@ -505,7 +509,7 @@ function convertCoordinates(coordsToConvert) {
   for (var i = 0; i < coordsToConvert.length; i++) {
     var formattedCoord = {
       lat: coordsToConvert[i].lat(),
-      lng: coordsToConvert[i].lng()
+      lng: coordsToConvert[i].lng(),
     };
     formattedCoords.push(formattedCoord);
   }
@@ -520,9 +524,9 @@ function distance(lat1, lon1, lat2, lon2) {
   var a =
     Math.sin(dLat / 2) * Math.sin(dLat / 2) +
     Math.cos((lat1 * Math.PI) / 180) *
-    Math.cos((lat2 * Math.PI) / 180) *
-    Math.sin(dLon / 2) *
-    Math.sin(dLon / 2);
+      Math.cos((lat2 * Math.PI) / 180) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
   var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   var d = R * c;
 
@@ -535,27 +539,27 @@ function distance(lat1, lon1, lat2, lon2) {
   return d * 1000;
 }
 
-socket.on("receive-tap", function() {
-  console.log("vibrate")
+socket.on("receive-tap", function () {
+  console.log("vibrate");
   if (window.navigator.vibrate) {
     window.navigator.vibrate(500);
   }
 
   homeMarker.setAnimation(google.maps.Animation.BOUNCE);
-  setTimeout(function() {
-    homeMarker.setAnimation(null)
+  setTimeout(function () {
+    homeMarker.setAnimation(null);
   }, 600);
 
   // var key = "arrival1";
   spriteSound.play(); //key
-})
+});
 
-socket.on("clear-markers", function(number) {
-  clearMarkers(number)
-})
+socket.on("clear-markers", function (number) {
+  clearMarkers(number);
+});
 
-socket.on("receive-id", function(id) {
-  setCookie("id", id, 1)
+socket.on("receive-id", function (id) {
+  setCookie("id", id, 1);
   console.log("setting id cookie to : " + id);
   // cookieID = id;
 });
@@ -668,19 +672,63 @@ function createDialogue(dialogueText) {
 
 socket.on('connect', function() {
 
-  socket.emit('new-client', 'mobile')
+socket.on("connect", function () {
   sessionID = socket.id;
   console.log("connected", socket.connected, sessionID);
-
+  socket.emit("new-client", "mobile");
   tryGeolocation();
   requestDeviceOrientation();
   if (currLatLng != null) {
     socket.emit("update-coordinates", currLatLng);
   }
-
 });
 
-socket.on("receive-group-coordinates", function(groupCoords) {
+var rooms = [];
+
+function displayRooms() {
+  $("#rooms-list").html(
+    rooms
+      .map((id) =>
+        sessionID === id
+          ? `<div>${id}</div><div></div>`
+          : `<div>${id}</div><button onclick="join('${id}')">Join</button>`
+      )
+      .join("")
+  );
+}
+
+function join(id) {
+  socket.emit("room-join", id);
+  sessionID = id;
+  displayRooms();
+}
+
+function check() {
+  socket.emit("room-check");
+}
+
+socket.on("room-msg", function () {
+  console.log("room-msg");
+});
+
+socket.on("room-list", function (list) {
+  rooms = list;
+  displayRooms();
+});
+
+socket.on("room-add", function (room) {
+  console.log("room-add", room);
+  rooms.push(room);
+  displayRooms();
+});
+
+socket.on("room-delete", function (room) {
+  console.log("room-delete", room);
+  rooms = rooms.filter((r) => r !== room);
+  displayRooms();
+});
+
+socket.on("receive-group-coordinates", function (groupCoords) {
   // console.log(groupCoords);
   drawLines(groupCoords);
   if (showArrows) {
@@ -697,7 +745,7 @@ socket.on("ready-status", function(counts) {
 socket.on("start-next", function(data) {
 
   console.log("start : ", data);
-})
+});
 
 function updateHomeMarkerPosition(position) {
   if (google.maps != null) {
@@ -730,24 +778,25 @@ function updateHomeMarkerRotation(data) {
 //setup sensor listeners
 //// TODO:  detect if ios12 and user needs to turn on sensor access
 function setupSensorListeners() {
-  window.addEventListener("deviceorientation", event => {
+  window.addEventListener("deviceorientation", (event) => {
     hasSensorAccess = true;
     var data = "";
     if ("webkitCompassHeading" in event) {
       data = {
-        info: "Received from deviceorientation webkitCompassHeading - iOS Safari,  Chrome, Firefox",
-        z: event.webkitCompassHeading
+        info:
+          "Received from deviceorientation webkitCompassHeading - iOS Safari,  Chrome, Firefox",
+        z: event.webkitCompassHeading,
       };
       // Android - Chrome <50
     } else if (event.absolute) {
       data = {
         info: "Received from deviceorientation with absolute=true & alpha val",
-        z: event.alpha
+        z: event.alpha,
       };
     } else {
       data = {
         info: "absolute=false, heading might not be absolute to magnetic north",
-        z: 360 - event.alpha
+        z: 360 - event.alpha,
       };
     }
     updateHomeMarkerRotation(data);
@@ -757,16 +806,19 @@ function setupSensorListeners() {
 
 function requestDeviceOrientation() {
   //Check if we need to request access to sensors
-  if (typeof(DeviceOrientationEvent) !== "undefined" && typeof(DeviceOrientationEvent.requestPermission) === "function") {
+  if (
+    typeof DeviceOrientationEvent !== "undefined" &&
+    typeof DeviceOrientationEvent.requestPermission === "function"
+  ) {
     DeviceOrientationEvent.requestPermission()
-      .then(response => {
+      .then((response) => {
         console.log("DeviceOrientationEvent response:", response);
         if (response == "granted") {
           setupSensorListeners();
           $("#activateSensors").html("Sensors On");
         }
       })
-      .catch(function(err) {
+      .catch(function (err) {
         console.log("DeviceOrientationEvent error:", err);
         $("#errorInfo").html("Cannot get permission", err.toString());
       });
@@ -787,156 +839,201 @@ function initMap() {
     zoom: 13,
     center: {
       lat: 45.536384,
-      lng: -73.628949
+      lng: -73.628949,
     },
     disableDefaultUI: true,
-    styles: [{
-        "elementType": "geometry",
-        "stylers": [{
-          "color": "#f5f5f5"
-        }]
+    styles: [
+      {
+        elementType: "geometry",
+        stylers: [
+          {
+            color: "#f5f5f5",
+          },
+        ],
       },
       {
         elementType: "geometry",
-        stylers: [{
-          color: "#f5f5f5"
-        }]
+        stylers: [
+          {
+            color: "#f5f5f5",
+          },
+        ],
       },
       {
         elementType: "labels",
-        stylers: [{
-          visibility: "off"
-        }]
+        stylers: [
+          {
+            visibility: "off",
+          },
+        ],
       },
       {
         elementType: "labels.icon",
-        stylers: [{
-          visibility: "off"
-        }]
+        stylers: [
+          {
+            visibility: "off",
+          },
+        ],
       },
       {
         elementType: "labels.text.fill",
-        stylers: [{
-          color: "#616161"
-        }]
+        stylers: [
+          {
+            color: "#616161",
+          },
+        ],
       },
       {
         elementType: "labels.text.stroke",
-        stylers: [{
-          color: "#f5f5f5"
-        }]
+        stylers: [
+          {
+            color: "#f5f5f5",
+          },
+        ],
       },
       {
         featureType: "administrative.land_parcel",
-        stylers: [{
-          visibility: "off"
-        }]
+        stylers: [
+          {
+            visibility: "off",
+          },
+        ],
       },
       {
         featureType: "administrative.land_parcel",
         elementType: "labels.text.fill",
-        stylers: [{
-          color: "#bdbdbd"
-        }]
+        stylers: [
+          {
+            color: "#bdbdbd",
+          },
+        ],
       },
       {
         featureType: "administrative.neighborhood",
-        stylers: [{
-          visibility: "off"
-        }]
+        stylers: [
+          {
+            visibility: "off",
+          },
+        ],
       },
       {
         featureType: "poi",
         elementType: "geometry",
-        stylers: [{
-          color: "#eeeeee"
-        }]
+        stylers: [
+          {
+            color: "#eeeeee",
+          },
+        ],
       },
       {
         featureType: "poi",
         elementType: "labels.text.fill",
-        stylers: [{
-          color: "#757575"
-        }]
+        stylers: [
+          {
+            color: "#757575",
+          },
+        ],
       },
       {
         featureType: "poi.park",
         elementType: "geometry",
-        stylers: [{
-          color: "#e5e5e5"
-        }]
+        stylers: [
+          {
+            color: "#e5e5e5",
+          },
+        ],
       },
       {
         featureType: "poi.park",
         elementType: "labels.text.fill",
-        stylers: [{
-          color: "#9e9e9e"
-        }]
+        stylers: [
+          {
+            color: "#9e9e9e",
+          },
+        ],
       },
       {
         featureType: "road",
         elementType: "geometry",
-        stylers: [{
-          color: "#ffffff"
-        }]
+        stylers: [
+          {
+            color: "#ffffff",
+          },
+        ],
       },
       {
         featureType: "road.arterial",
         elementType: "labels.text.fill",
-        stylers: [{
-          color: "#757575"
-        }]
+        stylers: [
+          {
+            color: "#757575",
+          },
+        ],
       },
       {
         featureType: "road.highway",
         elementType: "geometry",
-        stylers: [{
-          color: "#dadada"
-        }]
+        stylers: [
+          {
+            color: "#dadada",
+          },
+        ],
       },
       {
         featureType: "road.highway",
         elementType: "labels.text.fill",
-        stylers: [{
-          color: "#616161"
-        }]
+        stylers: [
+          {
+            color: "#616161",
+          },
+        ],
       },
       {
         featureType: "road.local",
         elementType: "labels.text.fill",
-        stylers: [{
-          color: "#9e9e9e"
-        }]
+        stylers: [
+          {
+            color: "#9e9e9e",
+          },
+        ],
       },
       {
         featureType: "transit.line",
         elementType: "geometry",
-        stylers: [{
-          color: "#e5e5e5"
-        }]
+        stylers: [
+          {
+            color: "#e5e5e5",
+          },
+        ],
       },
       {
         featureType: "transit.station",
         elementType: "geometry",
-        stylers: [{
-          color: "#eeeeee"
-        }]
+        stylers: [
+          {
+            color: "#eeeeee",
+          },
+        ],
       },
       {
         featureType: "water",
         elementType: "geometry",
-        stylers: [{
-          color: "#c9c9c9"
-        }]
+        stylers: [
+          {
+            color: "#c9c9c9",
+          },
+        ],
       },
       {
         featureType: "water",
         elementType: "labels.text.fill",
-        stylers: [{
-          color: "#9e9e9e"
-        }]
-      }
-    ]
+        stylers: [
+          {
+            color: "#9e9e9e",
+          },
+        ],
+      },
+    ],
   });
 
   //Uncomment below for debugging mode - add 'location' points with mouse click
@@ -945,7 +1042,7 @@ function initMap() {
     strokeColor: "#989898",
     strokeOpacity: 0.1,
     strokeWeight: 5,
-    editable: true
+    editable: true,
     // draggable: true
   });
 
@@ -958,38 +1055,38 @@ function initMap() {
   // map.addListener("click", addLatLng);
 
   var image = {
-    path: "M39.167,30c0,5.062-4.104,9.167-9.166,9.167c-5.063,0-9.167-4.104-9.167-9.167c0-9.125,8.416-18,9.167-18 C30.75,12,39.167,20.875,39.167,30z",
+    path:
+      "M39.167,30c0,5.062-4.104,9.167-9.166,9.167c-5.063,0-9.167-4.104-9.167-9.167c0-9.125,8.416-18,9.167-18 C30.75,12,39.167,20.875,39.167,30z",
     strokeWeight: 2,
     strokeColor: "#29ABE2",
     fillColor: "#29ABE2",
     fillOpacity: 1.0,
     scale: 0.75,
     anchor: new google.maps.Point(30, 30),
-    rotation: 0
+    rotation: 0,
   };
 
   homeMarker = new google.maps.Marker({
     title: "Home",
-    icon: image
+    icon: image,
   });
 
   var imageBounds = {
     north: 45.536384,
     south: 45.535557,
     west: -73.629249,
-    east: -73.628002
+    east: -73.628002,
   };
 
   homeMarker.setMap(map);
 
-  google.maps.event.addListener(homeMarker, 'mouseup', function(event) {
+  google.maps.event.addListener(homeMarker, "mouseup", function (event) {
     spriteSound.play();
 
     homeMarker.setAnimation(google.maps.Animation.BOUNCE);
-    setTimeout(function() {
-      homeMarker.setAnimation(null)
+    setTimeout(function () {
+      homeMarker.setAnimation(null);
     }, 600);
-
   });
 
   var id = getCookie("id");
@@ -1003,7 +1100,7 @@ function initMap() {
 }
 
 //Print errors as they happen
-window.onerror = function(msg, url, lineNo, columnNo, error) {
+window.onerror = function (msg, url, lineNo, columnNo, error) {
   var string = msg.toLowerCase();
   var substring = "script error";
   if (string.indexOf(substring) > -1) {
@@ -1014,7 +1111,7 @@ window.onerror = function(msg, url, lineNo, columnNo, error) {
       "URL: " + url,
       "Line: " + lineNo,
       "Column: " + columnNo,
-      "Error object: " + JSON.stringify(error)
+      "Error object: " + JSON.stringify(error),
     ].join(" - ");
 
     console.log("captured error:", message);
