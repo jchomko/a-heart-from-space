@@ -47,6 +47,15 @@ html, body {
   width: 80px;
 }
 
+#toggleRecord{
+  position: absolute;
+  top: 0;
+  left: 0px;
+  height: 50px;
+  background-color: rgb(220, 220, 220);
+  width: 80px;
+}
+
 #doneSection {
   position: absolute;
   /* bottom:0; */

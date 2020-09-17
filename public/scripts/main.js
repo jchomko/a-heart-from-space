@@ -131,15 +131,28 @@ function toggleSection() {
   // we need to trigger the drawing immediately here, and then let it update with location for the others
   // how do you distinguish which heart section is yours?
   // it shoouuld be equally drawn between the sections so it's centered on you.
+}
 
+function checkDoneButton(groupCoords){
+
+  for (var i = 0; i < groupCoords.length; i++) {
+    if (groupCoords[i].connectTimestamp === firstConnectTimestamp) {
+      if(groupCoords[i].ready){
+        $("#doneSection").html("Done!");
+        $("#doneSection").css("background-color", "rgb(180,260,180)")
+      }else{
+        $("#doneSection").html("Done");
+        $("#doneSection").css("background-color", "rgb(220,220,220)")
+      }
+      // groupCoords[i].done = coords.done
+    }
+  }
 
 }
 
 //Geolocation success callback
 var browserGeolocationSuccess = function(position) {
   // $("#activateGPS").html("GPS On");
-
-
   if (position.coords.accuracy < bestAccuracy) {
     bestAccuracy = position.coords.accuracy;
     console.log("bestAccuracy: " + bestAccuracy);
@@ -549,7 +562,7 @@ function drawMarkers(groupCoords) {
     groupMarkers[c].setPosition(latlng);
     groupMarkers[c].setIcon(image);
     // groupMarkers[c].setTitle(groupCoords[c].id);
-    groupMarkers[c].setTitle(groupCoords[c].connectTimestamp);
+    groupMarkers[c].setTitle(String(groupCoords[c].connectTimestamp));
     //Hide the marker if it's our own sessionId
     // if (groupMarkers[c].getTitle() != sessionID) {
     if (groupMarkers[c].getTitle() != firstConnectTimestamp) {
@@ -826,6 +839,8 @@ socket.on("receive-group-coordinates", function(groupCoords) {
   // console.log(groupCoords);
   // drawLines(groupCoords);
   drawFixedLines(groupCoords);
+
+  checkDoneButton(groupCoords);
 
   if (showArrows) {
     drawMarkers(groupCoords);

@@ -28,6 +28,31 @@ var cookieID;
 var firstSocketID;
 var firstConnectTimestamp;
 
+var recordState = false;
+
+socket.on('connect', function() {
+
+  socket.emit('new-client', 'viewer')
+  // sessionID = socket.id;
+  console.log("connected", socket.connected);
+
+});
+
+function toggleRecord(){
+
+  if(!recordState){
+    socket.emit("start-record", true);
+    $("#toggleRecord").html("Recording ");
+    $("#toggleRecord").css("background-color", "rgb(260,180,180)")
+  }else{
+    socket.emit("stop-record", true);
+    $("#toggleRecord").html("Start Recording ");
+    $("#toggleRecord").css("background-color", "rgb(180,180,180)")
+  }
+
+  recordState = !recordState;
+
+}
 
 //Set cookie - not yet used
 function setCookie(c_name, value, exdays) {
@@ -611,7 +636,6 @@ function initMap() {
   };
 
   homeMarker.setMap(map);
-
   google.maps.event.addListener(homeMarker, 'mouseup', function(event) {
     spriteSound.play();
 

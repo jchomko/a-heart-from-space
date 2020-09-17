@@ -14,11 +14,14 @@ var debugList = []
 var groupCoords = [];
 var sortList = [];
 
+var savedCoords = [];
+
 var idCounter = 0;
 var orderCounter = 0;
 var headingChangedFlag = false;
 var coordinatesChanged = false;
 var currentMode = 0;
+var recordCoords = false;
 
 //Development section
 if (process.env.NODE_ENV != 'production') {
@@ -56,8 +59,8 @@ app.get('/', function(request, response) {
   })
 })
 
-app.get('/view', function(request, response){
-  response.sendFile('/public/view.html',{
+app.get('/view', function(request, response) {
+  response.sendFile('/public/view.html', {
     "root": __dirname
   })
 })
@@ -71,9 +74,20 @@ io.on('connection', function(socket) {
 
   })
 
+  socket.on("start-record", function(data) {
+    recordCoords = true;
+    savedCoords = [];
+  })
+
+  socket.on("stop-record", function(data) {
+    recordCoords = false;
+    saveFile(savedCoords);
+  })
+
   //detect new client
   //client is added to list only when it sends some coordinates
   socket.on("new-client", function(data) {
+
     console.log("new client : ", data);
     // io.to(this.id).emit("receive-start-status", currentMode)
   })
@@ -108,8 +122,15 @@ io.on('connection', function(socket) {
   })
 
   socket.on('send-tap', function(targetSocketId) {
-    io.to(targetSocketId).emit('receive-tap');
-    console.log("sending tap to :", targetSocketId);
+
+    for (var i = 0; i < groupCoords.length; i++) {
+      if (groupCoords[i].connectTimestamp === targetSocketId) {
+        io.to(groupCoords[i].id).emit('receive-tap');
+        console.log("sending tap to :", groupCoords[i].id);
+        // groupCoords[i].done = coords.done
+      }
+    }
+
   })
 
   socket.on('addclient', function() {
@@ -139,6 +160,7 @@ io.on('connection', function(socket) {
         exists = true
       }
     }
+
     coordinatesChanged = exists;
     console.log("drawing heart for: ", this.id);
     // isGroupReady();
@@ -216,7 +238,6 @@ io.on('connection', function(socket) {
         // groupCoords[i].done = coords.done
         exists = true
       }
-
     }
 
     //If ID doesn't match with existing IDs
@@ -232,7 +253,7 @@ io.on('connection', function(socket) {
       groupCoords.push(person)
     }
 
-    groupCoords.sort(function (a, b){
+    groupCoords.sort(function(a, b) {
       return parseInt(a.connectTimestamp) - parseInt(b.connectTimestamp)
     });
 
@@ -337,12 +358,46 @@ function isGroupReady() {
 //
 // }
 
+function getDateString() {
+  const date = new Date();
+  const year = date.getFullYear();
+  const month = `${date.getMonth() + 1}`.padStart(2, '0');
+  const day = `${date.getDate()}`.padStart(2, '0');
+  const hour = date.getHours();
+  const min = date.getMinutes();
+  const sec = date.getSeconds();
+  return `${year}${month}${day}-${hour}:${min}:${sec}`
+}
+
+function saveFile(data) {
+
+  var name = "recording " + getDateString() + ".json";
+
+  var jsonString = JSON.stringify(data, null, 1)
+  fs.writeFile("./" + name, jsonString, (err) => {
+    if (err) {
+      console.error(err)
+      return
+    }
+    console.log("saved file: ", name);
+  })
+
+}
+
 function sendGroupCoordinates() {
-  if (coordinatesChanged) {
+
+  // if (coordinatesChanged) {
     coordinatesChanged = false;
     io.emit("receive-group-coordinates", groupCoords)
     // console.log("coord array length : ", groupCoords.length)
-  }
+    if (recordCoords) {
+      // groupCoords.timestamp = Date.now();
+      var timestamp = {timestamp: Date.now()};
+      savedCoords.push(timestamp);
+      savedCoords.push(groupCoords);
+    }
+  // }
+
 }
 
 setInterval(sendGroupCoordinates, 500);
