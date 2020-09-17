@@ -2,12 +2,13 @@
   height: 100%;
   /* zoom: 200%; */
   /* height: 400%;
-  top: -100%;
-  left: -100%;
-  width: 400%; */
+    top: -100%;
+    left: -100%;
+    width: 400%; */
 }
 
-html, body {
+html,
+body {
   height: 100%;
   margin: 0;
   padding: 0;
@@ -38,7 +39,7 @@ html, body {
   /* background-image: "images/center.png"; */
 }
 
-#readyButton{
+#readyButton {
   position: absolute;
   top: 0;
   left: 80px;
@@ -83,10 +84,10 @@ html, body {
 #dialog-message {
   display: none;
   /* position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  height: auto; */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    height: auto; */
   /* font-size: 19px; */
   /* background: #fdf7f3ed */
 }
@@ -94,4 +95,19 @@ html, body {
 #dialog-content {
   /* font-size: 19px; */
   /* background: #fdf7f3ed */
+}
+
+.rooms {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+}
+
+#rooms-list {
+  display: grid;
+  /*grid-auto-flow: row;*/
+  grid-template-columns: auto auto;
+  grid-row-gap: 5px;
+  grid-column-gap: 5px;
+  align-items: center;
 }
