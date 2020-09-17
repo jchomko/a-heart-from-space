@@ -234,7 +234,7 @@ io.on('connection', function(socket) {
         groupCoords[i].lat = coords.lat
         groupCoords[i].lng = coords.lng
         groupCoords[i].heading = coords.heading
-
+        // groupCoords[i].currentTimestamp = Date.now()
         // groupCoords[i].done = coords.done
         exists = true
       }
@@ -249,6 +249,7 @@ io.on('connection', function(socket) {
         lng: coords.lng,
         connectTimestamp: coords.connectTimestamp,
         heading: coords.heading
+        // currentTimestamp: Date.now()
       }
       groupCoords.push(person)
     }

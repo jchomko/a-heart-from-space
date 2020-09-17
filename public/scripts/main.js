@@ -380,7 +380,7 @@ function drawFixedLines(groupCoords) {
         // strokeOpacity: 1,
         strokeWeight: 5,
         fillColor: '#f70000',
-        fillOpacity: 0.2
+        fillOpacity: 1
       })
 
       trianglePolyline.setMap(map);
