@@ -117,6 +117,8 @@ io.on('connection', function(socket) {
       // coordinatesChanged = true;
       io.emit("clear-markers", 1) //groupCoords
       isGroupReady();
+    }else{
+      console.log("disconnect called but id not found - already removed")
     }
 
   })
@@ -205,6 +207,7 @@ io.on('connection', function(socket) {
       //if we find a match, we update the existing coordinate
       if (groupCoords[i].id === this.id) {
         groupCoords[i].heading = heading
+        groupCoords[i].currentTimestamp = Date.now()
         exists = true
       }
     }
@@ -226,19 +229,27 @@ io.on('connection', function(socket) {
     //If we don't have this ID already
     var exists = false
     var existsInDisconnected = false
-    for (var i = 0; i < groupCoords.length; i++) {
+    var inactiveIds = []
 
+    for (var i = 0; i < groupCoords.length; i++) {
       //if we find a match, we update the existing coordinate
       //using timestamps means that we update any duplicate markers that are hanging around
-      if (groupCoords[i].connectTimestamp === coords.connectTimestamp) {
+      if(groupCoords[i].connectTimestamp === coords.connectTimestamp) {
         groupCoords[i].lat = coords.lat
         groupCoords[i].lng = coords.lng
         groupCoords[i].heading = coords.heading
-        // groupCoords[i].currentTimestamp = Date.now()
+        groupCoords[i].currentTimestamp = Date.now()
         // groupCoords[i].done = coords.done
         exists = true
       }
+
+      //check all coordinates to see if they're fresh
+      if(Date.now() - groupCoords[i].currentTimestamp > 10000){
+        console.log(Date.now() - groupCoords[i].currentTimestamp)
+        inactiveIds.push(i);
+      }
     }
+
 
     //If ID doesn't match with existing IDs
     if (exists === false && typeof coords.connectTimestamp != "undefined") {
@@ -248,12 +259,13 @@ io.on('connection', function(socket) {
         lat: coords.lat,
         lng: coords.lng,
         connectTimestamp: coords.connectTimestamp,
-        heading: coords.heading
-        // currentTimestamp: Date.now()
+        heading: coords.heading,
+        currentTimestamp: Date.now()
       }
       groupCoords.push(person)
     }
 
+    //Sort coordinates so they're always in the same order
     groupCoords.sort(function(a, b) {
       return parseInt(a.connectTimestamp) - parseInt(b.connectTimestamp)
     });
@@ -262,8 +274,18 @@ io.on('connection', function(socket) {
       console.log("new addition")
       console.log(groupCoords.length);
       console.log(groupCoords);
-
     }
+
+    // console.log(inactiveIds);
+    if (inactiveIds.length > 0) {
+      for(var i = 0; i < inactiveIds.length; i ++){
+      // console.log("removing :" + JSON.stringify(groupCoords[index]))
+      console.log("removing inactive user: ", inactiveIds[i]);
+      groupCoords.splice(inactiveIds[i], 1)
+      io.emit("clear-markers", 1)
+      }
+    }
+
     //Sending coordinates on an interval timer
     // io.emit("receive-group-coordinates", groupCoords)
     coordinatesChanged = true;
@@ -273,6 +295,7 @@ io.on('connection', function(socket) {
   //
   //
   // })
+
 })
 
 
