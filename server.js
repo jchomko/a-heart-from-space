@@ -14,6 +14,118 @@ var headingChangedFlag = false;
 var coordinatesChanged = false;
 var started = false;
 
+function Sessions() {
+  this.sessions = [];
+}
+
+Sessions.prototype.getAvailableList = function () {
+  return (
+    this.sessions
+      //.filter((s) => s.lng !== undefined && s.lat !== undefined)
+      .reduce((acc, cur) => {
+        acc.push(cur.id);
+        return acc;
+      }, [])
+  );
+};
+
+Sessions.prototype.addSession = function (socketId) {
+  var session = {
+    id: socketId,
+    lng: undefined,
+    lat: undefined,
+    users: [
+      {
+        id: socketId,
+        lng: undefined,
+        lat: undefined,
+        heading: undefined,
+        done: false,
+      },
+    ],
+  };
+  this.sessions.push(session);
+};
+
+Sessions.prototype.addUserToSession = function (sessionId, user) {
+  var sessionIndex = this.sessions.findIndex((s) => s.id === sessionId);
+  if (sessionIndex !== -1) {
+    this.sessions[sessionIndex].users.push({
+      id: user.id,
+      lng: user.lng,
+      lat: user.lat,
+      heading: user.heading,
+      done: user.done,
+    });
+  }
+};
+
+Sessions.prototype.removeUserFromSession = function (socketId) {
+  var [sessionIndex, userIndex] = this.findUser(socketId);
+  if (sessionIndex !== undefined) {
+    var removedUsers = this.sessions[sessionIndex].users.splice(userIndex, 1);
+    var sessionId = this.sessions[sessionIndex].id;
+    if (this.sessions[sessionIndex].users.length === 0) {
+      this.sessions.splice(sessionIndex, 1);
+      return [sessionId, true, removedUsers[0]];
+    } else {
+      return [sessionId, false, removedUsers[0]];
+    }
+  }
+};
+
+Sessions.prototype.findUser = function (socketId) {
+  for (var i = 0; i < this.sessions.length; i++) {
+    var userIndex = this.sessions[i].users.findIndex((u) => u.id === socketId);
+    if (userIndex !== -1) {
+      return [i, userIndex];
+    }
+  }
+};
+
+/*Sessions.prototype.remove = function (socketId) {
+  var [sessionIndex, userIndex] = this.findUser(socketId);
+  if (sessionIndex !== undefined) {
+    this.sessions[sessionIndex].users.splice(userIndex, 1);
+    if (this.sessions[sessionIndex].users.length === 0) {
+      var sessionId = this.sessions[sessionIndex].id;
+      this.sessions.splice(sessionIndex, 1);
+      return sessionId;
+    }
+  }
+};*/
+
+Sessions.prototype.updateCoordinates = function (socketId, lng, lat) {
+  var [sessionIndex, userIndex] = this.findUser(socketId);
+  this.sessions[sessionIndex].users[userIndex].lng = lng;
+  this.sessions[sessionIndex].users[userIndex].lat = lat;
+  var usersToNotify = this.sessions[sessionIndex].users.filter(
+    (u, index) => index !== userIndex
+  );
+  if (usersToNotify.length > 0) {
+    return this.sessions[sessionIndex].id;
+  }
+};
+
+Sessions.prototype.updateHeading = function (socketId, heading) {
+  var [sessionIndex, userIndex] = this.findUser(socketId);
+  if (sessionIndex !== undefined) {
+    this.sessions[sessionIndex].users[userIndex].heading = heading;
+    var usersToNotify = this.sessions[sessionIndex].users.filter(
+      (u, index) => index !== userIndex
+    );
+    if (usersToNotify.length > 0) {
+      return this.sessions[sessionIndex].id;
+    }
+  }
+};
+
+var sessions = new Sessions();
+// console.log(sessions.add(1)
+// var rooms = Object.keys(this.rooms);
+// console.log("room-check:", rooms[0]);
+// socket.to(rooms[0]).emit("room-msg");
+
 //Development section
 if (process.env.NODE_ENV != "production") {
   var https = require("https").createServer(
@@ -48,33 +160,95 @@ app.get("/", function (request, response) {
   });
 });
 
-var sessions = [];
-
 io.on("connection", function (socket) {
   console.log("connected", socket.id);
 
-  sessions.push({ id: socket.id, users: [socket.id] });
+  // sessions.push({ id: socket.id, users: [socket.id] });
   // io.to(socket.id).emit("room-list", rooms);
-
-  socket.emit(
+  /*socket.emit(
     "room-list",
     sessions.reduce((acc, cur) => {
       acc.push(cur.id);
       return acc;
     }, [])
   );
-  socket.broadcast.emit("room-add", socket.id);
+  socket.broadcast.emit("room-add", socket.id);*/
+
+  socket.broadcast.emit("new-session-available", socket.id);
+  socket.emit("available-sessions", sessions.getAvailableList());
+  sessions.addSession(socket.id);
 
   socket.on("request-id", function () {
     io.to(this.id).emit("receive-id", idCounter);
     idCounter += 1;
   });
 
-  socket.on("room-join", function (newSession) {
-    // var rooms = Object.keys(this.rooms);
-    // socket.leave(rooms[0]);
+  socket.on("session-join", function (newSessionId) {
+    var [
+      sessionId,
+      isSessionDeleted,
+      removedUser,
+    ] = sessions.removeUserFromSession(socket.id);
+    socket.leave(sessionId, () => {
+      socket.join(newSessionId, () => {
+        if (isSessionDeleted === true) {
+          socket.broadcast.emit("session-deleted", sessionId);
+          socket.emit("session-deleted", sessionId);
+        }
+        sessions.addUserToSession(newSessionId, removedUser);
+      });
+    });
+    /*for (var i = 0; i < sessions.length; i++) {
+      var userIndex = sessions[i].users.findIndex((u) => u.id === socket.id);
+      if (userIndex !== -1) {
+        sessions[i].users.splice(userIndex, 1);
+        socket.leave(sessions[i].id, () => {
+          socket.join(newSession, () => {
+            if (sessions[i].users.length === 0) {
+              socket.broadcast.emit("session-delete", sessions[i].id);
+              socket.emit("session-delete", sessions[i].id);
+              sessions.splice(i, 1);
+            }
+            var sessionIndex = sessions.findIndex((s) => s.id === newSessionId);
+            sessions[sessionIndex].users.push(socket.id);
+          });
+        });
+        break;
+      }
+    };*/
+  });
+
+  socket.on("coordinates-updated", function (lng, lat) {
+    console.log("coordinates-updated", lng, lat);
+    var sessionToNotify = sessions.updateCoordinates(socket.id, lng, lat);
+    if (sessionToNotify !== undefined) {
+      socket.to(sessionToNotify).emit("coordinates-updated", lng, lat);
+    }
+  });
+
+  socket.on("heading-updated", function (heading) {
+    console.log("heading-updated", heading);
+    var sessionToNotify = sessions.updateHeading(socket.id, heading);
+    if (sessionToNotify !== undefined) {
+      socket.to(sessionToNotify).emit("heading-updated", heading);
+    }
+  });
+
+  socket.on("disconnect", function () {
+    console.log("disconnect", socket.id);
+    var [sessionId, isSessionDeleted] = sessions.removeUserFromSession(
+      socket.id
+    );
+    console.log("sessionId", sessionId, "isSessionDeleted", isSessionDeleted);
+    if (isSessionDeleted === true) {
+      socket.broadcast.emit("session-deleted", sessionId);
+      socket.emit("session-deleted", sessionId);
+    }
+  });
+
+  /*socket.on("room-join", function (newSession) {
     for (var i = 0; i < sessions.length; i++) {
-      var userIndex = sessions[i].users.findIndex((u) => u === socket.id);
+      var userIndex = sessions[i].users.findIndex((u) => u.id === socket.id);
       if (userIndex !== -1) {
         sessions[i].users.splice(userIndex, 1);
         socket.leave(sessions[i].id, () => {
@@ -86,27 +260,21 @@ io.on("connection", function (socket) {
             }
             var sessionIndex = sessions.findIndex((s) => s.id === newSession);
             sessions[sessionIndex].users.push(socket.id);
-            // rooms = Object.keys(socket.rooms);
-            // console.log("room joined", rooms[0]);
-            // io.to("room 237").emit("a new user has joined the room"); // broadcast to everyone in the room
           });
         });
         break;
       }
     }
-  });
+  });*/
 
-  socket.on("room-check", function () {
-    // var rooms = Object.keys(this.rooms);
-    // console.log("room-check:", rooms[0]);
-    // socket.to(rooms[0]).emit("room-msg");
+  /*socket.on("room-check", function () {
     for (var i = 0; i < sessions.length; i++) {
       var userIndex = sessions[i].users.findIndex((u) => u === socket.id);
       if (userIndex !== -1) {
         socket.to(sessions[i].id).emit("room-msg");
       }
     }
-  });
+  });*/
 
   //detect new client
   //client is added to list only when it sends some coordinates
@@ -116,26 +284,7 @@ io.on("connection", function (socket) {
   })*/
 
   //this happens automatically when the socket connection breaks
-  socket.on("disconnect", function () {
-    /*var roomIndex = sessions.indexOf(this.id);
-    if (roomIndex !== -1) {
-      rooms.splice(roomIndex, 1);
-      socket.broadcast.emit("room-delete", this.id);
-    }*/
-    console.log("disconnect", socket.id);
-    for (var i = 0; i < sessions.length; i++) {
-      var userIndex = sessions[i].users.findIndex((u) => u === socket.id);
-      if (userIndex !== -1) {
-        sessions[i].users.splice(userIndex, 1);
-        if (sessions[i].users.length === 0) {
-          socket.broadcast.emit("room-delete", sessions[i].id);
-          socket.emit("room-delete", sessions[i].id);
-          sessions.splice(i, 1);
-        }
-        break;
-      }
-    }
-
+  /*socket.on("disconnect", function () {
     var exists = false;
     var index = -1;
 
@@ -157,14 +306,14 @@ io.on("connection", function (socket) {
       io.emit("clear-markers", 1); //groupCoords
       // isGroupReady();
     }
-  });
+  });*/
 
   socket.on("send-tap", function (targetSocketId) {
     io.to(targetSocketId).emit("receive-tap");
     console.log("sending tap to :", targetSocketId);
   });
 
-  socket.on("addclient", function () {
+  /*socket.on("addclient", function () {
     //If user doesn't already exist
     if (usersList.indexOf(this.id) == -1) {
       //Add user to our list of users
@@ -181,7 +330,7 @@ io.on("connection", function (socket) {
     } else {
       console.log("Client Already Exists: ", this.id);
     }
-  });
+  });*/
 
   socket.on("draw-triangle", function (drawDone) {
     var sID = this.id;
@@ -226,7 +375,7 @@ io.on("connection", function (socket) {
     //But that is really an edge case
   });
 
-  socket.on("update-heading", function (heading) {
+  /*socket.on("update-heading", function (heading) {
     var sID = this.id;
     var exists = false;
 
@@ -243,12 +392,12 @@ io.on("connection", function (socket) {
     // if (exists) {
     // io.emit("receive-group-coordinates", groupCoords)
     // }
-  });
+  });*/
 
   //Receive coordinates from each participant and add them to our list
-  socket.on("update-coordinates", function (coords) {
+  /*socket.on("update-coordinates", function (coords) {
     var sID = this.id;
-    var formattedCoords = JSON.stringify(coords);
+    // var formattedCoords = JSON.stringify(coords);
     // console.log("received: " + formattedCoords + ", " + sID)
 
     //If we don't have this ID already
@@ -280,7 +429,7 @@ io.on("connection", function (socket) {
     //Sending coordinates on an interval timer
     // io.emit("receive-group-coordinates", groupCoords)
     coordinatesChanged = true;
-  });
+  });*/
 
   // socket.on("draw-triangle", function(state) {
   //

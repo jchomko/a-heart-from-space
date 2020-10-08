@@ -5,7 +5,7 @@ var map;
 var groupMarkers = [];
 var groupPolyLines = [];
 var homeMarkerID;
-var sessionID;
+// var sessionID;
 var bestAccuracy = 1000;
 var hasSensorAccess = false;
 var compassOrientation = 0;
@@ -116,24 +116,29 @@ var browserGeolocationSuccess = function (position) {
   // $("#activateGPS").html("GPS On");
   activateGPS();
 
-  if (position.coords.accuracy < bestAccuracy) {
-    bestAccuracy = position.coords.accuracy;
-    console.log("bestAccuracy: " + bestAccuracy);
-  }
+  //if (position.coords.accuracy < bestAccuracy) {
+  bestAccuracy = position.coords.accuracy;
+  console.log("bestAccuracy: " + bestAccuracy);
+  //}
   // if we have a high accuracy reading
   // if using simulated position the accuracy will be fixed at 150
-  if (position.coords.accuracy < bestAccuracy + 10) {
-    //|| position.coords.accuracy === 150
-    currLatLng = {
-      lat: position.coords.latitude,
-      lng: position.coords.longitude,
-      heading: compassOrientation,
-      done: drawDone,
-    };
-    updateHomeMarkerPosition(position);
-    // console.log("accurate coordinates: " + JSON.stringify(myLatLng))
-    socket.emit("update-coordinates", currLatLng);
-  }
+  //if (position.coords.accuracy < bestAccuracy + 10) {
+  //|| position.coords.accuracy === 150
+  currLatLng = {
+    lat: position.coords.latitude,
+    lng: position.coords.longitude,
+    heading: compassOrientation,
+    done: drawDone,
+  };
+  updateHomeMarkerPosition(position);
+  // console.log("accurate coordinates: " + JSON.stringify(myLatLng))
+  // socket.emit("update-coordinates", currLatLng);
+  socket.emit(
+    "coordinates-updated",
+    position.coords.longitude,
+    position.coords.latitude
+  );
+  //}
 };
 
 //Geolocation fail callback
@@ -190,7 +195,7 @@ const calculateCentroid = (acc, { lat, lng }, idx, src) => {
 
 const sortByAngle = (a, b) => a.angle - b.angle;
 
-function calculateSimilarity(groupCoordsSorted) {
+/*function calculateSimilarity(groupCoordsSorted) {
   const curve = groupCoordsSorted.map((coords) => ({
     x: coords.lng,
     y: coords.lat,
@@ -199,7 +204,7 @@ function calculateSimilarity(groupCoordsSorted) {
     rotations: 500,
   });
   console.log("similarity", similarity);
-}
+}*/
 
 //Draw lines between the received points
 function drawLines(groupCoords) {
@@ -544,7 +549,7 @@ socket.on("receive-id", function (id) {
   // cookieID = id;
 });
 
-socket.on("receive-start-status", function (startStatus) {
+/*socket.on("receive-start-status", function (startStatus) {
   console.log(" is started already ? :", startStatus);
   if (startStatus === false) {
     // show dialog
@@ -590,62 +595,76 @@ socket.on("receive-start-status", function (startStatus) {
     tryGeolocation();
     requestDeviceOrientation();
   }
-});
+});*/
 
 socket.on("connect", function () {
-  sessionID = socket.id;
-  console.log("connected", socket.connected, sessionID);
+  //sessionID = socket.id;
+  currentSessionID = socket.id;
+  displaySessions();
   socket.emit("new-client", "mobile");
   tryGeolocation();
   requestDeviceOrientation();
   if (currLatLng != null) {
-    socket.emit("update-coordinates", currLatLng);
+    // socket.emit("update-coordinates", currLatLng);
   }
 });
 
-var rooms = [];
+var sessions = [];
+var currentSessionID = undefined;
 
-function displayRooms() {
-  $("#rooms-list").html(
-    rooms
-      .map((id) =>
-        sessionID === id
-          ? `<div>${id}</div><div></div>`
-          : `<div>${id}</div><button onclick="join('${id}')">Join</button>`
+function displaySessions() {
+  console.log("displaySessions", sessions);
+  $("#current-session").html(currentSessionID);
+  $("#available-sessions").html(
+    sessions
+      .map(
+        (id) =>
+          `<div>${id}</div><button onclick="joinSession('${id}')">Join</button>`
       )
       .join("")
   );
 }
 
-function join(id) {
-  socket.emit("room-join", id);
-  sessionID = id;
-  displayRooms();
+function joinSession(sessionId) {
+  console.log("joinSession", sessionId);
+  socket.emit("session-join", sessionId);
+  currentSessionID = sessionId;
+  displaySessions();
 }
 
 function check() {
-  socket.emit("room-check");
+  // socket.emit("room-check");
 }
 
-socket.on("room-msg", function () {
+/*socket.on("room-msg", function () {
   console.log("room-msg");
+});*/
+
+// available-sessions
+socket.on("available-sessions", function (list) {
+  console.log("available-sessions", list);
+  sessions = list;
+  displaySessions();
 });
 
-socket.on("room-list", function (list) {
-  rooms = list;
-  displayRooms();
+socket.on("new-session-available", function (sessionId) {
+  console.log("new-session-available", sessionId);
+  sessions.push(sessionId);
+  displaySessions();
 });
 
-socket.on("room-add", function (room) {
-  console.log("room-add", room);
-  rooms.push(room);
-  displayRooms();
+socket.on("coordinates-updated", function (lng, lat) {
+  console.log("coordinates-updated", lng, lat);
 });
 
-socket.on("room-delete", function (room) {
-  console.log("room-delete", room);
-  rooms = rooms.filter((r) => r !== room);
-  displayRooms();
+socket.on("heading-updated", function (heading) {
+  console.log("heading-updated", heading);
+});
+
+socket.on("session-deleted", function (sessionId) {
+  console.log("session-deleted", sessionId);
+  sessions = sessions.filter((s) => s !== sessionId);
+  displaySessions();
 });
 
 socket.on("receive-group-coordinates", function (groupCoords) {
@@ -688,7 +707,8 @@ function updateHomeMarkerRotation(data) {
     homeMarker.setIcon(icon);
 
     //Only sending rotation updates with location updates
-    socket.emit("update-heading", compassOrientation);
+    //socket.emit("update-heading", compassOrientation);
+    socket.emit("heading-updated", compassOrientation);
     lastCompassOrientation = compassOrientation;
   }
 }
