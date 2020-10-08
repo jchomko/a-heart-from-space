@@ -32,9 +32,9 @@ var recordState = false;
 
 socket.on('connect', function() {
 
-  socket.emit('new-client', 'viewer')
+  socket.emit('start-playback', 'recording 20201008-17:26:46.json')
   // sessionID = socket.id;
-  console.log("connected", socket.connected);
+  console.log("requested playback");
 
 });
 
@@ -406,8 +406,9 @@ socket.on('connect', function() {
   // }
 });
 
-socket.on("receive-group-coordinates", function(groupCoords) {
-  // console.log(groupCoords);
+
+socket.on("receive-group-coordinates-playback", function(groupCoords) {
+  console.log(groupCoords);
   // drawLines(groupCoords);
   drawFixedLines(groupCoords);
 

@@ -371,8 +371,12 @@ function drawFixedLines(groupCoords) {
     lng: 0
   });
 
+  var readyCount = 0;
+  //Draw Triangles
   for (var i = 0; i < groupCoords.length; i++) {
     if (groupCoords[i].ready === true ) { //|| lastMode === 3
+
+      readyCount ++;
 
       var trianglePolyline = new google.maps.Polygon({
         strokeColor: '#f70000',
@@ -403,6 +407,13 @@ function drawFixedLines(groupCoords) {
       groupPolyLines.push(trianglePolyline);
     }
   }
+  // 
+  // console.log(readyCount, groupCoords.length, showArrows);
+  // if(readyCount >= groupCoords.length){
+  //   showArrows = false;
+  //   clearMarkers(groupCoords.length);
+  //   homeMarker.setMap(null);
+  // }
 
 }
 

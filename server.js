@@ -4,6 +4,7 @@ var app = express()
 var fs = require('fs')
 var useragent = require('express-useragent')
 var sslRedirect = require('heroku-ssl-redirect');
+app.engine('pug', require('pug').__express)
 
 require('dotenv').config();
 
@@ -14,7 +15,7 @@ var debugList = []
 var groupCoords = [];
 var sortList = [];
 
-var savedCoords = [];
+var savedCoordsString = "";
 
 var idCounter = 0;
 var orderCounter = 0;
@@ -23,6 +24,8 @@ var coordinatesChanged = false;
 var currentMode = 0;
 var recordCoords = false;
 
+var playbackIndex = 0;
+var playbackInterval = "";
 //Development section
 if (process.env.NODE_ENV != 'production') {
   var https = require('https').createServer({
@@ -49,6 +52,8 @@ if (process.env.NODE_ENV != 'production') {
 
 }
 
+app.set("view engine", "pug");
+app.set("views", path.join(__dirname, "views"));
 app.use(express.static('public'));
 // app.use(secure);
 
@@ -65,6 +70,31 @@ app.get('/view', function(request, response) {
   })
 })
 
+app.get('/playback', function(request, response) {
+  response.sendFile('/public/playback.html', {
+    "root": __dirname
+  })
+})
+
+app.get('/download', function(request, response) {
+  // response.sendFile('/public/download.html', {
+  //   "root": __dirname
+  // })
+  const testFolder = __dirname + '/public/logs/';
+  fs.readdir(testFolder, (err, files) => {
+    // files.forEach(file => {
+    //   console.log(file);
+    // });
+    response.render(__dirname + "/public/views/download", {
+      title: "Hey",
+      message: files
+    });
+
+  });
+
+
+})
+
 io.on('connection', function(socket) {
   socket.on("request-timestamp", function() {
     // io.to(this.id).emit("receive-id", idCounter)
@@ -76,12 +106,13 @@ io.on('connection', function(socket) {
 
   socket.on("start-record", function(data) {
     recordCoords = true;
-    savedCoords = [];
+    savedCoordsString = "[";
   })
 
   socket.on("stop-record", function(data) {
     recordCoords = false;
-    saveFile(savedCoords);
+    saveFile(savedCoordsString);
+    console.log("saving coords: ");
   })
 
   //detect new client
@@ -117,7 +148,7 @@ io.on('connection', function(socket) {
       // coordinatesChanged = true;
       io.emit("clear-markers", 1) //groupCoords
       isGroupReady();
-    }else{
+    } else {
       console.log("disconnect called but id not found - already removed")
     }
 
@@ -166,6 +197,42 @@ io.on('connection', function(socket) {
     coordinatesChanged = exists;
     console.log("drawing heart for: ", this.id);
     // isGroupReady();
+  })
+
+  socket.on("start-playback", function(filename) {
+
+    var fileData;
+    var filePath = path.join(__dirname, '/public/logs/' + filename)
+    fs.readFile(filePath, {
+      encoding: 'utf-8'
+    }, function(err, rawData) {
+      if (!err) {
+        sequenceIndex = 0;
+        playbackIndex = 0;
+        fileData = JSON.parse(rawData)
+        console.log("Succesfully read " + filename + ", instructions: " + fileData.length)
+      } else {
+        console.log(err)
+      }
+    })
+
+    if (playbackInterval != null) {
+      clearInterval(playbackInterval);
+      playbackInterval = setInterval(function() {
+        socket.emit('receive-group-coordinates-playback', fileData[playbackIndex]);
+        console.log(playbackIndex);
+        playbackIndex++;
+        if (playbackIndex > fileData.length) {
+          // playbackIndex= 0;
+          clearInterval(playbackInterval);
+        }
+      }, 500)
+    }
+
+    //Load file
+    //Start output to render window, loading json file and sending to frontend
+    //Set callback to advance index and load next file
+
   })
 
   // socket.on("ready-to-start", function(status) {
@@ -234,7 +301,7 @@ io.on('connection', function(socket) {
     for (var i = 0; i < groupCoords.length; i++) {
       //if we find a match, we update the existing coordinate
       //using timestamps means that we update any duplicate markers that are hanging around
-      if(groupCoords[i].connectTimestamp === coords.connectTimestamp) {
+      if (groupCoords[i].connectTimestamp === coords.connectTimestamp) {
         groupCoords[i].lat = coords.lat
         groupCoords[i].lng = coords.lng
         groupCoords[i].heading = coords.heading
@@ -244,10 +311,10 @@ io.on('connection', function(socket) {
       }
 
       //check all coordinates to see if they're fresh
-      if(Date.now() - groupCoords[i].currentTimestamp > 10000){
-        console.log(Date.now() - groupCoords[i].currentTimestamp)
-        inactiveIds.push(i);
-      }
+      // if (Date.now() - groupCoords[i].currentTimestamp > 10000) {
+      //   console.log(Date.now() - groupCoords[i].currentTimestamp)
+      //   inactiveIds.push(i);
+      // }
     }
 
 
@@ -276,13 +343,16 @@ io.on('connection', function(socket) {
       console.log(groupCoords);
     }
 
+    //Clear inactive ids - this is maybe a bit dangerous to use now, would rather just restart the server a few times
     // console.log(inactiveIds);
     if (inactiveIds.length > 0) {
-      for(var i = 0; i < inactiveIds.length; i ++){
-      // console.log("removing :" + JSON.stringify(groupCoords[index]))
-      console.log("removing inactive user: ", inactiveIds[i]);
-      groupCoords.splice(inactiveIds[i], 1)
-      io.emit("clear-markers", 1)
+      for (var i = 0; i < inactiveIds.length; i++) {
+
+        //It's not a good idea to actually remove the coordinate unless the socket is broken
+        //
+        // console.log("removing inactive user: ", inactiveIds[i]);
+        // groupCoords.splice(inactiveIds[i], 1)
+        io.emit("clear-markers", 1)
       }
     }
 
@@ -396,30 +466,37 @@ function getDateString() {
 function saveFile(data) {
 
   var name = "recording " + getDateString() + ".json";
+  // var name = "recording.json";
 
-  var jsonString = JSON.stringify(data, null, 1)
-  fs.writeFile("./" + name, jsonString, (err) => {
+  //add trailing bracket
+  data += "]";
+  // var jsonString = JSON.stringify(data, null, 1)
+  fs.writeFile("./public/logs/" + name, data, (err) => {
     if (err) {
       console.error(err)
       return
     }
-    console.log("saved file: ", name);
+    // console.log("saved file: ", name);
   })
 
 }
 
 function sendGroupCoordinates() {
-
   // if (coordinatesChanged) {
-    coordinatesChanged = false;
-    io.emit("receive-group-coordinates", groupCoords)
-    // console.log("coord array length : ", groupCoords.length)
-    if (recordCoords) {
-      // groupCoords.timestamp = Date.now();
-      var timestamp = {timestamp: Date.now()};
-      savedCoords.push(timestamp);
-      savedCoords.push(groupCoords);
-    }
+  coordinatesChanged = false;
+  io.emit("receive-group-coordinates", groupCoords)
+  // console.log("coord array length : ", groupCoords.length)
+  if (recordCoords) {
+    // groupCoords.timestamp = Date.now();
+    // var timestamp = {
+    //   timestamp: Date.now()
+    // };
+    // savedCoords.push(timestamp);
+    savedCoordsString += JSON.stringify(groupCoords, null, 1);
+    savedCoordsString += ",";
+    // console.log(saveCoords);
+    // savedCoords.push(saveCoords);
+  }
   // }
 
 }
