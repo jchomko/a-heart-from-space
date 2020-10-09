@@ -32,7 +32,7 @@ var recordState = false;
 
 socket.on('connect', function() {
 
-  socket.emit('start-playback', 'recording 20201008-17:26:46.json')
+  socket.emit('start-playback', 'recording 20201009-10:52:8.json')
   // sessionID = socket.id;
   console.log("requested playback");
 
