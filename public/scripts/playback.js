@@ -32,7 +32,7 @@ var recordState = false;
 
 socket.on('connect', function() {
 
-  socket.emit('start-playback', 'recording 20201009-10:52:8.json')
+  socket.emit('start-playback', 'recording 20201009-18_23_50.json')
   // sessionID = socket.id;
   console.log("requested playback");
 
@@ -159,7 +159,7 @@ function drawLines(groupCoords) {
       strokeOpacity: 1,
       strokeWeight: 5,
       fillColor: "#f70000",
-      fillOpacity: 0.5,
+      fillOpacity: 1,
       path: groupCoordsSorted
     });
     polyline.setMap(map);
@@ -243,7 +243,7 @@ function drawFixedLines(groupCoords) {
         // strokeOpacity: 1,
         strokeWeight: 5,
         fillColor: '#f70000',
-        fillOpacity: 0.2
+        fillOpacity: 1
       })
 
       trianglePolyline.setMap(map);
@@ -311,17 +311,17 @@ function drawMarkers(groupCoords) {
       icon: image
     });
 
-    // google.maps.event.addListener(marker, 'mouseup', function(event) {
-    //   console.log("tapping : ", this.getTitle());
-    //   socket.emit("send-tap", this.getTitle());
-    //
-    //   drawTapResponse(this.getTitle());
-    //
-    // });
-
     groupMarkers.push(marker);
     console.log("adding marker, total markers: ", groupMarkers.length);
     index++;
+  }
+
+  while(groupMarkers.length > groupCoords.length){
+
+      groupMarkers[groupMarkers.length-1].setMap(null);
+      groupMarkers.pop();
+
+      console.log("removing marker, total markers: ", groupMarkers.length);
   }
 
   //cycle through list of incoming coords
@@ -361,49 +361,8 @@ socket.on("clear-markers", function(number) {
   clearMarkers(number)
 })
 
-
-
-
-
 socket.on('connect', function() {
 
-  // socket.emit('new-client', 'mobile')
-  // sessionID = socket.id;
-  // console.log("connected", socket.connected, sessionID);
-  // $("#compassInfo").html(sessionID);
-
-  // tryGeolocation();
-  // requestDeviceOrientation();
-  //
-  // if (currLatLng != null) {
-  //   socket.emit("update-coordinates", currLatLng);
-  // }
-  //
-  // firstSocketID = getCookie("firstsocket");
-  //
-  // if(firstSocketID == null){
-  //     setCookie("firstsocket", sessionID, 1);
-  // }
-  //
-  // //Get sequential id from cookie
-  // // var id = getCookie("id");
-  // // if (id != null) {
-  // //   console.log("has cookie id: " + id);
-  // //   cookieID = id;
-  // // } else {
-  // //   console.log("has no id : " + id);
-  // //   socket.emit("request-id");
-  // // }
-  //
-  // var ct = getCookie("timestamp");
-  // if (ct != null) {
-  //   console.log("has timestamp : " + ct);
-  //   firstConnectTimestamp = ct;
-  //   $("#compassInfo").html(firstConnectTimestamp);
-  // } else {
-  //   console.log("no timestamp saved in cookies ");
-  //   socket.emit("request-timestamp");
-  // }
 });
 
 
@@ -415,6 +374,7 @@ socket.on("receive-group-coordinates-playback", function(groupCoords) {
   if (showArrows) {
     drawMarkers(groupCoords);
   }
+
 });
 
 //These two don't do anything anymore

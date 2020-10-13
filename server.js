@@ -146,7 +146,7 @@ io.on('connection', function(socket) {
       groupCoords.splice(index, 1)
       // console.log("coord array length : ", groupCoords.length)
       // coordinatesChanged = true;
-      io.emit("clear-markers", 1) //groupCoords
+      // io.emit("clear-markers", 1) //groupCoords
       isGroupReady();
     } else {
       console.log("disconnect called but id not found - already removed")
@@ -298,6 +298,7 @@ io.on('connection', function(socket) {
     var existsInDisconnected = false
     var inactiveIds = []
 
+
     for (var i = 0; i < groupCoords.length; i++) {
       //if we find a match, we update the existing coordinate
       //using timestamps means that we update any duplicate markers that are hanging around
@@ -313,11 +314,11 @@ io.on('connection', function(socket) {
       }
 
       //check all coordinates to see if they're fresh
-      if (Date.now() - groupCoords[i].currentTimestamp > 10000) {
-        console.log(Date.now() - groupCoords[i].currentTimestamp)
-        inactiveIds.push(i);
-      }
-      
+      // if (Date.now() - groupCoords[i].currentTimestamp > 10000) {
+      //   console.log(Date.now() - groupCoords[i].currentTimestamp)
+      //   inactiveIds.push(i);
+      // }
+
     }
 
 
@@ -349,14 +350,14 @@ io.on('connection', function(socket) {
     // Clear inactive ids - this is maybe a bit dangerous to use now, would rather just restart the server a few times
     // console.log(inactiveIds);
     if (inactiveIds.length > 0) {
-      for (var i = 0; i < inactiveIds.length; i++) {
+      // for (var i = 0; i < inactiveIds.length; i++) {
 
         //It's not a good idea to actually remove the coordinate unless the socket is broken
         //
         // console.log("removing inactive user: ", inactiveIds[i]);
-        groupCoords.splice(inactiveIds[i], 1)
-        io.emit("clear-markers", 1)
-      }
+        // groupCoords.splice(inactiveIds[i], 1)
+        // io.emit("clear-markers", 1)
+      // }
     }
 
     //Sending coordinates on an interval timer

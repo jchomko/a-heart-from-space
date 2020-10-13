@@ -133,14 +133,14 @@ function toggleSection() {
   // it shoouuld be equally drawn between the sections so it's centered on you.
 }
 
-function checkDoneButton(groupCoords){
+function checkDoneButton(groupCoords) {
 
   for (var i = 0; i < groupCoords.length; i++) {
     if (groupCoords[i].connectTimestamp === firstConnectTimestamp) {
-      if(groupCoords[i].ready){
+      if (groupCoords[i].ready) {
         $("#doneSection").html("Done!");
         $("#doneSection").css("background-color", "rgb(180,260,180)")
-      }else{
+      } else {
         $("#doneSection").html("Done");
         $("#doneSection").css("background-color", "rgb(220,220,220)")
       }
@@ -198,9 +198,14 @@ var browserGeolocationFail = function(error) {
 function tryGeolocation() {
   if (navigator.geolocation) {
 
-    if(watchPositionId != null){
+    if (watchPositionId != null) {
       navigator.geolocation.clearWatch(watchPositionId);
       console.log("clearing watchPosition: ", watchPositionId);
+    } else {
+      for (var i = 0; i < 100; i++) {
+        var w = navigator.geolocation.clearWatch(i);
+        console.log("clearing watchPositions ", i, w);
+      }
     }
 
     watchPositionId = navigator.geolocation.watchPosition(
@@ -208,7 +213,7 @@ function tryGeolocation() {
       browserGeolocationFail, {
         enableHighAccuracy: true,
         timeout: 10000,
-        maximumAge: 0
+        maximumAge: 10000 //maximum age might be why batteries were going so low - because it forces the phone to get a new position each time?
       }
     );
   }
@@ -374,9 +379,9 @@ function drawFixedLines(groupCoords) {
   var readyCount = 0;
   //Draw Triangles
   for (var i = 0; i < groupCoords.length; i++) {
-    if (groupCoords[i].ready === true ) { //|| lastMode === 3
+    if (groupCoords[i].ready === true) { //|| lastMode === 3
 
-      readyCount ++;
+      readyCount++;
 
       var trianglePolyline = new google.maps.Polygon({
         strokeColor: '#f70000',
@@ -407,7 +412,7 @@ function drawFixedLines(groupCoords) {
       groupPolyLines.push(trianglePolyline);
     }
   }
-  // 
+  //
   // console.log(readyCount, groupCoords.length, showArrows);
   // if(readyCount >= groupCoords.length){
   //   showArrows = false;
@@ -498,21 +503,21 @@ function drawTriangle() {
 //Called every time a socket is disconnected
 function clearMarkers(numberToClear) {
 
-  console.log("clear ", numberToClear, " markers");
-  var index = 0;
-  while (index < numberToClear) {
-    console.log(
-      "removing marker: "
-      // groupMarkers[groupMarkers.length - 1].getTitle()
-    );
-    if (groupMarkers.length - 1 > 0) {
-      groupMarkers[groupMarkers.length - 1].setMap(null);
-      // groupPolyLines.splice(groupMarkers.length-1,1);
-      groupMarkers.pop();
-    }
-    index++;
-    console.log("total markers : ", groupMarkers.length);
-  }
+  // console.log("clear ", numberToClear, " markers");
+  // var index = 0;
+  // while (index < numberToClear) {
+  //   console.log(
+  //     "removing marker: "
+  //     // groupMarkers[groupMarkers.length - 1].getTitle()
+  //   );
+  //   if (groupMarkers.length - 1 > 0) {
+  //     groupMarkers[groupMarkers.length - 1].setMap(null);
+  //     // groupPolyLines.splice(groupMarkers.length-1,1);
+  //     groupMarkers.pop();
+  //   }
+  //   index++;
+  //   console.log("total markers : ", groupMarkers.length);
+  // }
 
 }
 
@@ -548,6 +553,14 @@ function drawMarkers(groupCoords) {
     groupMarkers.push(marker);
     console.log("adding marker, total markers: ", groupMarkers.length);
     index++;
+  }
+
+  while(groupMarkers.length > groupCoords.length){
+
+      groupMarkers[groupMarkers.length-1].setMap(null);
+      groupMarkers.pop();
+
+      console.log("removing marker, total markers: ", groupMarkers.length);
   }
 
   //cycle through list of incoming coords
@@ -830,7 +843,7 @@ socket.on('connect', function() {
   // firstSocketID = getCookie("firstsocket");
 
   // if(firstSocketID == null){
-      // setCookie("firstsocket", sessionID, 1);
+  // setCookie("firstsocket", sessionID, 1);
   // }
 
   //Get sequential id from cookie
@@ -851,11 +864,13 @@ socket.on("receive-group-coordinates", function(groupCoords) {
   // drawLines(groupCoords);
   drawFixedLines(groupCoords);
 
-  checkDoneButton(groupCoords);
-
   if (showArrows) {
     drawMarkers(groupCoords);
   }
+
+  checkDoneButton(groupCoords);
+
+
 });
 
 //These two don't do anything anymore
