@@ -303,7 +303,7 @@ io.on('connection', function(socket) {
       //if we find a match, we update the existing coordinate
       //using timestamps means that we update any duplicate markers that are hanging around
       // if (JSON.stringify(groupCoords[i].connectTimestamp) === JSON.stringify(coords.connectTimestamp)) {
-      if (JSON.stringify( groupCoords[i].connectTimestamp) === JSON.stringify(coords.connectTimestamp)) {
+      if (JSON.stringify(groupCoords[i].connectTimestamp) === JSON.stringify(coords.connectTimestamp)) {
 
         groupCoords[i].lat = coords.lat
         groupCoords[i].lng = coords.lng
@@ -313,18 +313,29 @@ io.on('connection', function(socket) {
         exists = true
       }
 
-      //check all coordinates to see if they're fresh
-      // if (Date.now() - groupCoords[i].currentTimestamp > 10000) {
+      //check all coordinates to see if they're fresh, remove if older than 25 seconds
+      // if (Date.now() - groupCoords[i].currentTimestamp > 25000) {
       //   console.log(Date.now() - groupCoords[i].currentTimestamp)
       //   inactiveIds.push(i);
       // }
 
     }
 
+    //Remove any inactive ids
+    if (inactiveIds.length > 0) {
+      for (var i = 0; i < inactiveIds.length; i++) {
 
-    //If ID doesn't match with existing IDs
+        //It's not a good idea to actually remove the coordinate unless the socket is broken
+        //
+        console.log("removing inactive user: ", inactiveIds[i]);
+        groupCoords.splice(inactiveIds[i], 1)
+        // io.emit("clear-markers", 1)
+      }
+      inactiveIds = [];
+    }
+
+    //If ID doesn't match with existing IDs, we add a new entry
     if (exists === false && typeof coords.connectTimestamp != "undefined") {
-
       var person = {
         id: this.id,
         lat: coords.lat,
@@ -336,29 +347,61 @@ io.on('connection', function(socket) {
       groupCoords.push(person)
     }
 
-    //Sort coordinates so they're always in the same order
-    groupCoords.sort(function(a, b) {
-      return parseInt(a.connectTimestamp) - parseInt(b.connectTimestamp)
-    });
+    //Sort coordinates so they're always in the same order - for untangling
+    // groupCoords.sort(function(a, b) {
+    //   return parseInt(a.connectTimestamp) - parseInt(b.connectTimestamp)
+    // });
+
+    //Sort coords by angle to centroid - no untangling required
+    //This should maybe be called with a button press
+    //In the current setup it will be called whenever someone reloads
+    //If someone reloads and their dot is far away, it will mess things up!
+    //We probably need an 'untangle' button that anyone can press
 
     if (exists === false) {
+
+      //Untangle group
+      const center = groupCoords.reduce(calculateCentroid, {
+        lat: 0,
+        lng: 0
+      });
+
+      const angles = groupCoords.map(({
+        lat,
+        lng,
+        id,
+        ready,
+        currentTimestamp,
+        connectTimestamp
+      }) => {
+        return {
+          lat,
+          lng,
+          id,
+          ready,
+          currentTimestamp,
+          connectTimestamp,
+          angle: Math.atan2(lat - center.lat, lng - center.lng) * 180 / Math.PI
+        };
+      });
+
+      // let groupCoordsSorted = angles.sort(sortByAngle);
+
+      groupCoords = angles.sort(sortByAngle);
+
+      //closing the loop
+      // groupCoordsSorted.push(groupCoordsSorted[0]);
+      // groupCoords.push(groupCoords[0]);
+      // groupCoords = groupCoordsSorted;
+
       console.log("new addition")
       console.log(groupCoords.length);
       console.log(groupCoords);
+
     }
 
     // Clear inactive ids - this is maybe a bit dangerous to use now, would rather just restart the server a few times
     // console.log(inactiveIds);
-    if (inactiveIds.length > 0) {
-      // for (var i = 0; i < inactiveIds.length; i++) {
-
-        //It's not a good idea to actually remove the coordinate unless the socket is broken
-        //
-        // console.log("removing inactive user: ", inactiveIds[i]);
-        // groupCoords.splice(inactiveIds[i], 1)
-        // io.emit("clear-markers", 1)
-      // }
-    }
 
     //Sending coordinates on an interval timer
     // io.emit("receive-group-coordinates", groupCoords)
@@ -372,6 +415,27 @@ io.on('connection', function(socket) {
 
 })
 
+const calculateCentroid = (acc, {
+  lat,
+  lng
+}, idx, src) => {
+  acc.lat += lat / src.length;
+  acc.lng += lng / src.length;
+  return acc;
+};
+
+const sortByAngle = (a, b) => a.angle - b.angle;
+
+// function calculateSimilarity(groupCoordsSorted) {
+//   const curve = groupCoordsSorted.map(coords => ({
+//     x: coords.lng,
+//     y: coords.lat
+//   }));
+//   const similarity = curveMatcher.shapeSimilarity(curve, heartShape, {
+//     rotations: 500
+//   });
+//   console.log("similarity", similarity);
+// }
 
 function isGroupReady() {
 

@@ -253,6 +253,8 @@ function calculateSimilarity(groupCoordsSorted) {
 }
 
 //Draw lines between the received points
+//Sorts by angle to the centroid
+//We should be doing this on the back-end to save power
 function drawLines(groupCoords) {
 
   var dist = 0;
@@ -351,12 +353,14 @@ function drawFixedLines(groupCoords) {
   var path = fixedPolyLine.getPath();
   path.clear()
 
+  //Why aren't we just drawing the markers here? If we have extra, set map to null, if we need more add one to list?
   //Add positions of other people
   for (var i = 0; i < groupCoords.length; i++) {
     var ll = new google.maps.LatLng(groupCoords[i].lat, groupCoords[i].lng);
     // console.log("adding new coordinate");
     path.push(ll);
   }
+
 
   // //close shape by bringing it back to the first person
   if (groupCoords.length > 1) {
@@ -443,6 +447,8 @@ function drawTapResponse(markerId) {
 
 }
 
+//Draw one triangle for user
+//I made this so it would draw faster but not using it now
 function drawTriangle() {
 
   //find which index you are on the sorted list
