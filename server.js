@@ -18,22 +18,11 @@ function Sessions() {
   this.sessions = [];
 }
 
-Sessions.prototype.getAvailableList = function () {
-  return (
-    this.sessions
-      //.filter((s) => s.lng !== undefined && s.lat !== undefined)
-      .reduce((acc, cur) => {
-        acc.push(cur.id);
-        return acc;
-      }, [])
-  );
-};
-
 Sessions.prototype.addSession = function (socketId) {
   var session = {
     id: socketId,
-    lng: undefined,
-    lat: undefined,
+    //lng: undefined,
+    //lat: undefined,
     users: [
       {
         id: socketId,
@@ -60,16 +49,16 @@ Sessions.prototype.addUserToSession = function (sessionId, user) {
   }
 };
 
-Sessions.prototype.removeUserFromSession = function (socketId) {
+Sessions.prototype.deleteUserFromSession = function (socketId) {
   var [sessionIndex, userIndex] = this.findUser(socketId);
   if (sessionIndex !== undefined) {
-    var removedUsers = this.sessions[sessionIndex].users.splice(userIndex, 1);
+    var deletedUsers = this.sessions[sessionIndex].users.splice(userIndex, 1);
     var sessionId = this.sessions[sessionIndex].id;
     if (this.sessions[sessionIndex].users.length === 0) {
       this.sessions.splice(sessionIndex, 1);
-      return [sessionId, true, removedUsers[0]];
+      return [sessionId, true, deletedUsers[0]];
     } else {
-      return [sessionId, false, removedUsers[0]];
+      return [sessionId, false, deletedUsers[0]];
     }
   }
 };
@@ -81,6 +70,23 @@ Sessions.prototype.findUser = function (socketId) {
       return [i, userIndex];
     }
   }
+};
+
+Sessions.prototype.getSessionsIds = function () {
+  return (
+    this.sessions
+      //.filter((s) => s.lng !== undefined && s.lat !== undefined)
+      .reduce((acc, cur) => {
+        acc.push(cur.id);
+        return acc;
+      }, [])
+  );
+};
+
+Sessions.prototype.getUsers = function (socketId) {
+  console.log("getUsers", socketId);
+  var [sessionIndex] = this.findUser(socketId);
+  return this.sessions[sessionIndex].users;
 };
 
 /*Sessions.prototype.remove = function (socketId) {
@@ -163,118 +169,71 @@ app.get("/", function (request, response) {
 io.on("connection", function (socket) {
   console.log("connected", socket.id);
 
-  // sessions.push({ id: socket.id, users: [socket.id] });
-  // io.to(socket.id).emit("room-list", rooms);
-  /*socket.emit(
-    "room-list",
-    sessions.reduce((acc, cur) => {
-      acc.push(cur.id);
-      return acc;
-    }, [])
-  );
-  socket.broadcast.emit("room-add", socket.id);*/
-
-  socket.broadcast.emit("new-session-available", socket.id);
-  socket.emit("available-sessions", sessions.getAvailableList());
+  socket.broadcast.emit("new-session", socket.id);
+  socket.emit("sessions", sessions.getSessionsIds());
   sessions.addSession(socket.id);
 
-  socket.on("request-id", function () {
+  /*socket.on("request-id", function () {
     io.to(this.id).emit("receive-id", idCounter);
     idCounter += 1;
-  });
+  });*/
 
-  socket.on("session-join", function (newSessionId) {
+  socket.on("join-session", function (newSessionId) {
     var [
       sessionId,
-      isSessionDeleted,
-      removedUser,
-    ] = sessions.removeUserFromSession(socket.id);
+      isSessionToDelete,
+      deletedUser,
+    ] = sessions.deleteUserFromSession(socket.id);
+    console.log(
+      "join-session",
+      newSessionId,
+      "isSessionToDelete",
+      isSessionToDelete
+    );
     socket.leave(sessionId, () => {
       socket.join(newSessionId, () => {
-        if (isSessionDeleted === true) {
-          socket.broadcast.emit("session-deleted", sessionId);
-          socket.emit("session-deleted", sessionId);
+        if (isSessionToDelete === true) {
+          socket.broadcast.emit("delete-session", sessionId);
+          socket.emit("delete-session", sessionId);
         }
-        sessions.addUserToSession(newSessionId, removedUser);
+        socket.to(newSessionId).emit("new-user", deletedUser);
+        socket.emit("users", sessions.getUsers(newSessionId));
+        sessions.addUserToSession(newSessionId, deletedUser);
       });
     });
-    /*for (var i = 0; i < sessions.length; i++) {
-      var userIndex = sessions[i].users.findIndex((u) => u.id === socket.id);
-      if (userIndex !== -1) {
-        sessions[i].users.splice(userIndex, 1);
-        socket.leave(sessions[i].id, () => {
-          socket.join(newSession, () => {
-            if (sessions[i].users.length === 0) {
-              socket.broadcast.emit("session-delete", sessions[i].id);
-              socket.emit("session-delete", sessions[i].id);
-              sessions.splice(i, 1);
-            }
-            var sessionIndex = sessions.findIndex((s) => s.id === newSessionId);
-            sessions[sessionIndex].users.push(socket.id);
-          });
-        });
-        break;
-      }
-    };*/
   });
 
-  socket.on("coordinates-updated", function (lng, lat) {
-    console.log("coordinates-updated", lng, lat);
+  socket.on("update-coordinates", function (lng, lat) {
+    console.log("update-coordinates", lng, lat);
     var sessionToNotify = sessions.updateCoordinates(socket.id, lng, lat);
     if (sessionToNotify !== undefined) {
-      socket.to(sessionToNotify).emit("coordinates-updated", lng, lat);
+      socket
+        .to(sessionToNotify)
+        .emit("update-user-coordinates", socket.id, lng, lat);
     }
   });
 
-  socket.on("heading-updated", function (heading) {
-    console.log("heading-updated", heading);
+  socket.on("update-heading", function (heading) {
+    console.log("update-heading", heading);
     var sessionToNotify = sessions.updateHeading(socket.id, heading);
     if (sessionToNotify !== undefined) {
-      socket.to(sessionToNotify).emit("heading-updated", heading);
+      socket.to(sessionToNotify).emit("update-user-heading", heading);
     }
   });
 
   socket.on("disconnect", function () {
     console.log("disconnect", socket.id);
-    var [sessionId, isSessionDeleted] = sessions.removeUserFromSession(
+    var [sessionId, isSessionToDelete] = sessions.deleteUserFromSession(
       socket.id
     );
-    console.log("sessionId", sessionId, "isSessionDeleted", isSessionDeleted);
-    if (isSessionDeleted === true) {
-      socket.broadcast.emit("session-deleted", sessionId);
-      socket.emit("session-deleted", sessionId);
+    console.log("sessionId", sessionId, "isSessionToDelete", isSessionToDelete);
+    if (isSessionToDelete === true) {
+      socket.broadcast.emit("delete-session", sessionId);
+      socket.emit("delete-session", sessionId);
+    } else {
+      socket.broadcast.emit("delete-user", socket.id);
     }
   });
-
-  /*socket.on("room-join", function (newSession) {
-    for (var i = 0; i < sessions.length; i++) {
-      var userIndex = sessions[i].users.findIndex((u) => u.id === socket.id);
-      if (userIndex !== -1) {
-        sessions[i].users.splice(userIndex, 1);
-        socket.leave(sessions[i].id, () => {
-          socket.join(newSession, () => {
-            if (sessions[i].users.length === 0) {
-              socket.broadcast.emit("room-delete", sessions[i].id);
-              socket.emit("room-delete", sessions[i].id);
-              sessions.splice(i, 1);
-            }
-            var sessionIndex = sessions.findIndex((s) => s.id === newSession);
-            sessions[sessionIndex].users.push(socket.id);
-          });
-        });
-        break;
-      }
-    }
-  });*/
-
-  /*socket.on("room-check", function () {
-    for (var i = 0; i < sessions.length; i++) {
-      var userIndex = sessions[i].users.findIndex((u) => u === socket.id);
-      if (userIndex !== -1) {
-        socket.to(sessions[i].id).emit("room-msg");
-      }
-    }
-  });*/
 
   //detect new client
   //client is added to list only when it sends some coordinates

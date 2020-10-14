@@ -1,19 +1,19 @@
 var socket = io();
 
-var currLatLng;
+// var currLatLng;
 var map;
-var groupMarkers = [];
+// var groupMarkers = [];
 var groupPolyLines = [];
-var homeMarkerID;
+// var homeMarkerID;
 // var sessionID;
-var bestAccuracy = 1000;
+// var bestAccuracy = 1000;
 var hasSensorAccess = false;
 var compassOrientation = 0;
-var markerArray = [];
+// var markerArray = [];
 var homeMarker;
 var lastCompassOrientation = 0;
-var showArrows = true;
-var guideLine;
+// var showArrows = true;
+// var guideLine;
 var drawDone = false;
 var sensorsActive = false;
 var gpsActive = false;
@@ -58,10 +58,12 @@ function readyToStart() {
   //remove ready dialogue
   socket.emit("ready-to-start", true);
 }
+
 //Center map to current position (if it's been set)
 function center() {
   // requestDeviceOrientation();
-  map.panTo(new google.maps.LatLng(currLatLng.lat, currLatLng.lng));
+  // map.panTo(new google.maps.LatLng(currLatLng.lat, currLatLng.lng));
+  sessions.centerMap();
 }
 
 function activateSensors() {
@@ -90,7 +92,7 @@ function activateGPS() {
 
 function doneSection() {
   if (!drawDone) {
-    drawTriangle();
+    // drawTriangle();
     $("#doneSection").html("Fill On");
     $("#doneSection").css("background-color", "rgb(250,180,180)");
     // socket.emit("draw-triangle", true)
@@ -113,36 +115,45 @@ function doneSection() {
 
 //Geolocation success callback
 var browserGeolocationSuccess = function (position) {
+  // console.log("browserGeolocationSuccess", position);
   // $("#activateGPS").html("GPS On");
   activateGPS();
 
-  //if (position.coords.accuracy < bestAccuracy) {
-  bestAccuracy = position.coords.accuracy;
-  console.log("bestAccuracy: " + bestAccuracy);
-  //}
-  // if we have a high accuracy reading
-  // if using simulated position the accuracy will be fixed at 150
-  //if (position.coords.accuracy < bestAccuracy + 10) {
-  //|| position.coords.accuracy === 150
-  currLatLng = {
-    lat: position.coords.latitude,
-    lng: position.coords.longitude,
-    heading: compassOrientation,
-    done: drawDone,
-  };
-  updateHomeMarkerPosition(position);
-  // console.log("accurate coordinates: " + JSON.stringify(myLatLng))
-  // socket.emit("update-coordinates", currLatLng);
-  socket.emit(
-    "coordinates-updated",
+  sessions.updateCurrentPosition(
     position.coords.longitude,
     position.coords.latitude
   );
-  //}
+
+  socket.emit(
+    "update-coordinates",
+    position.coords.longitude,
+    position.coords.latitude
+  );
+
+  /*if (position.coords.accuracy < bestAccuracy) {
+    bestAccuracy = position.coords.accuracy;
+    console.log("bestAccuracy: " + bestAccuracy);
+  }
+  // if we have a high accuracy reading
+  // if using simulated position the accuracy will be fixed at 150
+  if (position.coords.accuracy < bestAccuracy + 10) {
+    //|| position.coords.accuracy === 150
+    currLatLng = {
+      lat: position.coords.latitude,
+      lng: position.coords.longitude,
+      heading: compassOrientation,
+      done: drawDone,
+    };
+    updateHomeMarkerPosition(position);
+
+    // console.log("accurate coordinates: " + JSON.stringify(myLatLng))
+    socket.emit("update-coordinates", currLatLng);
+  }*/
 };
 
 //Geolocation fail callback
 var browserGeolocationFail = function (error) {
+  console.log("browserGeolocationFail", error);
   switch (error.code) {
     case error.TIMEOUT:
       alert("Browser geolocation error !\n\nTimeout." + error.message);
@@ -187,14 +198,6 @@ function askForLocation() {
   }
 }
 
-const calculateCentroid = (acc, { lat, lng }, idx, src) => {
-  acc.lat += lat / src.length;
-  acc.lng += lng / src.length;
-  return acc;
-};
-
-const sortByAngle = (a, b) => a.angle - b.angle;
-
 /*function calculateSimilarity(groupCoordsSorted) {
   const curve = groupCoordsSorted.map((coords) => ({
     x: coords.lng,
@@ -207,7 +210,7 @@ const sortByAngle = (a, b) => a.angle - b.angle;
 }*/
 
 //Draw lines between the received points
-function drawLines(groupCoords) {
+/*function drawLines(groupCoords) {
   var dist = 0;
 
   // console.log("num lines: ", groupPolyLines.length);
@@ -294,9 +297,9 @@ function drawLines(groupCoords) {
       }
     }
   }
-}
+}*/
 
-function drawTapResponse(markerId) {
+/*function drawTapResponse(markerId) {
   let matchIndex = -1;
   for (var i = 0; i < groupMarkers.length; i++) {
     if (groupMarkers[i].getTitle() === markerId) {
@@ -316,9 +319,9 @@ function drawTapResponse(markerId) {
     600,
     matchIndex
   );
-}
+}*/
 
-function drawTriangle() {
+/*function drawTriangle() {
   //find which index you are on the sorted list
   //then just increment one up or down on the list to get the next point
   //but that means we need to keep the id in the coordinates
@@ -376,10 +379,10 @@ function drawTriangle() {
     //and so if an ID has a marker of being finished we draw a triangle for it
     //(or include it in our triangle if it's adjacent)
   }
-}
+}*/
 
 //Called every time a socket is disconnected
-function clearMarkers(numberToClear) {
+/*function clearMarkers(numberToClear) {
   var index = 0;
   while (index < numberToClear) {
     console.log(
@@ -393,9 +396,9 @@ function clearMarkers(numberToClear) {
     index++;
     console.log("total markers : ", groupMarkers.length);
   }
-}
+}*/
 
-function drawMarkers(groupCoords) {
+/*function drawMarkers(groupCoords) {
   var index = 0;
   while (groupMarkers.length < groupCoords.length) {
     var image = {
@@ -417,7 +420,6 @@ function drawMarkers(groupCoords) {
     google.maps.event.addListener(marker, "mouseup", function (event) {
       console.log("tapping : ", this.getTitle());
       socket.emit("send-tap", this.getTitle());
-
       drawTapResponse(this.getTitle());
     });
 
@@ -458,10 +460,10 @@ function drawMarkers(groupCoords) {
       groupMarkers[c].setMap(null);
     }
   }
-}
+}*/
 
 //Start debug drawing functions - Fired on map click - disabled for normal operation
-function addLatLng(event) {
+/*function addLatLng(event) {
   var path = guideLine.getPath();
   path.push(event.latLng);
   // drawLines(guideLine.getPath().getArray());
@@ -486,10 +488,10 @@ function removeAt(index) {
 
 function setAt(index) {
   polylineChanged();
-}
+}*/
 //End debug drawing functions
 
-function convertCoordinates(coordsToConvert) {
+/*function convertCoordinates(coordsToConvert) {
   var formattedCoords = [];
   for (var i = 0; i < coordsToConvert.length; i++) {
     var formattedCoord = {
@@ -499,10 +501,10 @@ function convertCoordinates(coordsToConvert) {
     formattedCoords.push(formattedCoord);
   }
   return formattedCoords;
-}
+}*/
 
 //Calculate distance between two points
-function distance(lat1, lon1, lat2, lon2) {
+/*function distance(lat1, lon1, lat2, lon2) {
   var R = 6371; // km (change this constant to get miles)
   var dLat = ((lat2 - lat1) * Math.PI) / 180;
   var dLon = ((lon2 - lon1) * Math.PI) / 180;
@@ -522,7 +524,7 @@ function distance(lat1, lon1, lat2, lon2) {
 
   //meters
   return d * 1000;
-}
+}*/
 
 socket.on("receive-tap", function () {
   console.log("vibrate");
@@ -539,7 +541,7 @@ socket.on("receive-tap", function () {
   spriteSound.play(); //key
 });
 
-socket.on("clear-markers", function (number) {
+/*socket.on("clear-markers", function (number) {
   clearMarkers(number);
 });
 
@@ -549,7 +551,7 @@ socket.on("receive-id", function (id) {
   // cookieID = id;
 });
 
-/*socket.on("receive-start-status", function (startStatus) {
+socket.on("receive-start-status", function (startStatus) {
   console.log(" is started already ? :", startStatus);
   if (startStatus === false) {
     // show dialog
@@ -597,83 +599,261 @@ socket.on("receive-id", function (id) {
   }
 });*/
 
-socket.on("connect", function () {
-  //sessionID = socket.id;
-  currentSessionID = socket.id;
-  displaySessions();
-  socket.emit("new-client", "mobile");
-  tryGeolocation();
-  requestDeviceOrientation();
-  if (currLatLng != null) {
-    // socket.emit("update-coordinates", currLatLng);
-  }
-});
+const calculateCentroid = (acc, user, idx, src) => {
+  acc.lat += user.getPosition().lat() / src.length;
+  acc.lng += user.getPosition().lng() / src.length;
+  return acc;
+};
 
-var sessions = [];
-var currentSessionID = undefined;
+const sortByAngle = (a, b) => a.angle - b.angle;
 
-function displaySessions() {
-  console.log("displaySessions", sessions);
-  $("#current-session").html(currentSessionID);
+function Sessions() {
+  this.sessions = [];
+  this.currentSessionID = undefined;
+  this.currentUser = undefined;
+  this.users = [];
+  this.polyline = undefined;
+}
+
+Sessions.prototype.displaySessions = function () {
+  console.log("displaySessions", this.sessions);
+  $("#current-session").html(this.currentSessionID);
   $("#available-sessions").html(
-    sessions
+    this.sessions
       .map(
         (id) =>
-          `<div>${id}</div><button onclick="joinSession('${id}')">Join</button>`
+          `<div>${id}</div><button onclick="sessions.joinSession('${id}')">Join</button>`
       )
       .join("")
   );
-}
+};
 
-function joinSession(sessionId) {
+/*Sessions.prototype.displayUsers = function () {
+  console.log("displayUsers", this.users);
+};*/
+
+Sessions.prototype.joinSession = function (sessionId) {
   console.log("joinSession", sessionId);
-  socket.emit("session-join", sessionId);
-  currentSessionID = sessionId;
-  displaySessions();
-}
+  this.setCurrentSession(sessionId);
+  this.deleteSession(sessionId);
+  socket.emit("join-session", sessionId);
+};
 
-function check() {
-  // socket.emit("room-check");
-}
+Sessions.prototype.setCurrentSession = function (id) {
+  this.currentSessionID = id;
+  this.displaySessions();
+};
 
-/*socket.on("room-msg", function () {
-  console.log("room-msg");
-});*/
+Sessions.prototype.setSessions = function (sessions) {
+  this.sessions = sessions;
+  this.displaySessions();
+};
 
-// available-sessions
-socket.on("available-sessions", function (list) {
-  console.log("available-sessions", list);
-  sessions = list;
-  displaySessions();
+Sessions.prototype.addSession = function (sessionId) {
+  this.sessions.push(sessionId);
+  this.displaySessions();
+};
+
+Sessions.prototype.deleteSession = function (sessionId) {
+  this.sessions = this.sessions.filter((s) => s !== sessionId);
+  this.displaySessions();
+};
+
+Sessions.prototype.addUsers = function (users) {
+  this.users = [];
+  users.forEach((user) => this.addUser(user));
+};
+
+Sessions.prototype.updateCurrentPosition = function (lng, lat) {
+  if (this.currentUser !== undefined) {
+    this.currentUser.setPosition({ lng, lat });
+  } else {
+    let homeMarker = new google.maps.Marker({
+      map,
+      position: { lng, lat },
+      title: "Home",
+      icon: {
+        path:
+          "M39.167,30c0,5.062-4.104,9.167-9.166,9.167c-5.063,0-9.167-4.104-9.167-9.167c0-9.125,8.416-18,9.167-18 C30.75,12,39.167,20.875,39.167,30z",
+        strokeWeight: 2,
+        strokeColor: "#29ABE2",
+        fillColor: "#29ABE2",
+        fillOpacity: 1.0,
+        scale: 0.75,
+        anchor: new google.maps.Point(30, 30),
+        rotation: 0,
+      },
+    });
+
+    google.maps.event.addListener(homeMarker, "mouseup", function (event) {
+      spriteSound.play();
+      homeMarker.setAnimation(google.maps.Animation.BOUNCE);
+      setTimeout(function () {
+        homeMarker.setAnimation(null);
+      }, 600);
+    });
+
+    this.currentUser = homeMarker;
+  }
+};
+
+Sessions.prototype.addUser = function (user) {
+  this.users.push(
+    new google.maps.Marker({
+      id: user.id,
+      map,
+      position: { lat: user.lat, lng: user.lng },
+      icon: {
+        path:
+          "M39.167,30c0,5.062-4.104,9.167-9.166,9.167c-5.063,0-9.167-4.104-9.167-9.167c0-9.125,8.416-18,9.167-18 C30.75,12,39.167,20.875,39.167,30z",
+        strokeWeight: 2,
+        fillColor: "#919191",
+        strokeColor: "#919191",
+        fillOpacity: 1.0,
+        scale: 0.75,
+        anchor: new google.maps.Point(30, 30),
+        rotation: user.heading,
+      },
+    })
+  );
+  this.drawLines();
+};
+
+Sessions.prototype.deleteUser = function (userId) {
+  var index = this.users.findIndex((u) => u.id === userId);
+  if (index !== -1) {
+    this.users[index].setMap(null);
+    this.users.splice(index, 1);
+    this.drawLines();
+  }
+};
+
+Sessions.prototype.drawLines = function () {
+  if (this.users.length > 0) {
+    if (this.polyline !== undefined) {
+      this.polyline.setMap(null);
+    }
+
+    const users = this.users.concat(this.currentUser);
+
+    console.log("drawLines", users);
+
+    const center = users.reduce(calculateCentroid, {
+      lat: 0,
+      lng: 0,
+    });
+
+    const angles = users.map((user) => {
+      const lat = user.getPosition().lat();
+      const lng = user.getPosition().lng();
+      return {
+        lat,
+        lng,
+        angle: (Math.atan2(lat - center.lat, lng - center.lng) * 180) / Math.PI,
+      };
+    });
+
+    let groupCoordsSorted = angles.sort(sortByAngle);
+    groupCoordsSorted.push(groupCoordsSorted[0]);
+
+    this.polyline = new google.maps.Polyline({
+      map,
+      strokeColor: "#f70000",
+      strokeOpacity: 1,
+      strokeOpacity: 1,
+      strokeWeight: 5,
+      fillColor: "#f70000",
+      fillOpacity: 0.5,
+      path: groupCoordsSorted,
+    });
+  } else {
+    if (this.polyline !== undefined) {
+      this.polyline.setMap(null);
+    }
+  }
+};
+
+Sessions.prototype.updateUserCoordinates = function (userId, lng, lat) {
+  var index = this.users.findIndex((u) => u.id === userId);
+  if (index !== -1) {
+    this.users[index].setPosition({ lng, lat });
+  }
+};
+
+Sessions.prototype.updateUserHeading = function (userId, heading) {
+  var index = this.users.findIndex((u) => u.id === userId);
+  if (index !== -1) {
+    var icon = this.users[index].getIcon();
+    icon.rotation = heading;
+    this.users[index].setIcon(icon);
+  }
+};
+
+Sessions.prototype.centerMap = function () {
+  map.panTo(this.currentUser.getPosition());
+};
+
+var sessions = new Sessions();
+
+socket.on("connect", function () {
+  //sessionID = socket.id;
+  sessions.setCurrentSession(socket.id);
+  // socket.emit("new-client", "mobile");
+  tryGeolocation();
+  requestDeviceOrientation();
+  /*if (currLatLng != null) {
+    socket.emit("update-coordinates", currLatLng);
+  }*/
 });
 
-socket.on("new-session-available", function (sessionId) {
-  console.log("new-session-available", sessionId);
-  sessions.push(sessionId);
-  displaySessions();
+// available sessions
+socket.on("sessions", function (list) {
+  console.log("sessions", list);
+  sessions.setSessions(list);
 });
 
-socket.on("coordinates-updated", function (lng, lat) {
-  console.log("coordinates-updated", lng, lat);
+// session users
+socket.on("users", function (users) {
+  console.log("users", users);
+  sessions.addUsers(users);
 });
 
-socket.on("heading-updated", function (heading) {
-  console.log("heading-updated", heading);
+socket.on("new-session", function (sessionId) {
+  console.log("new-session", sessionId);
+  sessions.addSession(sessionId);
 });
 
-socket.on("session-deleted", function (sessionId) {
-  console.log("session-deleted", sessionId);
-  sessions = sessions.filter((s) => s !== sessionId);
-  displaySessions();
+socket.on("delete-session", function (sessionId) {
+  console.log("delete-session", sessionId);
+  sessions.deleteSession(sessionId);
 });
 
-socket.on("receive-group-coordinates", function (groupCoords) {
-  // console.log(groupCoords);
+socket.on("new-user", function (user) {
+  console.log("new-user", user);
+  sessions.addUser(user);
+});
+
+socket.on("delete-user", function (userId) {
+  console.log("delete-user", userId);
+  sessions.deleteUser(userId);
+});
+
+socket.on("update-user-coordinates", function (userId, lng, lat) {
+  console.log("coordinates-updated", userId, lng, lat);
+  sessions.updateUserCoordinates(userId, lng, lat);
+});
+
+socket.on("update-user-heading", function (userId, heading) {
+  console.log("update-heading", userId, heading);
+  sessions.updateUserHeading(userId, heading);
+});
+
+/*socket.on("receive-group-coordinates", function (groupCoords) {
   drawLines(groupCoords);
   if (showArrows) {
     drawMarkers(groupCoords);
   }
-});
+});*/
 
 socket.on("ready-status", function (counts) {
   console.log(counts);
@@ -684,7 +864,7 @@ socket.on("start-next", function (data) {
   console.log("start : ", data);
 });
 
-function updateHomeMarkerPosition(position) {
+/*function updateHomeMarkerPosition(position) {
   if (google.maps != null) {
     var latlng = new google.maps.LatLng(
       position.coords.latitude,
@@ -692,7 +872,7 @@ function updateHomeMarkerPosition(position) {
     );
     homeMarker.setPosition(latlng);
   }
-}
+}*/
 
 function updateHomeMarkerRotation(data) {
   compassOrientation = data.z;
@@ -975,7 +1155,7 @@ function initMap() {
 
   //Uncomment below for debugging mode - add 'location' points with mouse click
 
-  guideLine = new google.maps.Polyline({
+  /*guideLine = new google.maps.Polyline({
     strokeColor: "#989898",
     strokeOpacity: 0.1,
     strokeWeight: 5,
@@ -988,10 +1168,9 @@ function initMap() {
   google.maps.event.addListener(guideLine.getPath(), "insert_at", insertAt);
   google.maps.event.addListener(guideLine.getPath(), "remove_at", removeAt);
   google.maps.event.addListener(guideLine.getPath(), "set_at", setAt);
+  map.addListener("click", addLatLng);*/
 
-  // map.addListener("click", addLatLng);
-
-  var image = {
+  /*var image = {
     path:
       "M39.167,30c0,5.062-4.104,9.167-9.166,9.167c-5.063,0-9.167-4.104-9.167-9.167c0-9.125,8.416-18,9.167-18 C30.75,12,39.167,20.875,39.167,30z",
     strokeWeight: 2,
@@ -1019,21 +1198,20 @@ function initMap() {
 
   google.maps.event.addListener(homeMarker, "mouseup", function (event) {
     spriteSound.play();
-
     homeMarker.setAnimation(google.maps.Animation.BOUNCE);
     setTimeout(function () {
       homeMarker.setAnimation(null);
     }, 600);
-  });
+  });*/
 
-  var id = getCookie("id");
+  /*var id = getCookie("id");
   if (id != null) {
     console.log("has id: " + id);
     cookieID = id;
   } else {
     console.log("has no id : " + id);
     socket.emit("request-id");
-  }
+  }*/
 }
 
 //Print errors as they happen
