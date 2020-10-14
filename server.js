@@ -57,13 +57,20 @@ app.set("views", path.join(__dirname, "views"));
 app.use(express.static('public'));
 // app.use(secure);
 
-app.get('/', function(request, response) {
+app.get('/', function(request, response){
+  response.sendFile('public/introduction.html',{
+    "root":__dirname
+  })
+})
+
+app.get('/heart', function(request, response) {
   // response.redirect('/index.html')
-  response.sendFile('/public/index.html', {
+  response.sendFile('/public/heart.html', {
     "root": __dirname
   })
 })
 
+//These following three should be password protected
 app.get('/view', function(request, response) {
   response.sendFile('/public/view.html', {
     "root": __dirname
@@ -77,21 +84,14 @@ app.get('/playback', function(request, response) {
 })
 
 app.get('/download', function(request, response) {
-  // response.sendFile('/public/download.html', {
-  //   "root": __dirname
-  // })
+
   const testFolder = __dirname + '/public/logs/';
   fs.readdir(testFolder, (err, files) => {
-    // files.forEach(file => {
-    //   console.log(file);
-    // });
     response.render(__dirname + "/public/views/download", {
-      title: "Hey",
+      title: "File Download",
       message: files
     });
-
   });
-
 
 })
 

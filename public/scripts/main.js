@@ -37,6 +37,9 @@ var spriteSound = new Howl({
   // }
 });
 
+//Global icon parameters
+var iconParameters;
+
 //Set cookie - not yet used
 function setCookie(c_name, value, exdays) {
   var exdate = new Date();
@@ -198,15 +201,18 @@ var browserGeolocationFail = function(error) {
 function tryGeolocation() {
   if (navigator.geolocation) {
 
-    if (watchPositionId != null) {
-      navigator.geolocation.clearWatch(watchPositionId);
-      console.log("clearing watchPosition: ", watchPositionId);
-    } else {
-      for (var i = 0; i < 100; i++) {
-        var w = navigator.geolocation.clearWatch(i);
-        console.log("clearing watchPositions ", i, w);
-      }
-    }
+    // if (watchPositionId != null) {
+    //   navigator.geolocation.clearWatch(watchPositionId);
+    //   console.log("clearing watchPosition: ", watchPositionId);
+    // } else {
+    //   for (var i = 0; i < 100; i++) {
+    //     var w = navigator.geolocation.clearWatch(i);
+    //     console.log("clearing watchPositions ", i, w);
+    //   }
+    // }
+
+    watchPositionId = navigator.geolocation.watchPosition(function(){}, function(){}, {});
+    navigator.geolocation.clearWatch(watchPositionId);
 
     watchPositionId = navigator.geolocation.watchPosition(
       browserGeolocationSuccess,
@@ -533,19 +539,20 @@ function drawMarkers(groupCoords) {
   var index = 0;
   while (groupMarkers.length < groupCoords.length) {
 
-    var image = {
-      path: "M39.167,30c0,5.062-4.104,9.167-9.166,9.167c-5.063,0-9.167-4.104-9.167-9.167c0-9.125,8.416-18,9.167-18 C30.75,12,39.167,20.875,39.167,30z",
-      strokeWeight: 2,
-      fillColor: "#919191",
-      strokeColor: "#919191",
-      fillOpacity: 1.0,
-      scale: 0.75,
-      anchor: new google.maps.Point(30, 30)
-      // rotation: groupCoords[c].heading
-    };
+    // var image = {
+    //   // path: "M39.167,30c0,5.062-4.104,9.167-9.166,9.167c-5.063,0-9.167-4.104-9.167-9.167c0-9.125,8.416-18,9.167-18 C30.75,12,39.167,20.875,39.167,30z",
+    //   url: '../images/g_marker.svg',
+    //   strokeWeight: 2,
+    //   fillColor: "#919191",
+    //   strokeColor: "#919191",
+    //   fillOpacity: 1.0,
+    //   scale: 0.75,
+    //   anchor: new google.maps.Point(30, 30)
+    //   // rotation: groupCoords[c].heading
+    // };
 
     var marker = new google.maps.Marker({
-      icon: image
+      icon: iconParameters
     });
 
     google.maps.event.addListener(marker, 'mouseup', function(event) {
@@ -569,19 +576,14 @@ function drawMarkers(groupCoords) {
       console.log("removing marker, total markers: ", groupMarkers.length);
   }
 
+
+  iconParameters.strokeColor = "#919191";
+  iconParameters.fillColor = "#919191";
+
   //cycle through list of incoming coords
   for (var c = 0; c < groupCoords.length; c++) {
-    //declare image, grab the heading value from the incoming array
-    var image = {
-      path: "M39.167,30c0,5.062-4.104,9.167-9.166,9.167c-5.063,0-9.167-4.104-9.167-9.167c0-9.125,8.416-18,9.167-18 C30.75,12,39.167,20.875,39.167,30z",
-      strokeWeight: 2,
-      fillColor: "#919191",
-      strokeColor: "#919191",
-      fillOpacity: 1.0,
-      scale: 0.75,
-      anchor: new google.maps.Point(30, 30),
-      rotation: groupCoords[c].heading
-    };
+
+    iconParameters.rotation = groupCoords[c].heading;
 
     //Get new coordinate
     var lat = groupCoords[c].lat;
@@ -590,7 +592,7 @@ function drawMarkers(groupCoords) {
 
     //Set marker position
     groupMarkers[c].setPosition(latlng);
-    groupMarkers[c].setIcon(image);
+    groupMarkers[c].setIcon(iconParameters);
     // groupMarkers[c].setTitle(groupCoords[c].id);
     groupMarkers[c].setTitle(String(groupCoords[c].connectTimestamp));
     //Hide the marker if it's our own sessionId
@@ -984,6 +986,7 @@ function initMap() {
     //   lng: -73.628949
     // },
     disableDefaultUI: true,
+    mapTypeId: 'roadmap',
     styles: [{
         "elementType": "geometry",
         "stylers": [{
@@ -1133,6 +1136,8 @@ function initMap() {
     ]
   });
 
+  map.setTilt(0);
+
   //Uncomment below for debugging mode - add 'location' points with mouse click
   guideLine = new google.maps.Polyline({
     strokeColor: "#989898",
@@ -1158,21 +1163,28 @@ function initMap() {
   google.maps.event.addListener(guideLine.getPath(), "set_at", setAt);
 
   // map.addListener("click", addLatLng);
-
-  var image = {
+  //Set iconParameters here
+  //We need google to be initialiazed
+  iconParameters = {
     path: "M39.167,30c0,5.062-4.104,9.167-9.166,9.167c-5.063,0-9.167-4.104-9.167-9.167c0-9.125,8.416-18,9.167-18 C30.75,12,39.167,20.875,39.167,30z",
-    strokeWeight: 2,
-    strokeColor: "#29ABE2",
-    fillColor: "#29ABE2",
-    fillOpacity: 1.0,
-    scale: 0.75,
+    // path: d="M147.865,84.126c-5.791-4.405-13.443-7.083-21.834-7.083c-8.422,0-16.101,2.698-21.899,7.132l0.031,0.041l21.868-31.583l0,0l21.868,31.583 M126.031,155.469c16.551,0,29.969-13.418,29.969-29.969c0-16.551-13.418-29.969-29.969-29.969c-16.551,0-29.969,13.417-29.969,29.969C96.062,142.051,109.48,155.469,126.031,155.469z",
+    // url: '../images/g_marker.svg',
+    strokeWeight: 0,
+
+    strokeColor: "#2A9DD8",
+    fillColor: "#2A9DD8",
+    fillOpacity: 0.7,
+    strokeOpacity: 0.7,
+    // scale: 0.25,
+    // anchor: new google.maps.Point(125, 125),
+    scale: 0.7,
     anchor: new google.maps.Point(30, 30),
     rotation: 0
   };
 
   homeMarker = new google.maps.Marker({
     title: "Home",
-    icon: image
+    icon: iconParameters
   });
 
   var imageBounds = {
@@ -1183,6 +1195,8 @@ function initMap() {
   };
 
   homeMarker.setMap(map);
+
+
 
   //Turn off self tap because it doesn't make any sense
   // google.maps.event.addListener(homeMarker, 'mouseup', function(event) {
