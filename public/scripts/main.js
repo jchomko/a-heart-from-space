@@ -28,6 +28,8 @@ var cookieID;
 var firstSocketID;
 var firstConnectTimestamp;
 
+var iconParameters;
+
 var spriteSound = new Howl({
   src: ['Ticket-machine-sound.mp3']
   //,
@@ -37,10 +39,7 @@ var spriteSound = new Howl({
   // }
 });
 
-//Global icon parameters
-var iconParameters;
-
-//Set cookie - not yet used
+//Set cookie
 function setCookie(c_name, value, exdays) {
   var exdate = new Date();
   exdate.setDate(exdate.getDate() + exdays);
@@ -49,7 +48,7 @@ function setCookie(c_name, value, exdays) {
   document.cookie = c_name + "=" + c_value;
 }
 
-//Retrieve cookie - not yet used
+//Retrieve cookie
 function getCookie(c_name) {
   var i, x, y;
   var ARRcookies = document.cookie.split(";");
@@ -69,7 +68,7 @@ function getCookie(c_name) {
 //   socket.emit("ready-to-start", true);
 // }
 //Center map to current position (if it's been set)
-function center() {
+function centerMap() {
   // requestDeviceOrientation();
   map.panTo(new google.maps.LatLng(currLatLng.lat, currLatLng.lng));
 }
@@ -92,7 +91,7 @@ function activateGPS() {
   if (!gpsActive) {
     tryGeolocation();
     $("#activateGPS").html("GPS On");
-    center();
+    centerMap();
     gpsActive = true;
   }
   // else{
@@ -120,6 +119,7 @@ function toggleSection() {
     $("#doneSection").html("Done");
     $("#doneSection").css("background-color", "rgb(220,220,220)")
 
+    //Not used
     if (trianglePolylineTemp != null) {
       trianglePolylineTemp.setMap(null);
       console.log("clearing triangle");
@@ -130,10 +130,7 @@ function toggleSection() {
   }
 
   drawDone = !drawDone;
-  // console.log(drawDone);
-  // we need to trigger the drawing immediately here, and then let it update with location for the others
-  // how do you distinguish which heart section is yours?
-  // it shoouuld be equally drawn between the sections so it's centered on you.
+
 }
 
 function checkDoneButton(groupCoords) {
@@ -172,7 +169,9 @@ var browserGeolocationSuccess = function(position) {
     };
     updateHomeMarkerPosition(position);
     // console.log("accurate coordinates: " + JSON.stringify(myLatLng))
-    socket.emit("update-coordinates", currLatLng);
+    if(firstConnectTimestamp != null){
+      socket.emit("update-coordinates", currLatLng);
+    }
     activateGPS();
   }
 };
@@ -197,7 +196,8 @@ var browserGeolocationFail = function(error) {
   }
 };
 
-//Get location of device  - navigator is just an html5 access for the browser
+//Get location of device
+//Multiple things to test here to make sure we always get GPS updates
 function tryGeolocation() {
   if (navigator.geolocation) {
 
@@ -211,28 +211,18 @@ function tryGeolocation() {
     //   }
     // }
 
-    watchPositionId = navigator.geolocation.watchPosition(function(){}, function(){}, {});
+    //This seems to be pretty reliable.
+    watchPositionId = navigator.geolocation.watchPosition(function() {}, function() {}, {});
     navigator.geolocation.clearWatch(watchPositionId);
 
     watchPositionId = navigator.geolocation.watchPosition(
       browserGeolocationSuccess,
       browserGeolocationFail, {
         enableHighAccuracy: true,
-        timeout: 10000,
+        timeout: 10000, //means it has 10 seconds to get a location
         maximumAge: 10000 //maximum age might be why batteries were going so low - because it forces the phone to get a new position each time?
       }
     );
-  }
-}
-
-//Request for position must come from user action, hence the prompt
-function askForLocation() {
-  if (
-    confirm(
-      "This website requires access to your GPS location. Press OK and you'll receive a request to access your location."
-    )
-  ) {
-    tryGeolocation();
   }
 }
 
@@ -259,8 +249,7 @@ function calculateSimilarity(groupCoordsSorted) {
 }
 
 //Draw lines between the received points
-//Sorts by angle to the centroid
-//We should be doing this on the back-end to save power
+//Sorts by angle to the centroid so the line is always external
 function drawLines(groupCoords) {
 
   var dist = 0;
@@ -513,6 +502,7 @@ function drawTriangle() {
 }
 
 //Called every time a socket is disconnected
+//Not used anymore, markers clear themselves
 function clearMarkers(numberToClear) {
 
   // console.log("clear ", numberToClear, " markers");
@@ -568,12 +558,12 @@ function drawMarkers(groupCoords) {
     index++;
   }
 
-  while(groupMarkers.length > groupCoords.length){
+  while (groupMarkers.length > groupCoords.length) {
 
-      groupMarkers[groupMarkers.length-1].setMap(null);
-      groupMarkers.pop();
+    groupMarkers[groupMarkers.length - 1].setMap(null);
+    groupMarkers.pop();
 
-      console.log("removing marker, total markers: ", groupMarkers.length);
+    console.log("removing marker, total markers: ", groupMarkers.length);
   }
 
 
@@ -692,6 +682,8 @@ socket.on("clear-markers", function(number) {
 
 socket.on("receive-timestamp", function(ts) {
   // setCookie("id", id, 1)
+  // I suppose sometimes the timestamp might not be set before we send off a packet of data, maybe that's a problem?
+
   setCookie("timestamp", ts, 1)
   console.log("setting id cookie to : " + ts);
   firstConnectTimestamp = ts;
@@ -805,24 +797,10 @@ function createDialogue(dialogueText) {
 
 }
 
-//Makes sure we request sensor access
-//Sometimes the connect function triggers before load is completed?
-//so this makes sure that it loads properly
-tryGeolocation();
-requestDeviceOrientation();
+//This could be a source of errors, if timestamp doesn't arrive in time
+//But i've added catches on each message transmit area
 
-var ct = getCookie("timestamp");
-if (ct != null) {
-  console.log("has timestamp : " + ct);
-  firstConnectTimestamp = ct;
-  $("#compassInfo").html(firstConnectTimestamp);
-} else {
-  console.log("no timestamp saved in cookies ");
-  socket.emit("request-timestamp");
-}
-
-socket.on('connect', function() {
-
+function requestTimestamp(){
   var ct = getCookie("timestamp");
   if (ct != null) {
     console.log("has timestamp : " + ct);
@@ -832,7 +810,20 @@ socket.on('connect', function() {
     console.log("no timestamp saved in cookies ");
     socket.emit("request-timestamp");
   }
+}
 
+//Makes sure we request sensor access
+//Sometimes the connect function triggers before load is completed?
+//so this makes sure that it loads properly
+//These are just called on startup
+
+requestTimestamp();
+tryGeolocation();
+requestDeviceOrientation();
+
+socket.on('connect', function() {
+
+  requestTimestamp();
   // clearMarkers();
 
   socket.emit('new-client', 'mobile')
@@ -844,7 +835,7 @@ socket.on('connect', function() {
   tryGeolocation();
   requestDeviceOrientation();
 
-  if (currLatLng != null) {
+  if (currLatLng != null && firstConnectTimestamp != null) {
     socket.emit("update-coordinates", currLatLng);
   }
 
@@ -864,7 +855,6 @@ socket.on('connect', function() {
   //   socket.emit("request-id");
   // }
 
-
 });
 
 socket.on("receive-group-coordinates", function(groupCoords) {
@@ -878,7 +868,6 @@ socket.on("receive-group-coordinates", function(groupCoords) {
 
   checkDoneButton(groupCoords);
 
-
 });
 
 //These two don't do anything anymore
@@ -888,12 +877,11 @@ socket.on("ready-status", function(counts) {
 });
 
 socket.on("start-next", function(data) {
-
   console.log("start : ", data);
 })
 
 function updateHomeMarkerPosition(position) {
-  if (google.maps != null) {
+  if (google != null) {
     var latlng = new google.maps.LatLng(
       position.coords.latitude,
       position.coords.longitude
@@ -903,25 +891,25 @@ function updateHomeMarkerPosition(position) {
 }
 
 function updateHomeMarkerRotation(data) {
+
   compassOrientation = data.z;
   compassOrientation = compassOrientation + 0;
   if (compassOrientation > 360) {
     compassOrientation = compassOrientation - 360;
   }
 
+  //Only update if there has been a change
   if (compassOrientation != lastCompassOrientation) {
     var icon = homeMarker.getIcon();
     icon.rotation = compassOrientation;
     homeMarker.setIcon(icon);
 
-    //Only sending rotation updates with location updates
     socket.emit("update-heading", compassOrientation);
     lastCompassOrientation = compassOrientation;
   }
 }
 
 //setup sensor listeners
-//// TODO:  detect if ios12 and user needs to turn on sensor access
 function setupSensorListeners() {
   window.addEventListener("deviceorientation", event => {
     hasSensorAccess = true;
@@ -1170,12 +1158,9 @@ function initMap() {
     // path: d="M147.865,84.126c-5.791-4.405-13.443-7.083-21.834-7.083c-8.422,0-16.101,2.698-21.899,7.132l0.031,0.041l21.868-31.583l0,0l21.868,31.583 M126.031,155.469c16.551,0,29.969-13.418,29.969-29.969c0-16.551-13.418-29.969-29.969-29.969c-16.551,0-29.969,13.417-29.969,29.969C96.062,142.051,109.48,155.469,126.031,155.469z",
     // url: '../images/g_marker.svg',
     strokeWeight: 0,
-
     strokeColor: "#2A9DD8",
     fillColor: "#2A9DD8",
     fillOpacity: 0.7,
-    strokeOpacity: 0.7,
-    // scale: 0.25,
     // anchor: new google.maps.Point(125, 125),
     scale: 0.7,
     anchor: new google.maps.Point(30, 30),
@@ -1195,18 +1180,6 @@ function initMap() {
   };
 
   homeMarker.setMap(map);
-
-
-
-  //Turn off self tap because it doesn't make any sense
-  // google.maps.event.addListener(homeMarker, 'mouseup', function(event) {
-  //   spriteSound.play();
-  //
-  //   homeMarker.setAnimation(google.maps.Animation.BOUNCE);
-  //   setTimeout(function() {
-  //     homeMarker.setAnimation(null)
-  //   }, 600);
-  // });
 
 }
 

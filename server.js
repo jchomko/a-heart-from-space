@@ -58,7 +58,7 @@ app.use(express.static('public'));
 // app.use(secure);
 
 app.get('/', function(request, response){
-  response.sendFile('public/introduction.html',{
+  response.sendFile('public/heart.html',{
     "root":__dirname
   })
 })
@@ -314,6 +314,7 @@ io.on('connection', function(socket) {
       }
 
       //check all coordinates to see if they're fresh, remove if older than 25 seconds
+      //commented for testing purposes
       // if (Date.now() - groupCoords[i].currentTimestamp > 25000) {
       //   console.log(Date.now() - groupCoords[i].currentTimestamp)
       //   inactiveIds.push(i);
@@ -357,7 +358,8 @@ io.on('connection', function(socket) {
     //In the current setup it will be called whenever someone reloads
     //If someone reloads and their dot is far away, it will mess things up!
     //We probably need an 'untangle' button that anyone can press
-
+    //The dot should be in the same spot if we allow caching of locations
+    //This only runs when we have a new addition or someone has reloaded the system
     if (exists === false) {
 
       //Untangle group
@@ -386,13 +388,11 @@ io.on('connection', function(socket) {
       });
 
       // let groupCoordsSorted = angles.sort(sortByAngle);
-
       groupCoords = angles.sort(sortByAngle);
 
-      //closing the loop
+      //closing the loop - not needed any more
       // groupCoordsSorted.push(groupCoordsSorted[0]);
       // groupCoords.push(groupCoords[0]);
-      // groupCoords = groupCoordsSorted;
 
       console.log("new addition")
       console.log(groupCoords.length);
@@ -400,18 +400,10 @@ io.on('connection', function(socket) {
 
     }
 
-    // Clear inactive ids - this is maybe a bit dangerous to use now, would rather just restart the server a few times
-    // console.log(inactiveIds);
-
     //Sending coordinates on an interval timer
     // io.emit("receive-group-coordinates", groupCoords)
     coordinatesChanged = true;
   })
-
-  // socket.on("draw-triangle", function(state) {
-  //
-  //
-  // })
 
 })
 
@@ -426,16 +418,6 @@ const calculateCentroid = (acc, {
 
 const sortByAngle = (a, b) => a.angle - b.angle;
 
-// function calculateSimilarity(groupCoordsSorted) {
-//   const curve = groupCoordsSorted.map(coords => ({
-//     x: coords.lng,
-//     y: coords.lat
-//   }));
-//   const similarity = curveMatcher.shapeSimilarity(curve, heartShape, {
-//     rotations: 500
-//   });
-//   console.log("similarity", similarity);
-// }
 
 function isGroupReady() {
 
