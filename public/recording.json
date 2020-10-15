@@ -1,0 +1,3698 @@
+[
+ {
+  "timestamp": 1602184672825
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184673327
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184673830
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184674331
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184674837
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184675338
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184675843
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184676346
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184676848
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184677350
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184677855
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184678356
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184678859
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184679364
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184679869
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184680375
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184680880
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184681385
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184681890
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184682396
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184682900
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184683405
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184683910
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184684415
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184684921
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184685426
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184685930
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184686435
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184686938
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184687442
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184687945
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184688446
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184688947
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184689448
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184689949
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184690453
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184690957
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184691459
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184691964
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184692467
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184692972
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184693475
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184693977
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184694481
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184694987
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184695491
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184695993
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184696495
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184697001
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184697505
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184698005
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184698509
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184699009
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184699509
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184700011
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184700513
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184701015
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184701516
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184702017
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184702517
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184703020
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184703526
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184704027
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184704530
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184705035
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184705540
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184706046
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184706548
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184707050
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184707553
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184708054
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184708556
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184709059
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184709559
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184710062
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184710568
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184711073
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184711577
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184712083
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184712588
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184713091
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184713598
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184714099
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184714602
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184715104
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184715606
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184716107
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184716607
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184717112
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184717615
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184718120
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184718620
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184719121
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184719627
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184720129
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184720634
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184721136
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184721636
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184722136
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184722638
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184723139
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184723641
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184724142
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184724645
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184725146
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184725651
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184726152
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184726654
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184727159
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184727664
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184728168
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184728674
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184729175
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184729678
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184730181
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184730682
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184731188
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184731693
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184732198
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184732703
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184733208
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184733711
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184734217
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184734720
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184735226
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184735727
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184736232
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184736738
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184737242
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184737747
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184738253
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184738758
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184739263
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184739767
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184740273
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184740778
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184741279
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184741782
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184742288
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184742793
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184743297
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184743802
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184744307
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184744812
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184745317
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184745822
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184746328
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184746833
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184747338
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184747846
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184748347
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184748853
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184749357
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184749863
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184750368
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184750873
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184751376
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184751881
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184752382
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184752887
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184753392
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184753897
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184754402
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184754907
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184755413
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184755917
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184756419
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184756922
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184757427
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184757932
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184758437
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184758942
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184759444
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184759946
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184760451
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ],
+ {
+  "timestamp": 1602184760956
+ },
+ [
+  {
+   "id": "uKp3auyWOSlS6owKAAAB",
+   "lat": 45.53430332147945,
+   "lng": -73.61069715351695,
+   "connectTimestamp": "1602181437713",
+   "heading": 257.5892333984375,
+   "currentTimestamp": 1602184761033
+  },
+  {
+   "id": "CjWtwpHh0-cxVgDeAAAC",
+   "lat": 45.53431485318163,
+   "lng": -73.61048754311503,
+   "connectTimestamp": 1602184694496,
+   "heading": 64.49235534667969,
+   "currentTimestamp": 1602184761071
+  }
+ ]
+]
