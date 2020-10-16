@@ -16,8 +16,8 @@
   <button id="centerMap" onclick="centerMap()">Center Map</button>
   <button id="doneSection" onclick="toggleDone()">Done?</button>
   <!-- <button id="readyButton" onclick="readyToStart()">Start</button> -->
-  <button id="activateSensors" onclick="activateSensors()">Activate Sensors</button>
-  <button id="activateGPS" onclick="activateGPS()">Activate GPS</button>
+  <button id="activateSensors" onclick="toggleSensorsButton()">Activate Sensors</button>
+  <button id="activateGPS" onclick="toggleGPSButton()">Activate GPS</button>
 
   <div id="dialog-message" title="Info">
     <p id="dialog-content"> </p>
@@ -35,7 +35,7 @@
   <script src="/scripts/main.js"> </script>
   <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBsTwTesuZp5Gh_ydqQY5VDNpPlSZLtt-M&callback=initMap">
   </script>
-  
+
 </body>
 
 </html>

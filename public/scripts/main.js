@@ -135,7 +135,7 @@ function createDialogue(dialogueText) {
 // }
 
 //Activate Compass
-function activateSensors() {
+function toggleSensorsButton() {
   if (!sensorsActive) {
     requestDeviceOrientation();
     $("#activateSensors").html("Sensors On");
@@ -148,7 +148,7 @@ function activateSensors() {
 }
 
 //Activate GPS
-function activateGPS() {
+function toggleGPSButton() {
   if (!gpsActive) {
     tryGeolocation();
     $("#activateGPS").html("GPS On");
@@ -163,39 +163,28 @@ function activateGPS() {
 
 //Done button - triggers triangle drawing when done.
 function toggleDone() {
-
   if (!drawDone) {
-
     drawTriangle();
     $("#doneSection").html("Done!");
     $("#doneSection").css("background-color", "rgb(180,260,180)")
     // socket.emit("draw-triangle", true)
-
     // drawDone = true;
     // socket.emit("draw-triangle", true)
     socket.emit("draw-triangle", true)
-
   } else {
-
     $("#doneSection").html("Done");
     $("#doneSection").css("background-color", "rgb(220,220,220)")
-
     //Not used
     if (trianglePolylineTemp != null) {
       trianglePolylineTemp.setMap(null);
       console.log("clearing triangle");
     }
-
     socket.emit("draw-triangle", false)
-
   }
-
   drawDone = !drawDone;
-
 }
 
 function checkDoneButton(groupCoords) {
-
   for (var i = 0; i < groupCoords.length; i++) {
     if (groupCoords[i].connectTimestamp === firstConnectTimestamp) {
       if (groupCoords[i].ready) {
@@ -205,12 +194,11 @@ function checkDoneButton(groupCoords) {
         $("#doneSection").html("Done");
         $("#doneSection").css("background-color", "rgb(220,220,220)")
       }
-      // groupCoords[i].done = coords.done
     }
   }
 }
 
-//Callect when socket connects
+//Called when socket connects
 function setup(){
 
   requestTimestamp();
@@ -229,7 +217,7 @@ function setup(){
   }
 }
 
-//Welcome dialogue stuff
+//Welcome dialogue stuff not currently used
 // if (lastMode === 0 || lastMode === null) {
 //   createDialogue("Hello, welcome. A Heart from Space is a tool that allows you to draw shapes with others.")
 // }
