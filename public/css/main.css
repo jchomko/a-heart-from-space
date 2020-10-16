@@ -127,17 +127,43 @@ html, body {
   height: 40px;
 }
 
+.map-button{
+  width: 60px;
+  height: 60px;
+}
+
 #centerMap {
   position: absolute;
-  bottom: 10px;
+  bottom: 20px;
   right: 0px;
   border: none;
+  /* width: 5%; */
+
   /* background-color: rgb(220, 220, 220); */
   /* background-image: url("/public/images/center.png");
   background: no-repeat top left;
   background-size: cover; */
   /* background-size: auto; */
 }
+
+#doneSection {
+  position: absolute;
+  bottom: 90px;
+  right: 0px;
+  border: none;
+  /* width: 5%; */
+
+  /* position: absolute;
+  top: 4%;
+  left: 50%;
+  width: 50%;
+  transform: translate(-50%, 0);
+  height: 7%;
+  background-color: rgb(220, 220, 220);
+  border-radius: 18px;
+  font-size: 16px; */
+}
+
 
 #readyButton {
   position: absolute;
@@ -158,19 +184,7 @@ html, body {
   width: 80px;
 }
 
-#doneSection {
-  position: absolute;
-  /* bottom:0; */
-  /* left: 0; */
-  top: 4%;
-  left: 50%;
-  width: 50%;
-  transform: translate(-50%, 0);
-  height: 7%;
-  background-color: rgb(220, 220, 220);
-  border-radius: 18px;
-  font-size: 16px;
-}
+
 
 #activateSensors {
   position: absolute;

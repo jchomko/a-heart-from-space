@@ -188,42 +188,45 @@ function toggleGPSButton() {
 
 //Done button - triggers triangle drawing when done.
 function toggleDone() {
+  console.log(drawDone)
   if (!drawDone) {
     // drawTriangle();
-    $("#doneSection").html("Done");
-    $("#doneSection").css("background-color", "rgb(180,260,180)")
+    // $("#doneSection").html("Done");
+    $("#doneIcon").attr("src","/images/heart-button.png")
+    // $("#doneSection").css("background-color", "rgb(180,260,180)")
     // socket.emit("draw-triangle", true)
     // drawDone = true;
     // socket.emit("draw-triangle", true)
     // socket.emit("update-done-status", true)
-    socket.emit("update-done-status", true, firstConnectTimestamp)
+    socket.emit("update-done-status", true)
 
 
   } else {
-    $("#doneSection").html("Done");
-    $("#doneSection").css("background-color", "rgb(220,220,220)")
+    // $("#doneSection").html("Done");
+    $("#doneIcon").attr("src","/images/heart-button-blank-trans.png")
+    // $("#doneSection").css("background-color", "rgb(220,220,220)")
     //Not used
     // if (trianglePolylineTemp != null) {
     //   trianglePolylineTemp.setMap(null);
     //   console.log("clearing triangle");
     // }
-    socket.emit("update-done-status", false, firstConnectTimestamp)
+    socket.emit("update-done-status", false)
   }
   drawDone = !drawDone;
 }
 
 function checkDoneButton(groupCoords) {
-  for (var i = 0; i < groupCoords.length; i++) {
-    if (groupCoords[i].connectTimestamp === firstConnectTimestamp) {
-      if (groupCoords[i].ready) {
-        $("#doneSection").html("Done");
-        $("#doneSection").css("background-color", "rgb(180,260,180)")
-      } else {
-        $("#doneSection").html("Done");
-        $("#doneSection").css("background-color", "rgb(220,220,220)")
-      }
-    }
-  }
+  // for (var i = 0; i < groupCoords.length; i++) {
+  //   if (groupCoords[i].connectTimestamp === firstConnectTimestamp) {
+  //     if (groupCoords[i].ready) {
+  //       $("#doneSection").html("Done");
+  //       $("#doneSection").css("background-color", "rgb(180,260,180)")
+  //     } else {
+  //       $("#doneSection").html("Done");
+  //       $("#doneSection").css("background-color", "rgb(220,220,220)")
+  //     }
+  //   }
+  // }
 }
 
 //Called when socket connects
