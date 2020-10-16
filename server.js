@@ -8,7 +8,6 @@ app.engine('pug', require('pug').__express)
 
 require('dotenv').config();
 
-
 var io = null
 var usersList = []
 var debugList = []
@@ -16,7 +15,6 @@ var groupCoords = [];
 var sortList = [];
 
 var savedCoordsString = "";
-
 var idCounter = 0;
 var orderCounter = 0;
 var headingChangedFlag = false;
@@ -26,7 +24,8 @@ var recordCoords = false;
 
 var playbackIndex = 0;
 var playbackInterval = "";
-//Development section
+
+//Development config
 if (process.env.NODE_ENV != 'production') {
   var https = require('https').createServer({
     key: fs.readFileSync('localhost+4-key.pem'),
@@ -40,6 +39,7 @@ if (process.env.NODE_ENV != 'production') {
   });
   console.log("development")
 
+//Production config
 } else {
 
   var http = require('http').createServer(app);
@@ -92,16 +92,14 @@ app.get('/download', function(request, response) {
       message: files
     });
   });
-
 })
 
+//Socket comms
 io.on('connection', function(socket) {
+
   socket.on("request-timestamp", function() {
-    // io.to(this.id).emit("receive-id", idCounter)
-    // idCounter += 1;
     //Giving this via server is a bit weird but probably better than getting it from browser as browser can be off depending on timezone of phone maybe?
     io.to(this.id).emit("receive-timestamp", Date.now())
-
   })
 
   socket.on("start-record", function(data) {
@@ -115,10 +113,8 @@ io.on('connection', function(socket) {
     console.log("saving coords: ");
   })
 
-  //detect new client
   //client is added to list only when it sends some coordinates
   socket.on("new-client", function(data) {
-
     console.log("new client : ", data);
     // io.to(this.id).emit("receive-start-status", currentMode)
   })
@@ -269,7 +265,6 @@ io.on('connection', function(socket) {
   socket.on("update-heading", function(heading) {
     var sID = this.id
     var exists = false
-
     for (var i = 0; i < groupCoords.length; i++) {
       //if we find a match, we update the existing coordinate
       if (JSON.stringify(groupCoords[i].id) === JSON.stringify(this.id)) {
@@ -278,12 +273,7 @@ io.on('connection', function(socket) {
         exists = true
       }
     }
-
-    // coordinatesChanged = true;
-    //Update happens on timer now
-    // if (exists) {
-    // io.emit("receive-group-coordinates", groupCoords)
-    // }
+    coordinatesChanged = true;
   })
 
   //Receive coordinates from each participant and add them to our list
@@ -407,6 +397,7 @@ io.on('connection', function(socket) {
 
 })
 
+//Utility Function
 const calculateCentroid = (acc, {
   lat,
   lng
