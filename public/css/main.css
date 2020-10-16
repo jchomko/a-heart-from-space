@@ -14,24 +14,105 @@ html, body {
   background-color: lightgray;
 }
 
-#introtext{
+#introduction {
+  background-color: #7A70F9;
+  display: inline;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+#welcome {
+  display: inline;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+#sensor-setup {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+#done-button-intro {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+#introtext {
   position: absolute;
   margin: 20px;
   /* font: sans-serif; */
   font-family: sans-serif;
 }
 
-#start-intro{
+#sensor-gps {
   position: absolute;
-  bottom: 20px;
-  left:50%;
-  transform:translate(-50%,0);
-  width: 90px;
+  bottom: 50%;
+  left: 70%;
+  transform: translate(-50%, -50%);
+  width: 30%;
   height: 50px;
   background-color: rgb(220, 220, 220);
 }
 
-#compassInfo{
+#sensor-compass {
+  position: absolute;
+  bottom: 50%;
+  left: 30%;
+  transform: translate(-50%, -50%);
+  width: 30%;
+  height: 50px;
+  background-color: rgb(220, 220, 220);
+}
+
+#start-new-heart {
+  position: absolute;
+  bottom: 20px;
+  left: 30%;
+  transform: translate(-50%, 0);
+  width: 30%;
+  height: 50px;
+  background-color: rgb(220, 220, 220);
+}
+
+#join-heart {
+  position: absolute;
+  bottom: 20px;
+  left: 70%;
+  transform: translate(-50%, 0);
+  width: 30%;
+  height: 50px;
+  background-color: rgb(220, 220, 220);
+}
+
+#skip-intro {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  /* transform:translate(-50%,0); */
+  width: 30%;
+  height: 30px;
+  background-color: rgb(220, 220, 220);
+}
+
+#compassInfo {
   z-index: 10;
   position: absolute;
   bottom: 0;
@@ -48,24 +129,27 @@ html, body {
 
 #centerMap {
   position: absolute;
-  bottom: 0px;
+  bottom: 10px;
   right: 0px;
-  width: 80px;
-  height: 50px;
-  background-color: rgb(220, 220, 220);
-  /* background-image: "images/center.png"; */
+  border: none;
+  /* background-color: rgb(220, 220, 220); */
+  /* background-image: url("/public/images/center.png");
+  background: no-repeat top left;
+  background-size: cover; */
+  /* background-size: auto; */
 }
 
-#readyButton{
+#readyButton {
   position: absolute;
   top: 0;
-  left: 80px;
+  left: 50%;
+  transform: translate(-50%, 0);
   height: 50px;
   background-color: rgb(220, 220, 220);
   width: 80px;
 }
 
-#toggleRecord{
+#toggleRecord {
   position: absolute;
   top: 0;
   left: 0px;
@@ -78,11 +162,14 @@ html, body {
   position: absolute;
   /* bottom:0; */
   /* left: 0; */
-  top: 0;
-  left: 0;
-  width: 80px;
-  height: 50px;
+  top: 4%;
+  left: 50%;
+  width: 50%;
+  transform: translate(-50%, 0);
+  height: 7%;
   background-color: rgb(220, 220, 220);
+  border-radius: 18px;
+  font-size: 16px;
 }
 
 #activateSensors {

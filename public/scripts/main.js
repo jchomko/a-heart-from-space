@@ -53,7 +53,29 @@ var spriteSound = new Howl({
   // }
 });
 
+//Frontend Functions
+function joinHeart(){
+  $("#welcome").css("display", "none")
+  $("#sensor-setup").css("display", "inline")
 
+  //Hide gps button if we already have access
+  if(gpsActive){
+    $("#sensor-gps").css("display", "none")
+  }
+
+  if(hasSensorAccess){
+    $("#sensor-compass").css("display", "none")
+  }
+}
+
+function hideIntroduction(){
+    $("#introduction").css("display","none");
+}
+
+function skipIntro(){
+  $("#introduction").css("display","none");
+  setup();
+}
 //Utility Functions
 
 //Set cookie
@@ -154,6 +176,9 @@ function toggleGPSButton() {
     $("#activateGPS").html("GPS On");
     centerMap();
     gpsActive = true;
+
+    $("#sensor-setup").css("display", "none");
+    $("#done-button-intro").css("display","inline");
   }
   // else{
   //   $("#activateGPS").html("Activate GPS");
@@ -164,22 +189,25 @@ function toggleGPSButton() {
 //Done button - triggers triangle drawing when done.
 function toggleDone() {
   if (!drawDone) {
-    drawTriangle();
-    $("#doneSection").html("Done!");
+    // drawTriangle();
+    $("#doneSection").html("Done");
     $("#doneSection").css("background-color", "rgb(180,260,180)")
     // socket.emit("draw-triangle", true)
     // drawDone = true;
     // socket.emit("draw-triangle", true)
-    socket.emit("draw-triangle", true)
+    // socket.emit("update-done-status", true)
+    socket.emit("update-done-status", true, firstConnectTimestamp)
+
+
   } else {
     $("#doneSection").html("Done");
     $("#doneSection").css("background-color", "rgb(220,220,220)")
     //Not used
-    if (trianglePolylineTemp != null) {
-      trianglePolylineTemp.setMap(null);
-      console.log("clearing triangle");
-    }
-    socket.emit("draw-triangle", false)
+    // if (trianglePolylineTemp != null) {
+    //   trianglePolylineTemp.setMap(null);
+    //   console.log("clearing triangle");
+    // }
+    socket.emit("update-done-status", false, firstConnectTimestamp)
   }
   drawDone = !drawDone;
 }
@@ -188,7 +216,7 @@ function checkDoneButton(groupCoords) {
   for (var i = 0; i < groupCoords.length; i++) {
     if (groupCoords[i].connectTimestamp === firstConnectTimestamp) {
       if (groupCoords[i].ready) {
-        $("#doneSection").html("Done!");
+        $("#doneSection").html("Done");
         $("#doneSection").css("background-color", "rgb(180,260,180)")
       } else {
         $("#doneSection").html("Done");
@@ -296,6 +324,7 @@ socket.on("receive-timestamp", function(ts) {
   setCookie("timestamp", ts, 1)
   console.log("setting id cookie to : " + ts);
   firstConnectTimestamp = ts;
+
 });
 
 socket.on("receive-start-status", function(currentMode) {
@@ -305,7 +334,7 @@ socket.on("receive-start-status", function(currentMode) {
 })
 
 socket.on('connect', function() {
-  setup()
+  // setup()
 });
 
 socket.on("receive-group-coordinates", function(groupCoords) {
@@ -342,5 +371,7 @@ window.onerror = function(msg, url, lineNo, columnNo, error) {
 
 //Called when browser loads
 requestTimestamp();
-tryGeolocation();
-// requestDeviceOrientation();
+//Call these only when we have done the tutorial
+// tryGeolocation();
+//Call this before tutorial to check if it's necessary
+requestDeviceOrientation();

@@ -58,17 +58,11 @@ app.use(express.static('public'));
 // app.use(secure);
 
 app.get('/', function(request, response){
-  response.sendFile('public/heart.html',{
+  response.sendFile('public/index.html',{
     "root":__dirname
   })
 })
 
-app.get('/heart', function(request, response) {
-  // response.redirect('/index.html')
-  response.sendFile('/public/heart.html', {
-    "root": __dirname
-  })
-})
 
 //These following three should be password protected
 app.get('/view', function(request, response) {
@@ -174,16 +168,16 @@ io.on('connection', function(socket) {
     } else {
       console.log("Client Already Exists: ", this.id)
     }
-
   })
 
-  socket.on("draw-triangle", function(state) {
+  socket.on("update-done-status", function(state) {
     // var sID = this.id
     var exists = false
 
     for (var i = 0; i < groupCoords.length; i++) {
       //if we find a match, we update the existing coordinate
       if (groupCoords[i].id === this.id) {
+      // if (groupCoords[i].connectTimestamp === targetSocketId) {
         // groupCoords[i].done = drawDone
         groupCoords[i].ready = state;
         exists = true
