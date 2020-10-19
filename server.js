@@ -14,12 +14,14 @@ var headingChangedFlag = false;
 var coordinatesChanged = false;
 var started = false;
 
+// we keep track of rooms (sessions) and their sockets (users)
 function Sessions() {
   this.sessions = [];
 }
 
-Sessions.prototype.addSession = function (socketId) {
-  var session = {
+// each socket automatically joins a room (session) identified by its own id, so we add a new session on connect
+Sessions.prototype.addSession = function(socketId) {
+  this.sessions.push({
     id: socketId,
     //lng: undefined,
     //lat: undefined,
@@ -29,31 +31,32 @@ Sessions.prototype.addSession = function (socketId) {
         lng: undefined,
         lat: undefined,
         heading: undefined,
-        done: false,
-      },
-    ],
-  };
-  this.sessions.push(session);
+        done: false
+      }
+    ]
+  });
 };
 
-Sessions.prototype.addUserToSession = function (sessionId, user) {
-  var sessionIndex = this.sessions.findIndex((s) => s.id === sessionId);
+// adds a socket (user) to a room (session)
+Sessions.prototype.addUserToSession = function(sessionId, user) {
+  const sessionIndex = this.sessions.findIndex(s => s.id === sessionId);
   if (sessionIndex !== -1) {
     this.sessions[sessionIndex].users.push({
       id: user.id,
       lng: user.lng,
       lat: user.lat,
       heading: user.heading,
-      done: user.done,
+      done: user.done
     });
   }
 };
 
-Sessions.prototype.deleteUserFromSession = function (socketId) {
-  var [sessionIndex, userIndex] = this.findUser(socketId);
+// deletes a socket (user) to a room (session)
+Sessions.prototype.deleteUserFromSession = function(socketId) {
+  const [sessionIndex, userIndex] = this.findUser(socketId);
   if (sessionIndex !== undefined) {
-    var deletedUsers = this.sessions[sessionIndex].users.splice(userIndex, 1);
-    var sessionId = this.sessions[sessionIndex].id;
+    const deletedUsers = this.sessions[sessionIndex].users.splice(userIndex, 1);
+    const sessionId = this.sessions[sessionIndex].id;
     if (this.sessions[sessionIndex].users.length === 0) {
       this.sessions.splice(sessionIndex, 1);
       return [sessionId, true, deletedUsers[0]];
@@ -63,16 +66,22 @@ Sessions.prototype.deleteUserFromSession = function (socketId) {
   }
 };
 
-Sessions.prototype.findUser = function (socketId) {
-  for (var i = 0; i < this.sessions.length; i++) {
-    var userIndex = this.sessions[i].users.findIndex((u) => u.id === socketId);
+// finds a socket (user) in a room (session)
+Sessions.prototype.findUser = function(socketId) {
+  console.log("findUser", socketId);
+  console.dir(this.sessions, { depth: null, colors: true });
+
+  for (let i = 0; i < this.sessions.length; i++) {
+    const userIndex = this.sessions[i].users.findIndex(u => u.id === socketId);
     if (userIndex !== -1) {
       return [i, userIndex];
     }
   }
+  console.log("user not found"); // why?
 };
 
-Sessions.prototype.getSessionsIds = function () {
+// returns an array of all rooms (sessions)
+Sessions.prototype.getSessionsIds = function() {
   return (
     this.sessions
       //.filter((s) => s.lng !== undefined && s.lat !== undefined)
@@ -83,10 +92,19 @@ Sessions.prototype.getSessionsIds = function () {
   );
 };
 
-Sessions.prototype.getUsers = function (socketId) {
-  console.log("getUsers", socketId);
-  var [sessionIndex] = this.findUser(socketId);
-  return this.sessions[sessionIndex].users;
+// returns sockets (users) in a given room (session)
+Sessions.prototype.getSessionUsers = function(sessionId) {
+  console.log("getSessionUsers for", sessionId);
+  const sessionIndex = this.sessions.findIndex(s => s.id === sessionId);
+  if (sessionIndex !== -1) {
+    return this.sessions[sessionIndex].users;
+  }
+  // return this.getSessionUsers(socketId);
+  /*console.log("sessionIndex", sessionIndex, "userIndex", userIndex);
+  if (sessionIndex !== undefined) {
+    console.log("returning", this.sessions[sessionIndex].users);
+    return this.sessions[sessionIndex].users;
+  }*/
 };
 
 /*Sessions.prototype.remove = function (socketId) {
@@ -101,8 +119,9 @@ Sessions.prototype.getUsers = function (socketId) {
   }
 };*/
 
-Sessions.prototype.updateCoordinates = function (socketId, lng, lat) {
-  var [sessionIndex, userIndex] = this.findUser(socketId);
+// updates coordinates for a given socket (user)
+Sessions.prototype.updateCoordinates = function(socketId, lng, lat) {
+  const [sessionIndex, userIndex] = this.findUser(socketId);
   this.sessions[sessionIndex].users[userIndex].lng = lng;
   this.sessions[sessionIndex].users[userIndex].lat = lat;
   var usersToNotify = this.sessions[sessionIndex].users.filter(
@@ -113,8 +132,9 @@ Sessions.prototype.updateCoordinates = function (socketId, lng, lat) {
   }
 };
 
-Sessions.prototype.updateHeading = function (socketId, heading) {
-  var [sessionIndex, userIndex] = this.findUser(socketId);
+// updates heading for a given socket (user)
+Sessions.prototype.updateHeading = function(socketId, heading) {
+  const [sessionIndex, userIndex] = this.findUser(socketId);
   if (sessionIndex !== undefined) {
     this.sessions[sessionIndex].users[userIndex].heading = heading;
     var usersToNotify = this.sessions[sessionIndex].users.filter(
@@ -127,10 +147,6 @@ Sessions.prototype.updateHeading = function (socketId, heading) {
 };
 
 var sessions = new Sessions();
-// console.log(sessions.add(1)
-// var rooms = Object.keys(this.rooms);
-// console.log("room-check:", rooms[0]);
-// socket.to(rooms[0]).emit("room-msg");
 
 //Development section
 if (process.env.NODE_ENV != "production") {
@@ -139,19 +155,19 @@ if (process.env.NODE_ENV != "production") {
       key: fs.readFileSync("localhost+4-key.pem"),
       cert: fs.readFileSync("localhost+4.pem"),
       requestCert: false,
-      rejectUnauthorized: false,
+      rejectUnauthorized: false
     },
     app
   );
   io = require("socket.io").listen(https);
-  https.listen(process.env.PORT || 5000, function () {
+  https.listen(process.env.PORT || 5000, function() {
     console.log("Node app is running at localhost: " + app.get("port"));
   });
   console.log("development");
 } else {
   var http = require("http").createServer(app);
   io = require("socket.io").listen(http);
-  http.listen(process.env.PORT || 5000, function () {
+  http.listen(process.env.PORT || 5000, function() {
     console.log("Node app is running at localhost: " + app.get("port"));
   });
   console.log("production");
@@ -159,18 +175,23 @@ if (process.env.NODE_ENV != "production") {
 
 app.use(express.static("public"));
 
-app.get("/", function (request, response) {
+app.get("/", function(request, response) {
   // response.redirect('/index.html')
   response.sendFile("/public/index.html", {
-    root: __dirname,
+    root: __dirname
   });
 });
 
-io.on("connection", function (socket) {
+io.on("connection", function(socket) {
   console.log("connected", socket.id);
 
-  socket.broadcast.emit("new-session", socket.id);
-  socket.emit("sessions", sessions.getSessionsIds());
+  // notifies all clients except sender that a new room (session) has become available
+  socket.broadcast.emit("new-session-available", socket.id);
+
+  // sends an array of ids of all rooms (sessions) to the connected client
+  socket.emit("available-sessions", sessions.getSessionsIds());
+
+  // remembers the new room (session)
   sessions.addSession(socket.id);
 
   /*socket.on("request-id", function () {
@@ -178,34 +199,49 @@ io.on("connection", function (socket) {
     idCounter += 1;
   });*/
 
-  socket.on("join-session", function (newSessionId) {
-    var [
+  // a socket (user) joins a new room (session)
+  socket.on("join-session", function(newSessionId) {
+    const [
       sessionId,
       isSessionToDelete,
-      deletedUser,
+      deletedUser
     ] = sessions.deleteUserFromSession(socket.id);
     console.log(
       "join-session",
+      "socket.id =",
+      socket.id,
+      "newSessionId =",
       newSessionId,
       "isSessionToDelete",
       isSessionToDelete
     );
+
+    // at first they leave the previous room (session)
     socket.leave(sessionId, () => {
+      // then they join a new room (session)
       socket.join(newSessionId, () => {
+        // if there are no sockets (users) left in the previous room (session), we notify all clients that the room (session) has been deleted
         if (isSessionToDelete === true) {
-          socket.broadcast.emit("delete-session", sessionId);
-          socket.emit("delete-session", sessionId);
+          //socket.broadcast.emit("delete-session", sessionId);
+          //socket.emit("delete-session", sessionId);
+          io.emit("session-deleted", sessionId);
         }
-        socket.to(newSessionId).emit("new-user", deletedUser);
-        socket.emit("users", sessions.getUsers(newSessionId));
+
+        // notifies the sockets (users) of the new room (session) that a new socket (user) has joined the room
+        socket.to(newSessionId).emit("new-user-joined", deletedUser);
+
+        // sends an array of ids of the existing sockets (users) in the new room (session) to the client
+        socket.emit("session-users", sessions.getSessionUsers(newSessionId));
+
+        // adds the socket (user) to the new room (session)
         sessions.addUserToSession(newSessionId, deletedUser);
       });
     });
   });
 
-  socket.on("update-coordinates", function (lng, lat) {
-    console.log("update-coordinates", lng, lat);
-    var sessionToNotify = sessions.updateCoordinates(socket.id, lng, lat);
+  socket.on("update-coordinates", function(lng, lat) {
+    //console.log("update-coordinates", lng, lat);
+    const sessionToNotify = sessions.updateCoordinates(socket.id, lng, lat);
     if (sessionToNotify !== undefined) {
       socket
         .to(sessionToNotify)
@@ -213,25 +249,29 @@ io.on("connection", function (socket) {
     }
   });
 
-  socket.on("update-heading", function (heading) {
+  socket.on("update-heading", function(heading) {
     console.log("update-heading", heading);
-    var sessionToNotify = sessions.updateHeading(socket.id, heading);
+    const sessionToNotify = sessions.updateHeading(socket.id, heading);
     if (sessionToNotify !== undefined) {
       socket.to(sessionToNotify).emit("update-user-heading", heading);
     }
   });
 
-  socket.on("disconnect", function () {
+  // on disconnect we delete the socket (user) from its room (session) and delete the room (session) if it's empty (has no users/sockets)
+  socket.on("disconnect", function() {
     console.log("disconnect", socket.id);
-    var [sessionId, isSessionToDelete] = sessions.deleteUserFromSession(
+    const [sessionId, isSessionToDelete] = sessions.deleteUserFromSession(
       socket.id
     );
     console.log("sessionId", sessionId, "isSessionToDelete", isSessionToDelete);
     if (isSessionToDelete === true) {
-      socket.broadcast.emit("delete-session", sessionId);
-      socket.emit("delete-session", sessionId);
+      // notify all clients that the room (session) has been deleted
+      // socket.broadcast.emit("delete-session", sessionId);
+      // socket.emit("delete-session", sessionId);
+      io.emit("session-deleted", sessionId);
     } else {
-      socket.broadcast.emit("delete-user", socket.id);
+      // notify all clients except sender that the user (socket) has been deleted
+      socket.broadcast.emit("user-deleted", socket.id);
     }
   });
 
@@ -267,7 +307,7 @@ io.on("connection", function (socket) {
     }
   });*/
 
-  socket.on("send-tap", function (targetSocketId) {
+  socket.on("send-tap", function(targetSocketId) {
     io.to(targetSocketId).emit("receive-tap");
     console.log("sending tap to :", targetSocketId);
   });
@@ -291,7 +331,7 @@ io.on("connection", function (socket) {
     }
   });*/
 
-  socket.on("draw-triangle", function (drawDone) {
+  socket.on("draw-triangle", function(drawDone) {
     var sID = this.id;
     var exists = false;
 
@@ -306,7 +346,7 @@ io.on("connection", function (socket) {
     coordinatesChanged = true;
   });
 
-  socket.on("ready-to-start", function (status) {
+  socket.on("ready-to-start", function(status) {
     console.log("number of active users : ", groupCoords.length);
     console.log("receiving : ", status, "from :", this.id);
     var sID = this.id;
@@ -426,7 +466,7 @@ function isGroupReady() {
 
   let counts = {
     users: groupCoords.length,
-    ready: readyCounter,
+    ready: readyCounter
   };
 
   io.emit("ready-status", counts);

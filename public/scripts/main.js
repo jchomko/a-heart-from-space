@@ -23,7 +23,7 @@ var trianglePolylineTemp;
 var lastSortedCoords = [];
 
 var spriteSound = new Howl({
-  src: ["Ticket-machine-sound.mp3"],
+  src: ["Ticket-machine-sound.mp3"]
   //,
   // sprite: {
   //   arrival1: [0, 2500],
@@ -114,21 +114,17 @@ function doneSection() {
 }
 
 //Geolocation success callback
-var browserGeolocationSuccess = function (position) {
+var browserGeolocationSuccess = function(position) {
   // console.log("browserGeolocationSuccess", position);
   // $("#activateGPS").html("GPS On");
   activateGPS();
 
-  sessions.updateCurrentPosition(
-    position.coords.longitude,
-    position.coords.latitude
-  );
+  const lng = position.coords.longitude + Math.random() / 4 - 1 / 4;
+  const lat = position.coords.latitude + Math.random() / 4 - 1 / 4;
 
-  socket.emit(
-    "update-coordinates",
-    position.coords.longitude,
-    position.coords.latitude
-  );
+  sessions.updateCurrentPosition(lng, lat);
+
+  socket.emit("update-coordinates", lng, lat);
 
   /*if (position.coords.accuracy < bestAccuracy) {
     bestAccuracy = position.coords.accuracy;
@@ -152,7 +148,7 @@ var browserGeolocationSuccess = function (position) {
 };
 
 //Geolocation fail callback
-var browserGeolocationFail = function (error) {
+var browserGeolocationFail = function(error) {
   console.log("browserGeolocationFail", error);
   switch (error.code) {
     case error.TIMEOUT:
@@ -181,7 +177,7 @@ function tryGeolocation() {
       {
         enableHighAccuracy: true,
         timeout: 10000,
-        maximumAge: 5000,
+        maximumAge: 5000
       }
     );
   }
@@ -526,14 +522,14 @@ function setAt(index) {
   return d * 1000;
 }*/
 
-socket.on("receive-tap", function () {
+socket.on("receive-tap", function() {
   console.log("vibrate");
   if (window.navigator.vibrate) {
     window.navigator.vibrate(500);
   }
 
   homeMarker.setAnimation(google.maps.Animation.BOUNCE);
-  setTimeout(function () {
+  setTimeout(function() {
     homeMarker.setAnimation(null);
   }, 600);
 
@@ -615,13 +611,13 @@ function Sessions() {
   this.polyline = undefined;
 }
 
-Sessions.prototype.displaySessions = function () {
+Sessions.prototype.displaySessions = function() {
   console.log("displaySessions", this.sessions);
   $("#current-session").html(this.currentSessionID);
   $("#available-sessions").html(
     this.sessions
       .map(
-        (id) =>
+        id =>
           `<div>${id}</div><button onclick="sessions.joinSession('${id}')">Join</button>`
       )
       .join("")
@@ -632,41 +628,43 @@ Sessions.prototype.displaySessions = function () {
   console.log("displayUsers", this.users);
 };*/
 
-Sessions.prototype.joinSession = function (sessionId) {
+Sessions.prototype.joinSession = function(sessionId) {
   console.log("joinSession", sessionId);
   this.setCurrentSession(sessionId);
   this.deleteSession(sessionId);
   socket.emit("join-session", sessionId);
 };
 
-Sessions.prototype.setCurrentSession = function (id) {
+Sessions.prototype.setCurrentSession = function(id) {
+  console.log("setCurrentSession", id);
   this.currentSessionID = id;
   this.displaySessions();
 };
 
-Sessions.prototype.setSessions = function (sessions) {
+Sessions.prototype.setSessions = function(sessions) {
   this.sessions = sessions;
   this.displaySessions();
 };
 
-Sessions.prototype.addSession = function (sessionId) {
+Sessions.prototype.addSession = function(sessionId) {
   this.sessions.push(sessionId);
   this.displaySessions();
 };
 
-Sessions.prototype.deleteSession = function (sessionId) {
-  this.sessions = this.sessions.filter((s) => s !== sessionId);
+Sessions.prototype.deleteSession = function(sessionId) {
+  this.sessions = this.sessions.filter(s => s !== sessionId);
   this.displaySessions();
 };
 
-Sessions.prototype.addUsers = function (users) {
+Sessions.prototype.addUsers = function(users) {
   this.users = [];
-  users.forEach((user) => this.addUser(user));
+  users.forEach(user => this.addUser(user));
 };
 
-Sessions.prototype.updateCurrentPosition = function (lng, lat) {
+Sessions.prototype.updateCurrentPosition = function(lng, lat) {
   if (this.currentUser !== undefined) {
     this.currentUser.setPosition({ lng, lat });
+    this.drawLines();
   } else {
     let homeMarker = new google.maps.Marker({
       map,
@@ -681,14 +679,14 @@ Sessions.prototype.updateCurrentPosition = function (lng, lat) {
         fillOpacity: 1.0,
         scale: 0.75,
         anchor: new google.maps.Point(30, 30),
-        rotation: 0,
-      },
+        rotation: 0
+      }
     });
 
-    google.maps.event.addListener(homeMarker, "mouseup", function (event) {
+    google.maps.event.addListener(homeMarker, "mouseup", function(event) {
       spriteSound.play();
       homeMarker.setAnimation(google.maps.Animation.BOUNCE);
-      setTimeout(function () {
+      setTimeout(function() {
         homeMarker.setAnimation(null);
       }, 600);
     });
@@ -697,7 +695,7 @@ Sessions.prototype.updateCurrentPosition = function (lng, lat) {
   }
 };
 
-Sessions.prototype.addUser = function (user) {
+Sessions.prototype.addUser = function(user) {
   this.users.push(
     new google.maps.Marker({
       id: user.id,
@@ -712,15 +710,15 @@ Sessions.prototype.addUser = function (user) {
         fillOpacity: 1.0,
         scale: 0.75,
         anchor: new google.maps.Point(30, 30),
-        rotation: user.heading,
-      },
+        rotation: user.heading
+      }
     })
   );
   this.drawLines();
 };
 
-Sessions.prototype.deleteUser = function (userId) {
-  var index = this.users.findIndex((u) => u.id === userId);
+Sessions.prototype.deleteUser = function(userId) {
+  var index = this.users.findIndex(u => u.id === userId);
   if (index !== -1) {
     this.users[index].setMap(null);
     this.users.splice(index, 1);
@@ -728,7 +726,8 @@ Sessions.prototype.deleteUser = function (userId) {
   }
 };
 
-Sessions.prototype.drawLines = function () {
+Sessions.prototype.drawLines = function() {
+  // console.log("drawLines");
   if (this.users.length > 0) {
     if (this.polyline !== undefined) {
       this.polyline.setMap(null);
@@ -736,20 +735,20 @@ Sessions.prototype.drawLines = function () {
 
     const users = this.users.concat(this.currentUser);
 
-    console.log("drawLines", users);
+    // console.log("drawLines", users);
 
     const center = users.reduce(calculateCentroid, {
       lat: 0,
-      lng: 0,
+      lng: 0
     });
 
-    const angles = users.map((user) => {
+    const angles = users.map(user => {
       const lat = user.getPosition().lat();
       const lng = user.getPosition().lng();
       return {
         lat,
         lng,
-        angle: (Math.atan2(lat - center.lat, lng - center.lng) * 180) / Math.PI,
+        angle: (Math.atan2(lat - center.lat, lng - center.lng) * 180) / Math.PI
       };
     });
 
@@ -764,7 +763,7 @@ Sessions.prototype.drawLines = function () {
       strokeWeight: 5,
       fillColor: "#f70000",
       fillOpacity: 0.5,
-      path: groupCoordsSorted,
+      path: groupCoordsSorted
     });
   } else {
     if (this.polyline !== undefined) {
@@ -773,15 +772,17 @@ Sessions.prototype.drawLines = function () {
   }
 };
 
-Sessions.prototype.updateUserCoordinates = function (userId, lng, lat) {
-  var index = this.users.findIndex((u) => u.id === userId);
+Sessions.prototype.updateUserCoordinates = function(userId, lng, lat) {
+  console.log("updateUserCoordinates");
+  var index = this.users.findIndex(u => u.id === userId);
   if (index !== -1) {
     this.users[index].setPosition({ lng, lat });
+    this.drawLines();
   }
 };
 
-Sessions.prototype.updateUserHeading = function (userId, heading) {
-  var index = this.users.findIndex((u) => u.id === userId);
+Sessions.prototype.updateUserHeading = function(userId, heading) {
+  var index = this.users.findIndex(u => u.id === userId);
   if (index !== -1) {
     var icon = this.users[index].getIcon();
     icon.rotation = heading;
@@ -789,14 +790,15 @@ Sessions.prototype.updateUserHeading = function (userId, heading) {
   }
 };
 
-Sessions.prototype.centerMap = function () {
+Sessions.prototype.centerMap = function() {
   map.panTo(this.currentUser.getPosition());
 };
 
 var sessions = new Sessions();
 
-socket.on("connect", function () {
+socket.on("connect", function() {
   //sessionID = socket.id;
+  console.log("connected", socket.id);
   sessions.setCurrentSession(socket.id);
   // socket.emit("new-client", "mobile");
   tryGeolocation();
@@ -807,43 +809,43 @@ socket.on("connect", function () {
 });
 
 // available sessions
-socket.on("sessions", function (list) {
-  console.log("sessions", list);
+socket.on("available-sessions", function(list) {
+  console.log("available-sessions", list);
   sessions.setSessions(list);
 });
 
 // session users
-socket.on("users", function (users) {
-  console.log("users", users);
+socket.on("session-users", function(users) {
+  console.log("session-users", users);
   sessions.addUsers(users);
 });
 
-socket.on("new-session", function (sessionId) {
-  console.log("new-session", sessionId);
+socket.on("new-session-available", function(sessionId) {
+  console.log("new-session-available", sessionId);
   sessions.addSession(sessionId);
 });
 
-socket.on("delete-session", function (sessionId) {
-  console.log("delete-session", sessionId);
+socket.on("session-deleted", function(sessionId) {
+  console.log("session-deleted", sessionId);
   sessions.deleteSession(sessionId);
 });
 
-socket.on("new-user", function (user) {
-  console.log("new-user", user);
+socket.on("new-user-joined", function(user) {
+  console.log("new-user-joined", user);
   sessions.addUser(user);
 });
 
-socket.on("delete-user", function (userId) {
-  console.log("delete-user", userId);
+socket.on("user-deleted", function(userId) {
+  console.log("user-deleted", userId);
   sessions.deleteUser(userId);
 });
 
-socket.on("update-user-coordinates", function (userId, lng, lat) {
+socket.on("update-user-coordinates", function(userId, lng, lat) {
   console.log("coordinates-updated", userId, lng, lat);
   sessions.updateUserCoordinates(userId, lng, lat);
 });
 
-socket.on("update-user-heading", function (userId, heading) {
+socket.on("update-user-heading", function(userId, heading) {
   console.log("update-heading", userId, heading);
   sessions.updateUserHeading(userId, heading);
 });
@@ -855,12 +857,12 @@ socket.on("update-user-heading", function (userId, heading) {
   }
 });*/
 
-socket.on("ready-status", function (counts) {
+socket.on("ready-status", function(counts) {
   console.log(counts);
   // $("#compassInfo").html("Users Ready: " + counts.users + "/" + counts.ready);
 });
 
-socket.on("start-next", function (data) {
+socket.on("start-next", function(data) {
   console.log("start : ", data);
 });
 
@@ -882,9 +884,9 @@ function updateHomeMarkerRotation(data) {
   }
 
   if (compassOrientation != lastCompassOrientation) {
-    var icon = homeMarker.getIcon();
+    /*var icon = homeMarker.getIcon();
     icon.rotation = compassOrientation;
-    homeMarker.setIcon(icon);
+    homeMarker.setIcon(icon);*/
 
     //Only sending rotation updates with location updates
     //socket.emit("update-heading", compassOrientation);
@@ -896,25 +898,25 @@ function updateHomeMarkerRotation(data) {
 //setup sensor listeners
 //// TODO:  detect if ios12 and user needs to turn on sensor access
 function setupSensorListeners() {
-  window.addEventListener("deviceorientation", (event) => {
+  window.addEventListener("deviceorientation", event => {
     hasSensorAccess = true;
     var data = "";
     if ("webkitCompassHeading" in event) {
       data = {
         info:
           "Received from deviceorientation webkitCompassHeading - iOS Safari,  Chrome, Firefox",
-        z: event.webkitCompassHeading,
+        z: event.webkitCompassHeading
       };
       // Android - Chrome <50
     } else if (event.absolute) {
       data = {
         info: "Received from deviceorientation with absolute=true & alpha val",
-        z: event.alpha,
+        z: event.alpha
       };
     } else {
       data = {
         info: "absolute=false, heading might not be absolute to magnetic north",
-        z: 360 - event.alpha,
+        z: 360 - event.alpha
       };
     }
     updateHomeMarkerRotation(data);
@@ -929,14 +931,14 @@ function requestDeviceOrientation() {
     typeof DeviceOrientationEvent.requestPermission === "function"
   ) {
     DeviceOrientationEvent.requestPermission()
-      .then((response) => {
+      .then(response => {
         console.log("DeviceOrientationEvent response:", response);
         if (response == "granted") {
           setupSensorListeners();
           $("#activateSensors").html("Sensors On");
         }
       })
-      .catch(function (err) {
+      .catch(function(err) {
         console.log("DeviceOrientationEvent error:", err);
         $("#errorInfo").html("Cannot get permission", err.toString());
       });
@@ -950,13 +952,13 @@ function requestDeviceOrientation() {
 function initMap() {
   var myLatLng = {
     lat: -25.363,
-    lng: 131.044,
+    lng: 131.044
   };
   map = new google.maps.Map(document.getElementById("map"), {
     zoom: 13,
     center: {
       lat: 45.536384,
-      lng: -73.628949,
+      lng: -73.628949
     },
     disableDefaultUI: true,
     styles: [
@@ -964,193 +966,193 @@ function initMap() {
         elementType: "geometry",
         stylers: [
           {
-            color: "#f5f5f5",
-          },
-        ],
+            color: "#f5f5f5"
+          }
+        ]
       },
       {
         elementType: "geometry",
         stylers: [
           {
-            color: "#f5f5f5",
-          },
-        ],
+            color: "#f5f5f5"
+          }
+        ]
       },
       {
         elementType: "labels",
         stylers: [
           {
-            visibility: "off",
-          },
-        ],
+            visibility: "off"
+          }
+        ]
       },
       {
         elementType: "labels.icon",
         stylers: [
           {
-            visibility: "off",
-          },
-        ],
+            visibility: "off"
+          }
+        ]
       },
       {
         elementType: "labels.text.fill",
         stylers: [
           {
-            color: "#616161",
-          },
-        ],
+            color: "#616161"
+          }
+        ]
       },
       {
         elementType: "labels.text.stroke",
         stylers: [
           {
-            color: "#f5f5f5",
-          },
-        ],
+            color: "#f5f5f5"
+          }
+        ]
       },
       {
         featureType: "administrative.land_parcel",
         stylers: [
           {
-            visibility: "off",
-          },
-        ],
+            visibility: "off"
+          }
+        ]
       },
       {
         featureType: "administrative.land_parcel",
         elementType: "labels.text.fill",
         stylers: [
           {
-            color: "#bdbdbd",
-          },
-        ],
+            color: "#bdbdbd"
+          }
+        ]
       },
       {
         featureType: "administrative.neighborhood",
         stylers: [
           {
-            visibility: "off",
-          },
-        ],
+            visibility: "off"
+          }
+        ]
       },
       {
         featureType: "poi",
         elementType: "geometry",
         stylers: [
           {
-            color: "#eeeeee",
-          },
-        ],
+            color: "#eeeeee"
+          }
+        ]
       },
       {
         featureType: "poi",
         elementType: "labels.text.fill",
         stylers: [
           {
-            color: "#757575",
-          },
-        ],
+            color: "#757575"
+          }
+        ]
       },
       {
         featureType: "poi.park",
         elementType: "geometry",
         stylers: [
           {
-            color: "#e5e5e5",
-          },
-        ],
+            color: "#e5e5e5"
+          }
+        ]
       },
       {
         featureType: "poi.park",
         elementType: "labels.text.fill",
         stylers: [
           {
-            color: "#9e9e9e",
-          },
-        ],
+            color: "#9e9e9e"
+          }
+        ]
       },
       {
         featureType: "road",
         elementType: "geometry",
         stylers: [
           {
-            color: "#ffffff",
-          },
-        ],
+            color: "#ffffff"
+          }
+        ]
       },
       {
         featureType: "road.arterial",
         elementType: "labels.text.fill",
         stylers: [
           {
-            color: "#757575",
-          },
-        ],
+            color: "#757575"
+          }
+        ]
       },
       {
         featureType: "road.highway",
         elementType: "geometry",
         stylers: [
           {
-            color: "#dadada",
-          },
-        ],
+            color: "#dadada"
+          }
+        ]
       },
       {
         featureType: "road.highway",
         elementType: "labels.text.fill",
         stylers: [
           {
-            color: "#616161",
-          },
-        ],
+            color: "#616161"
+          }
+        ]
       },
       {
         featureType: "road.local",
         elementType: "labels.text.fill",
         stylers: [
           {
-            color: "#9e9e9e",
-          },
-        ],
+            color: "#9e9e9e"
+          }
+        ]
       },
       {
         featureType: "transit.line",
         elementType: "geometry",
         stylers: [
           {
-            color: "#e5e5e5",
-          },
-        ],
+            color: "#e5e5e5"
+          }
+        ]
       },
       {
         featureType: "transit.station",
         elementType: "geometry",
         stylers: [
           {
-            color: "#eeeeee",
-          },
-        ],
+            color: "#eeeeee"
+          }
+        ]
       },
       {
         featureType: "water",
         elementType: "geometry",
         stylers: [
           {
-            color: "#c9c9c9",
-          },
-        ],
+            color: "#c9c9c9"
+          }
+        ]
       },
       {
         featureType: "water",
         elementType: "labels.text.fill",
         stylers: [
           {
-            color: "#9e9e9e",
-          },
-        ],
-      },
-    ],
+            color: "#9e9e9e"
+          }
+        ]
+      }
+    ]
   });
 
   //Uncomment below for debugging mode - add 'location' points with mouse click
@@ -1215,7 +1217,7 @@ function initMap() {
 }
 
 //Print errors as they happen
-window.onerror = function (msg, url, lineNo, columnNo, error) {
+window.onerror = function(msg, url, lineNo, columnNo, error) {
   var string = msg.toLowerCase();
   var substring = "script error";
   if (string.indexOf(substring) > -1) {
@@ -1226,7 +1228,7 @@ window.onerror = function (msg, url, lineNo, columnNo, error) {
       "URL: " + url,
       "Line: " + lineNo,
       "Column: " + columnNo,
-      "Error object: " + JSON.stringify(error),
+      "Error object: " + JSON.stringify(error)
     ].join(" - ");
 
     console.log("captured error:", message);
