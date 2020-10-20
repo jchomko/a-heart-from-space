@@ -27,6 +27,7 @@ var playbackInterval = "";
 
 //Development config
 if (process.env.NODE_ENV != 'production') {
+  app.use(useragent.express())
   var https = require('https').createServer({
     key: fs.readFileSync('localhost+4-key.pem'),
     cert: fs.readFileSync('localhost+4.pem'),
@@ -43,36 +44,50 @@ if (process.env.NODE_ENV != 'production') {
 } else {
 
   var http = require('http').createServer(app);
+  app.use(useragent.express())
   app.use(sslRedirect());
   io = require('socket.io').listen(http);
   http.listen((process.env.PORT || 5000), function() {
     console.log("Node app is running at localhost: " + app.get('port'))
   });
   console.log("production");
-
 }
 
+//View engine for download
 app.set("view engine", "pug");
 app.set("views", path.join(__dirname, "views"));
+
 app.use(express.static('public'));
+
 // app.use(secure);
 
 app.get('/', function(request, response){
-  response.sendFile('public/index.html',{
-    "root":__dirname
+
+  if (request.useragent.isMobile){
+    // console.log("recirect to mobile");
+    response.redirect('/mobile')
+  }else{
+    // console.log("desktop");
+    response.sendFile('/public/desktop/desktop.html', {"root": __dirname})
+  }
+
+})
+
+app.get('/mobile', function(request, response) {
+  response.sendFile('/public/heartmap.html', {
+    "root": __dirname
   })
 })
 
-
 //These following three should be password protected
 app.get('/view', function(request, response) {
-  response.sendFile('/public/view.html', {
+  response.sendFile('/public/desktop/view.html', {
     "root": __dirname
   })
 })
 
 app.get('/playback', function(request, response) {
-  response.sendFile('/public/playback.html', {
+  response.sendFile('/public/desktop/playback.html', {
     "root": __dirname
   })
 })
@@ -81,7 +96,7 @@ app.get('/download', function(request, response) {
 
   const testFolder = __dirname + '/public/logs/';
   fs.readdir(testFolder, (err, files) => {
-    response.render(__dirname + "/public/views/download", {
+    response.render(__dirname + "/public/desktop/views/download", {
       title: "File Download",
       message: files
     });
@@ -144,12 +159,12 @@ io.on('connection', function(socket) {
 
   })
 
-  socket.on('send-tap', function(targetSocketId) {
-
+  socket.on('send-tap', function(target) {
+    console.log("send tap :", target)
     for (var i = 0; i < groupCoords.length; i++) {
-      if (groupCoords[i].connectTimestamp === targetSocketId) {
+      if (groupCoords[i].connectTimestamp == target) {
         io.to(groupCoords[i].id).emit('receive-tap');
-        console.log("sending tap to :", groupCoords[i].id);
+        console.log("sending tap to :", groupCoords[i].connectTimestamp);
         // groupCoords[i].done = coords.done
       }
     }
@@ -287,7 +302,7 @@ io.on('connection', function(socket) {
       //if we find a match, we update the existing coordinate
       //using timestamps means that we update any duplicate markers that are hanging around
       // if (JSON.stringify(groupCoords[i].connectTimestamp) === JSON.stringify(coords.connectTimestamp)) {
-      if (JSON.stringify(groupCoords[i].connectTimestamp) === JSON.stringify(coords.connectTimestamp)) {
+      if (groupCoords[i].connectTimestamp === coords.connectTimestamp) {
 
         groupCoords[i].lat = coords.lat
         groupCoords[i].lng = coords.lng
@@ -536,4 +551,4 @@ function sendGroupCoordinates() {
 
 }
 
-setInterval(sendGroupCoordinates, 500);
+setInterval(sendGroupCoordinates, 250);

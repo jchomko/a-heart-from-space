@@ -45,7 +45,7 @@ var iconParameters = {
 
 //Audio
 var spriteSound = new Howl({
-  src: ['Ticket-machine-sound.mp3']
+  src: ['../audio/Ticket-machine-sound.mp3']
   //,
   // sprite: {
   //   arrival1: [0, 2500],
@@ -55,17 +55,27 @@ var spriteSound = new Howl({
 
 //Frontend Functions
 function joinHeart(){
-  $("#welcome").css("display", "none")
-  $("#sensor-setup").css("display", "inline")
 
-  //Hide gps button if we already have access
-  if(gpsActive){
-    $("#sensor-gps").css("display", "none")
-  }
+  $("#introduction").css("display","none");
+  setup();
 
-  if(hasSensorAccess){
-    $("#sensor-compass").css("display", "none")
-  }
+  // $("#welcome").css("display", "none")
+  // $("#sensor-setup").css("display", "inline")
+  //
+  // //Hide gps button if we already have access
+  // if(gpsActive){
+  //   $("#sensor-gps").css("display", "none")
+  // }
+  //
+  // if(hasSensorAccess){
+  //   $("#sensor-compass").css("display", "none")
+  // }
+}
+
+function showDoneIntro(){
+  $("#introduction").css("z-index","1");
+  $("#sensor-setup").css("display", "none");
+  $("#done-button-intro").css("display","inline");
 }
 
 function hideIntroduction(){
@@ -106,11 +116,15 @@ function requestTimestamp(){
   var ct = getCookie("timestamp");
   if (ct != null) {
     console.log("has timestamp : " + ct);
-    firstConnectTimestamp = ct;
+    //Read the value as numeric - mix between numeric and non-numeric values was causing issues
+    firstConnectTimestamp = +ct;
     $("#compassInfo").html(firstConnectTimestamp);
   } else {
     console.log("no timestamp saved in cookies ");
-    socket.emit("request-timestamp");
+    // socket.emit("request-timestamp");
+    firstConnectTimestamp = Date.now();
+    setCookie("timestamp", firstConnectTimestamp, 1)
+    console.log("saving timestamp : ", firstConnectTimestamp);
   }
 }
 
@@ -177,8 +191,7 @@ function toggleGPSButton() {
     centerMap();
     gpsActive = true;
 
-    $("#sensor-setup").css("display", "none");
-    $("#done-button-intro").css("display","inline");
+    showDoneIntro();
   }
   // else{
   //   $("#activateGPS").html("Activate GPS");
@@ -318,27 +331,29 @@ function showDialogue(currentMode){
 }
 
 //Socket Communication
+
+socket.on('connect', function() {
+  // setup()
+});
+
+
 socket.on("receive-tap", function() {
   drawHomeTap();
 })
 
-socket.on("receive-timestamp", function(ts) {
-  // I suppose sometimes the timestamp might not be set before we send off a packet of data, maybe that's a problem?
-  setCookie("timestamp", ts, 1)
-  console.log("setting id cookie to : " + ts);
-  firstConnectTimestamp = ts;
-
-});
+// socket.on("receive-timestamp", function(ts) {
+//   // I suppose sometimes the timestamp might not be set before we send off a packet of data, maybe that's a problem?
+//   setCookie("timestamp", ts, 1)
+//   console.log("setting id cookie to : " + ts);
+//   firstConnectTimestamp = ts;
+//
+// });
 
 socket.on("receive-start-status", function(currentMode) {
 
     console.log("current mode :", currentMode);
     showDialogue(currentMode);
 })
-
-socket.on('connect', function() {
-  // setup()
-});
 
 socket.on("receive-group-coordinates", function(groupCoords) {
 
@@ -377,4 +392,4 @@ requestTimestamp();
 //Call these only when we have done the tutorial
 // tryGeolocation();
 //Call this before tutorial to check if it's necessary
-requestDeviceOrientation();
+// requestDeviceOrientation();

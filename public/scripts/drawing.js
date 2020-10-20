@@ -137,7 +137,6 @@ function drawMarkers(groupCoords) {
     google.maps.event.addListener(marker, 'mouseup', function(event) {
       console.log("tapping : ", this.getTitle());
       socket.emit("send-tap", this.getTitle());
-
       drawTapResponse(this.getTitle());
 
     });
@@ -185,7 +184,7 @@ function drawMarkers(groupCoords) {
 }
 
 function updateHomeMarkerPosition(position) {
-  if(google){ //if google maps is loaded 
+  if(google){ //if google maps is loaded
     var latlng = new google.maps.LatLng(
       position.coords.latitude,
       position.coords.longitude

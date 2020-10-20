@@ -26,16 +26,20 @@
   <div id="introduction">
     <div id="welcome">
       <div id="introtext">
-        A Heart from Space is a website that enables a group of people create drawings together using their GPS positions.
         <p>
-          Each participant holds a point of the drawing and adjusts their position in response to the actions of the group.
-          <p>
-            The drawing only exists when everyone is online together - nothing is saved, the drawing disappears when you leave.
-            <p>
+          <b>A Heart from Space</b> is a website that enables a group of people to draw together using their GPS positions. <br><br>
+          Each participant holds a point of the drawing and moves with the group to create a heart. <br><br>
+          <!-- <b>Instructions</b><br> -->
+          When you click start, you'll be asked to share some sensor permissions - these allow the website to access your GPS position and compass sensor.<br><br>
+          When you're happy with the shape of the heart, tap the heart button on the bottom right of the screen to fill your section. When the heart is full of colour, the heart is ready.<br><br>
+
+        </p>
+
       </div>
-      <button id="start-new-heart" onclick="startNewHeart()">Start New Heart</button>
-      <button id="join-heart" onclick="joinHeart()">Join Heart</button>
-      <button id="skip-intro" onclick="skipIntro()">Skip Intro</button>
+      <!-- <img id='heart-photo' src='images/heart-photo.png'> -->
+      <!-- <button id="start-new-heart" onclick="startNewHeart()">Start New Heart</button> -->
+      <button id="join-heart" onclick="joinHeart()">Start</button>
+      <!-- <button id="skip-intro" onclick="skipIntro()">Skip Intro</button> -->
     </div>
     <div id="sensor-setup">
       <div id="introtext">
@@ -46,8 +50,7 @@
     </div>
     <div id="done-button-intro">
       <div id="introtext">
-        When you're satisfied with how the heart looks, press this button and it will fill your heart with colour.
-        When the heart is full of colour, the group is declaring they are happy with the shape of their heart.
+        When you're satisfied with how the heart looks, press this button and it will fill your heart with colour. When the heart is full of colour, the group is declaring they are happy with the shape of their heart.
       </div>
       <button id="sensor-gps" onclick="hideIntroduction()">OK, lets go!</button>
 

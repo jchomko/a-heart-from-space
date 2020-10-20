@@ -15,7 +15,7 @@ html, body {
 }
 
 #introduction {
-  background-color: #7A70F9;
+  background-color: rgb(245, 246, 245);
   display: inline;
   position: absolute;
   top: 0;
@@ -23,11 +23,12 @@ html, body {
   height: 100%;
   width: 100%;
   overflow: hidden;
+  z-index: 10;
 }
 
 #welcome {
-  display: inline;
-  position: absolute;
+  /* display: inline; */
+  position: relative;
   top: 0;
   left: 0;
   height: 100%;
@@ -56,8 +57,8 @@ html, body {
 }
 
 #introtext {
-  position: absolute;
-  margin: 20px;
+  position: relative;
+  margin: 5%;
   /* font: sans-serif; */
   font-family: sans-serif;
 }
@@ -92,13 +93,26 @@ html, body {
   background-color: rgb(220, 220, 220);
 }
 
+#heart-photo{
+  position: relative;
+  height: 20%;
+}
+
 #join-heart {
-  position: absolute;
+  /* position: absolute;
   bottom: 20px;
   left: 70%;
   transform: translate(-50%, 0);
   width: 30%;
   height: 50px;
+  background-color: rgb(220, 220, 220); */
+  position: absolute;
+  /* margin: 5%; */
+  left: 50%;
+  transform: translate(-50%, 0);
+  width: 90%;
+  height: 10%;
+  bottom: 5%;
   background-color: rgb(220, 220, 220);
 }
 
@@ -127,7 +141,7 @@ html, body {
   height: 40px;
 }
 
-.map-button{
+.map-button {
   width: 60px;
   height: 60px;
 }
@@ -138,7 +152,6 @@ html, body {
   right: 0px;
   border: none;
   /* width: 5%; */
-
   /* background-color: rgb(220, 220, 220); */
   /* background-image: url("/public/images/center.png");
   background: no-repeat top left;
@@ -151,8 +164,8 @@ html, body {
   bottom: 90px;
   right: 0px;
   border: none;
+  z-index: 10;
   /* width: 5%; */
-
   /* position: absolute;
   top: 4%;
   left: 50%;
@@ -163,7 +176,6 @@ html, body {
   border-radius: 18px;
   font-size: 16px; */
 }
-
 
 #readyButton {
   position: absolute;
@@ -183,8 +195,6 @@ html, body {
   background-color: rgb(220, 220, 220);
   width: 80px;
 }
-
-
 
 #activateSensors {
   position: absolute;
@@ -222,4 +232,41 @@ html, body {
 #dialog-content {
   /* font-size: 19px; */
   /* background: #fdf7f3ed */
+}
+
+/* Desktop */
+
+html, body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  background-color: whitesmoke;
+  /* background-color: red; /* same colour of container */
+}
+
+*, *:before, *:after {
+  box-sizing: border-box;
+}
+
+.desktop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  height: 100%;
+  width: 100%;
+  /* background-color: rgb(230, 230, 255); /* same colour of container */
+}
+
+#desktop-text {
+  position: absolute;
+  top: 10%;
+  left: 10%;
+  margin-bottom: 30%;
+  height: 100%;
+  margin-right: 10%;
+  max-width: 800px;
+  font-family: sans-serif;
+  background-color: whitesmoke;
+  /* same colour of container */
 }
