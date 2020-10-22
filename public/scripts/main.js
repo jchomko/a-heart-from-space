@@ -53,12 +53,17 @@ var spriteSound = new Howl({
   // }
 });
 
+var hasDoneIntro = getCookie("intro-done");
+console.log("had done intro: ", hasDoneIntro);
+
 //Frontend Functions
+//Start function
 function joinHeart(){
 
   $("#introduction").css("display","none");
   setup();
 
+  setCookie("intro-done", true, 1)
   // $("#welcome").css("display", "none")
   // $("#sensor-setup").css("display", "inline")
   //
@@ -228,6 +233,7 @@ function toggleDone() {
   drawDone = !drawDone;
 }
 
+//This function was to make sure that the done button is always showing the correct status
 function checkDoneButton(groupCoords) {
   // for (var i = 0; i < groupCoords.length; i++) {
   //   if (groupCoords[i].connectTimestamp === firstConnectTimestamp) {
@@ -333,7 +339,7 @@ function showDialogue(currentMode){
 //Socket Communication
 
 socket.on('connect', function() {
-  // setup()
+  setup();
 });
 
 

@@ -231,7 +231,7 @@ io.on('connection', function(socket) {
           // playbackIndex= 0;
           clearInterval(playbackInterval);
         }
-      }, 500)
+      }, 250)
     }
 
     //Load file
