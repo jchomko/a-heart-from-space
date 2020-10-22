@@ -7,7 +7,7 @@
 .pem
 node_modules
 npm-debug.log
-/public/logs
+#/public/logs
 
 
 /.idea
