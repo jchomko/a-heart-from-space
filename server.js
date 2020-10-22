@@ -515,7 +515,7 @@ function getDateString() {
 
 function saveFile(data) {
 
-  var name = "recording " + getDateString() + ".json";
+  var name = "recording" + getDateString() + ".json";
   // var name = "recording.json";
 
   //add trailing bracket
