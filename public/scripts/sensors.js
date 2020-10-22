@@ -73,7 +73,7 @@ var browserGeolocationSuccess = function(position) {
     if(firstConnectTimestamp != null){
       socket.emit("update-coordinates", currLatLng);
     }
-    toggleGPSButton();
+    // toggleGPSButton();
   }
 };
 
