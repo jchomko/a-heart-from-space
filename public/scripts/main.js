@@ -342,7 +342,7 @@ socket.on('connect', function() {
   // setup();
   tryGeolocation();
   requestDeviceOrientation();
-  
+
 });
 
 
