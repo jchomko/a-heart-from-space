@@ -339,7 +339,9 @@ function showDialogue(currentMode){
 //Socket Communication
 
 socket.on('connect', function() {
-  setup();
+  // setup();
+  tryGeolocation();
+  requestDeviceOrientation();
 });
 
 
