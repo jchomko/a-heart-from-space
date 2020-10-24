@@ -612,7 +612,7 @@ function Sessions() {
 }
 
 Sessions.prototype.displaySessions = function() {
-  console.log("displaySessions", this.sessions);
+  // console.log("displaySessions", this.sessions);
   $("#current-session").html(this.currentSessionID);
   $("#available-sessions").html(
     this.sessions
@@ -631,12 +631,14 @@ Sessions.prototype.displaySessions = function() {
 Sessions.prototype.joinSession = function(sessionId) {
   console.log("joinSession", sessionId);
   this.setCurrentSession(sessionId);
-  this.deleteSession(sessionId);
+
+  //wtf?
+  //this.deleteSession(sessionId);
+
   socket.emit("join-session", sessionId);
 };
 
 Sessions.prototype.setCurrentSession = function(id) {
-  console.log("setCurrentSession", id);
   this.currentSessionID = id;
   this.displaySessions();
 };
@@ -656,7 +658,8 @@ Sessions.prototype.deleteSession = function(sessionId) {
   this.displaySessions();
 };
 
-Sessions.prototype.addUsers = function(users) {
+Sessions.prototype.setUsers = function(users) {
+  this.users.forEach(user => user.setMap(null));
   this.users = [];
   users.forEach(user => this.addUser(user));
 };
@@ -773,7 +776,7 @@ Sessions.prototype.drawLines = function() {
 };
 
 Sessions.prototype.updateUserCoordinates = function(userId, lng, lat) {
-  console.log("updateUserCoordinates");
+  // console.log("updateUserCoordinates");
   var index = this.users.findIndex(u => u.id === userId);
   if (index !== -1) {
     this.users[index].setPosition({ lng, lat });
@@ -798,7 +801,7 @@ var sessions = new Sessions();
 
 socket.on("connect", function() {
   //sessionID = socket.id;
-  console.log("connected", socket.id);
+  console.log("connection: ", "socket id = ", socket.id);
   sessions.setCurrentSession(socket.id);
   // socket.emit("new-client", "mobile");
   tryGeolocation();
@@ -810,38 +813,43 @@ socket.on("connect", function() {
 
 // available sessions
 socket.on("available-sessions", function(list) {
-  console.log("available-sessions", list);
+  console.log("available-sessions: ", list);
   sessions.setSessions(list);
 });
 
 // session users
 socket.on("session-users", function(users) {
-  console.log("session-users", users);
-  sessions.addUsers(users);
+  console.log("session-users: ", users);
+  sessions.setUsers(users);
 });
 
 socket.on("new-session-available", function(sessionId) {
-  console.log("new-session-available", sessionId);
+  console.log("new-session-available: ", sessionId);
   sessions.addSession(sessionId);
 });
 
 socket.on("session-deleted", function(sessionId) {
-  console.log("session-deleted", sessionId);
+  console.log("session-deleted: ", sessionId);
   sessions.deleteSession(sessionId);
 });
 
 socket.on("new-user-joined", function(user) {
-  console.log("new-user-joined", user);
+  console.log("new-user-joined: ", user);
   sessions.addUser(user);
 });
 
-socket.on("user-deleted", function(userId) {
-  console.log("user-deleted", userId);
+socket.on("user-disconnected", function(userId) {
+  console.log("user-disconnected: ", userId);
+  sessions.deleteUser(userId);
+});
+
+socket.on("user-left", function(userId) {
+  console.log("user-left: ", userId);
   sessions.deleteUser(userId);
 });
 
 socket.on("update-user-coordinates", function(userId, lng, lat) {
-  console.log("coordinates-updated", userId, lng, lat);
+  // console.log("coordinates-updated", userId, lng, lat);
   sessions.updateUserCoordinates(userId, lng, lat);
 });
 

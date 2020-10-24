@@ -68,8 +68,8 @@ Sessions.prototype.deleteUserFromSession = function(socketId) {
 
 // finds a socket (user) in a room (session)
 Sessions.prototype.findUser = function(socketId) {
-  console.log("findUser", socketId);
-  console.dir(this.sessions, { depth: null, colors: true });
+  // console.log("findUser", socketId);
+  // console.dir(this.sessions, { depth: null, colors: true });
 
   for (let i = 0; i < this.sessions.length; i++) {
     const userIndex = this.sessions[i].users.findIndex(u => u.id === socketId);
@@ -80,11 +80,12 @@ Sessions.prototype.findUser = function(socketId) {
   console.log("user not found"); // why?
 };
 
-// returns an array of all rooms (sessions)
-Sessions.prototype.getSessionsIds = function() {
+// returns an array of all rooms (sessions) except the given id
+Sessions.prototype.getSessionsIds = function(id) {
   return (
     this.sessions
       //.filter((s) => s.lng !== undefined && s.lat !== undefined)
+      .filter(s => s.id !== id)
       .reduce((acc, cur) => {
         acc.push(cur.id);
         return acc;
@@ -183,13 +184,15 @@ app.get("/", function(request, response) {
 });
 
 io.on("connection", function(socket) {
-  console.log("connected", socket.id);
+  console.log("on connection:", "socket id = ", socket.id);
 
   // notifies all clients except sender that a new room (session) has become available
   socket.broadcast.emit("new-session-available", socket.id);
 
-  // sends an array of ids of all rooms (sessions) to the connected client
-  socket.emit("available-sessions", sessions.getSessionsIds());
+  // sends an array of ids of all available ASukhanrooms (sessions) to the connected client
+  const sessionIds = sessions.getSessionsIds();
+  console.log("available-session =", sessionIds);
+  socket.emit("available-sessions", sessionIds);
 
   // remembers the new room (session)
   sessions.addSession(socket.id);
@@ -203,17 +206,20 @@ io.on("connection", function(socket) {
   socket.on("join-session", function(newSessionId) {
     const [
       sessionId,
-      isSessionToDelete,
+      isSessionEmpty,
       deletedUser
     ] = sessions.deleteUserFromSession(socket.id);
+
     console.log(
-      "join-session",
+      "join-session:",
       "socket.id =",
       socket.id,
-      "newSessionId =",
+      ", session to join =",
       newSessionId,
-      "isSessionToDelete",
-      isSessionToDelete
+      ", session to leave =",
+      sessionId,
+      ", is old session empty?",
+      isSessionEmpty
     );
 
     // at first they leave the previous room (session)
@@ -221,10 +227,13 @@ io.on("connection", function(socket) {
       // then they join a new room (session)
       socket.join(newSessionId, () => {
         // if there are no sockets (users) left in the previous room (session), we notify all clients that the room (session) has been deleted
-        if (isSessionToDelete === true) {
+        if (isSessionEmpty === true) {
           //socket.broadcast.emit("delete-session", sessionId);
           //socket.emit("delete-session", sessionId);
           io.emit("session-deleted", sessionId);
+        } else {
+          // notify the old previous (session) that the socket (user) has left it
+          socket.to(sessionId).emit("user-left", socket.id);
         }
 
         // notifies the sockets (users) of the new room (session) that a new socket (user) has joined the room
@@ -235,6 +244,11 @@ io.on("connection", function(socket) {
 
         // adds the socket (user) to the new room (session)
         sessions.addUserToSession(newSessionId, deletedUser);
+
+        // sends an array of ids of all available rooms (sessions) to the connected client
+        const sessionIds = sessions.getSessionsIds(newSessionId);
+        console.log("available-session =", sessionIds);
+        socket.emit("available-sessions", sessionIds);
       });
     });
   });
@@ -259,19 +273,18 @@ io.on("connection", function(socket) {
 
   // on disconnect we delete the socket (user) from its room (session) and delete the room (session) if it's empty (has no users/sockets)
   socket.on("disconnect", function() {
-    console.log("disconnect", socket.id);
-    const [sessionId, isSessionToDelete] = sessions.deleteUserFromSession(
+    const [sessionId, isSessionEmpty] = sessions.deleteUserFromSession(
       socket.id
     );
-    console.log("sessionId", sessionId, "isSessionToDelete", isSessionToDelete);
-    if (isSessionToDelete === true) {
+    console.log("on disconnect:", "socket =", socket.id, ", sessionId =", sessionId, ", isSessionEmpty =", isSessionEmpty);
+    if (isSessionEmpty === true) {
       // notify all clients that the room (session) has been deleted
       // socket.broadcast.emit("delete-session", sessionId);
       // socket.emit("delete-session", sessionId);
       io.emit("session-deleted", sessionId);
     } else {
       // notify all clients except sender that the user (socket) has been deleted
-      socket.broadcast.emit("user-deleted", socket.id);
+      socket.broadcast.emit("user-disconnected", socket.id);
     }
   });
 
