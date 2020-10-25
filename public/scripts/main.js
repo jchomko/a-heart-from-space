@@ -106,7 +106,6 @@ function doneSection() {
   }
 
   drawDone = !drawDone;
-  console.log(drawDone);
   // we need to trigger the drawing immediately here, and then let it update with location for the others
   // how do you distinguish which heart section is yours?
   // it shoouuld be equally drawn between the sections so it's centered on you.
@@ -115,14 +114,13 @@ function doneSection() {
 
 //Geolocation success callback
 var browserGeolocationSuccess = function(position) {
-  // console.log("browserGeolocationSuccess", position);
   // $("#activateGPS").html("GPS On");
   activateGPS();
 
-  const lng = position.coords.longitude + Math.random() / 4 - 1 / 4;
-  const lat = position.coords.latitude + Math.random() / 4 - 1 / 4;
+  const lng = position.coords.longitude; // + Math.random() / 4 - 1 / 4;
+  const lat = position.coords.latitude; // + Math.random() / 4 - 1 / 4;
 
-  sessions.updateCurrentPosition(lng, lat);
+  sessions.updateCurrentUserPosition(lng, lat);
 
   socket.emit("update-coordinates", lng, lat);
 
@@ -149,7 +147,6 @@ var browserGeolocationSuccess = function(position) {
 
 //Geolocation fail callback
 var browserGeolocationFail = function(error) {
-  console.log("browserGeolocationFail", error);
   switch (error.code) {
     case error.TIMEOUT:
       alert("Browser geolocation error !\n\nTimeout." + error.message);
@@ -523,7 +520,6 @@ function setAt(index) {
 }*/
 
 socket.on("receive-tap", function() {
-  console.log("vibrate");
   if (window.navigator.vibrate) {
     window.navigator.vibrate(500);
   }
@@ -624,17 +620,8 @@ Sessions.prototype.displaySessions = function() {
   );
 };
 
-/*Sessions.prototype.displayUsers = function () {
-  console.log("displayUsers", this.users);
-};*/
-
 Sessions.prototype.joinSession = function(sessionId) {
-  console.log("joinSession", sessionId);
   this.setCurrentSession(sessionId);
-
-  //wtf?
-  //this.deleteSession(sessionId);
-
   socket.emit("join-session", sessionId);
 };
 
@@ -664,7 +651,7 @@ Sessions.prototype.setUsers = function(users) {
   users.forEach(user => this.addUser(user));
 };
 
-Sessions.prototype.updateCurrentPosition = function(lng, lat) {
+Sessions.prototype.updateCurrentUserPosition = function(lng, lat) {
   if (this.currentUser !== undefined) {
     this.currentUser.setPosition({ lng, lat });
     this.drawLines();
@@ -698,6 +685,14 @@ Sessions.prototype.updateCurrentPosition = function(lng, lat) {
   }
 };
 
+Sessions.prototype.updateCurrentUserRotation = function(rotation) {
+  if (this.currentUser !== undefined) {
+    let icon = this.currentUser.getIcon();
+    icon.rotation = rotation;
+    this.currentUser.setIcon(icon);
+  }
+}
+
 Sessions.prototype.addUser = function(user) {
   this.users.push(
     new google.maps.Marker({
@@ -721,7 +716,7 @@ Sessions.prototype.addUser = function(user) {
 };
 
 Sessions.prototype.deleteUser = function(userId) {
-  var index = this.users.findIndex(u => u.id === userId);
+  const index = this.users.findIndex(u => u.id === userId);
   if (index !== -1) {
     this.users[index].setMap(null);
     this.users.splice(index, 1);
@@ -730,15 +725,12 @@ Sessions.prototype.deleteUser = function(userId) {
 };
 
 Sessions.prototype.drawLines = function() {
-  // console.log("drawLines");
   if (this.users.length > 0) {
     if (this.polyline !== undefined) {
       this.polyline.setMap(null);
     }
 
     const users = this.users.concat(this.currentUser);
-
-    // console.log("drawLines", users);
 
     const center = users.reduce(calculateCentroid, {
       lat: 0,
@@ -776,19 +768,18 @@ Sessions.prototype.drawLines = function() {
 };
 
 Sessions.prototype.updateUserCoordinates = function(userId, lng, lat) {
-  // console.log("updateUserCoordinates");
-  var index = this.users.findIndex(u => u.id === userId);
+  const index = this.users.findIndex(u => u.id === userId);
   if (index !== -1) {
     this.users[index].setPosition({ lng, lat });
     this.drawLines();
   }
 };
 
-Sessions.prototype.updateUserHeading = function(userId, heading) {
-  var index = this.users.findIndex(u => u.id === userId);
+Sessions.prototype.updateUserRotation = function(userId, rotation) {
+  const index = this.users.findIndex(u => u.id === userId);
   if (index !== -1) {
     var icon = this.users[index].getIcon();
-    icon.rotation = heading;
+    icon.rotation = rotation;
     this.users[index].setIcon(icon);
   }
 };
@@ -800,8 +791,6 @@ Sessions.prototype.centerMap = function() {
 var sessions = new Sessions();
 
 socket.on("connect", function() {
-  //sessionID = socket.id;
-  console.log("connection: ", "socket id = ", socket.id);
   sessions.setCurrentSession(socket.id);
   // socket.emit("new-client", "mobile");
   tryGeolocation();
@@ -811,51 +800,40 @@ socket.on("connect", function() {
   }*/
 });
 
-// available sessions
 socket.on("available-sessions", function(list) {
-  console.log("available-sessions: ", list);
   sessions.setSessions(list);
 });
 
-// session users
 socket.on("session-users", function(users) {
-  console.log("session-users: ", users);
   sessions.setUsers(users);
 });
 
 socket.on("new-session-available", function(sessionId) {
-  console.log("new-session-available: ", sessionId);
   sessions.addSession(sessionId);
 });
 
 socket.on("session-deleted", function(sessionId) {
-  console.log("session-deleted: ", sessionId);
   sessions.deleteSession(sessionId);
 });
 
 socket.on("new-user-joined", function(user) {
-  console.log("new-user-joined: ", user);
   sessions.addUser(user);
 });
 
 socket.on("user-disconnected", function(userId) {
-  console.log("user-disconnected: ", userId);
   sessions.deleteUser(userId);
 });
 
 socket.on("user-left", function(userId) {
-  console.log("user-left: ", userId);
   sessions.deleteUser(userId);
 });
 
-socket.on("update-user-coordinates", function(userId, lng, lat) {
-  // console.log("coordinates-updated", userId, lng, lat);
+socket.on("coordinates-updated", function(userId, lng, lat) {
   sessions.updateUserCoordinates(userId, lng, lat);
 });
 
-socket.on("update-user-heading", function(userId, heading) {
-  console.log("update-heading", userId, heading);
-  sessions.updateUserHeading(userId, heading);
+socket.on("heading-updated", function(userId, heading) {
+  sessions.updateUserRotation(userId, heading);
 });
 
 /*socket.on("receive-group-coordinates", function (groupCoords) {
@@ -892,13 +870,10 @@ function updateHomeMarkerRotation(data) {
   }
 
   if (compassOrientation != lastCompassOrientation) {
-    /*var icon = homeMarker.getIcon();
-    icon.rotation = compassOrientation;
-    homeMarker.setIcon(icon);*/
+    sessions.updateCurrentUserRotation(compassOrientation);
 
     //Only sending rotation updates with location updates
-    //socket.emit("update-heading", compassOrientation);
-    socket.emit("heading-updated", compassOrientation);
+    socket.emit("update-heading", compassOrientation);
     lastCompassOrientation = compassOrientation;
   }
 }
@@ -940,14 +915,12 @@ function requestDeviceOrientation() {
   ) {
     DeviceOrientationEvent.requestPermission()
       .then(response => {
-        console.log("DeviceOrientationEvent response:", response);
         if (response == "granted") {
           setupSensorListeners();
           $("#activateSensors").html("Sensors On");
         }
       })
       .catch(function(err) {
-        console.log("DeviceOrientationEvent error:", err);
         $("#errorInfo").html("Cannot get permission", err.toString());
       });
   } else {
