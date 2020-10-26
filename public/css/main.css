@@ -89,13 +89,14 @@ body {
   /* background: #fdf7f3ed */
 }
 
-.rooms {
+.sessions {
   position: absolute;
   bottom: 10px;
   left: 10px;
+  border: 1px solid black;
 }
 
-#rooms-list {
+#available-sessions {
   display: grid;
   /*grid-auto-flow: row;*/
   grid-template-columns: auto auto;

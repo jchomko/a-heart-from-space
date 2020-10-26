@@ -1,19 +1,19 @@
 var socket = io();
 
-var currLatLng;
+// var currLatLng;
 var map;
-var groupMarkers = [];
+// var groupMarkers = [];
 var groupPolyLines = [];
-var homeMarkerID;
-var sessionID;
-var bestAccuracy = 1000;
+// var homeMarkerID;
+// var sessionID;
+// var bestAccuracy = 1000;
 var hasSensorAccess = false;
 var compassOrientation = 0;
-var markerArray = [];
+// var markerArray = [];
 var homeMarker;
 var lastCompassOrientation = 0;
-var showArrows = true;
-var guideLine;
+// var showArrows = true;
+// var guideLine;
 var drawDone = false;
 var sensorsActive = false;
 var gpsActive = false;
@@ -23,7 +23,7 @@ var trianglePolylineTemp;
 var lastSortedCoords = [];
 
 var spriteSound = new Howl({
-  src: ["Ticket-machine-sound.mp3"],
+  src: ["Ticket-machine-sound.mp3"]
   //,
   // sprite: {
   //   arrival1: [0, 2500],
@@ -58,10 +58,12 @@ function readyToStart() {
   //remove ready dialogue
   socket.emit("ready-to-start", true);
 }
+
 //Center map to current position (if it's been set)
 function center() {
   // requestDeviceOrientation();
-  map.panTo(new google.maps.LatLng(currLatLng.lat, currLatLng.lng));
+  // map.panTo(new google.maps.LatLng(currLatLng.lat, currLatLng.lng));
+  sessions.centerMap();
 }
 
 function activateSensors() {
@@ -90,7 +92,7 @@ function activateGPS() {
 
 function doneSection() {
   if (!drawDone) {
-    drawTriangle();
+    // drawTriangle();
     $("#doneSection").html("Fill On");
     $("#doneSection").css("background-color", "rgb(250,180,180)");
     // socket.emit("draw-triangle", true)
@@ -104,7 +106,6 @@ function doneSection() {
   }
 
   drawDone = !drawDone;
-  console.log(drawDone);
   // we need to trigger the drawing immediately here, and then let it update with location for the others
   // how do you distinguish which heart section is yours?
   // it shoouuld be equally drawn between the sections so it's centered on you.
@@ -112,11 +113,18 @@ function doneSection() {
 }
 
 //Geolocation success callback
-var browserGeolocationSuccess = function (position) {
+var browserGeolocationSuccess = function(position) {
   // $("#activateGPS").html("GPS On");
   activateGPS();
 
-  if (position.coords.accuracy < bestAccuracy) {
+  const lng = position.coords.longitude; // + Math.random() / 4 - 1 / 4;
+  const lat = position.coords.latitude; // + Math.random() / 4 - 1 / 4;
+
+  sessions.updateCurrentUserPosition(lng, lat);
+
+  socket.emit("update-coordinates", lng, lat);
+
+  /*if (position.coords.accuracy < bestAccuracy) {
     bestAccuracy = position.coords.accuracy;
     console.log("bestAccuracy: " + bestAccuracy);
   }
@@ -131,13 +139,14 @@ var browserGeolocationSuccess = function (position) {
       done: drawDone,
     };
     updateHomeMarkerPosition(position);
+
     // console.log("accurate coordinates: " + JSON.stringify(myLatLng))
     socket.emit("update-coordinates", currLatLng);
-  }
+  }*/
 };
 
 //Geolocation fail callback
-var browserGeolocationFail = function (error) {
+var browserGeolocationFail = function(error) {
   switch (error.code) {
     case error.TIMEOUT:
       alert("Browser geolocation error !\n\nTimeout." + error.message);
@@ -165,7 +174,7 @@ function tryGeolocation() {
       {
         enableHighAccuracy: true,
         timeout: 10000,
-        maximumAge: 5000,
+        maximumAge: 5000
       }
     );
   }
@@ -182,15 +191,7 @@ function askForLocation() {
   }
 }
 
-const calculateCentroid = (acc, { lat, lng }, idx, src) => {
-  acc.lat += lat / src.length;
-  acc.lng += lng / src.length;
-  return acc;
-};
-
-const sortByAngle = (a, b) => a.angle - b.angle;
-
-function calculateSimilarity(groupCoordsSorted) {
+/*function calculateSimilarity(groupCoordsSorted) {
   const curve = groupCoordsSorted.map((coords) => ({
     x: coords.lng,
     y: coords.lat,
@@ -199,10 +200,10 @@ function calculateSimilarity(groupCoordsSorted) {
     rotations: 500,
   });
   console.log("similarity", similarity);
-}
+}*/
 
 //Draw lines between the received points
-function drawLines(groupCoords) {
+/*function drawLines(groupCoords) {
   var dist = 0;
 
   // console.log("num lines: ", groupPolyLines.length);
@@ -289,9 +290,9 @@ function drawLines(groupCoords) {
       }
     }
   }
-}
+}*/
 
-function drawTapResponse(markerId) {
+/*function drawTapResponse(markerId) {
   let matchIndex = -1;
   for (var i = 0; i < groupMarkers.length; i++) {
     if (groupMarkers[i].getTitle() === markerId) {
@@ -311,9 +312,9 @@ function drawTapResponse(markerId) {
     600,
     matchIndex
   );
-}
+}*/
 
-function drawTriangle() {
+/*function drawTriangle() {
   //find which index you are on the sorted list
   //then just increment one up or down on the list to get the next point
   //but that means we need to keep the id in the coordinates
@@ -371,10 +372,10 @@ function drawTriangle() {
     //and so if an ID has a marker of being finished we draw a triangle for it
     //(or include it in our triangle if it's adjacent)
   }
-}
+}*/
 
 //Called every time a socket is disconnected
-function clearMarkers(numberToClear) {
+/*function clearMarkers(numberToClear) {
   var index = 0;
   while (index < numberToClear) {
     console.log(
@@ -388,9 +389,9 @@ function clearMarkers(numberToClear) {
     index++;
     console.log("total markers : ", groupMarkers.length);
   }
-}
+}*/
 
-function drawMarkers(groupCoords) {
+/*function drawMarkers(groupCoords) {
   var index = 0;
   while (groupMarkers.length < groupCoords.length) {
     var image = {
@@ -412,7 +413,6 @@ function drawMarkers(groupCoords) {
     google.maps.event.addListener(marker, "mouseup", function (event) {
       console.log("tapping : ", this.getTitle());
       socket.emit("send-tap", this.getTitle());
-
       drawTapResponse(this.getTitle());
     });
 
@@ -453,10 +453,10 @@ function drawMarkers(groupCoords) {
       groupMarkers[c].setMap(null);
     }
   }
-}
+}*/
 
 //Start debug drawing functions - Fired on map click - disabled for normal operation
-function addLatLng(event) {
+/*function addLatLng(event) {
   var path = guideLine.getPath();
   path.push(event.latLng);
   // drawLines(guideLine.getPath().getArray());
@@ -481,10 +481,10 @@ function removeAt(index) {
 
 function setAt(index) {
   polylineChanged();
-}
+}*/
 //End debug drawing functions
 
-function convertCoordinates(coordsToConvert) {
+/*function convertCoordinates(coordsToConvert) {
   var formattedCoords = [];
   for (var i = 0; i < coordsToConvert.length; i++) {
     var formattedCoord = {
@@ -494,10 +494,10 @@ function convertCoordinates(coordsToConvert) {
     formattedCoords.push(formattedCoord);
   }
   return formattedCoords;
-}
+}*/
 
 //Calculate distance between two points
-function distance(lat1, lon1, lat2, lon2) {
+/*function distance(lat1, lon1, lat2, lon2) {
   var R = 6371; // km (change this constant to get miles)
   var dLat = ((lat2 - lat1) * Math.PI) / 180;
   var dLon = ((lon2 - lon1) * Math.PI) / 180;
@@ -517,16 +517,15 @@ function distance(lat1, lon1, lat2, lon2) {
 
   //meters
   return d * 1000;
-}
+}*/
 
-socket.on("receive-tap", function () {
-  console.log("vibrate");
+socket.on("receive-tap", function() {
   if (window.navigator.vibrate) {
     window.navigator.vibrate(500);
   }
 
   homeMarker.setAnimation(google.maps.Animation.BOUNCE);
-  setTimeout(function () {
+  setTimeout(function() {
     homeMarker.setAnimation(null);
   }, 600);
 
@@ -534,7 +533,7 @@ socket.on("receive-tap", function () {
   spriteSound.play(); //key
 });
 
-socket.on("clear-markers", function (number) {
+/*socket.on("clear-markers", function (number) {
   clearMarkers(number);
 });
 
@@ -590,82 +589,270 @@ socket.on("receive-start-status", function (startStatus) {
     tryGeolocation();
     requestDeviceOrientation();
   }
-});
+});*/
 
-socket.on("connect", function () {
-  sessionID = socket.id;
-  console.log("connected", socket.connected, sessionID);
-  socket.emit("new-client", "mobile");
-  tryGeolocation();
-  requestDeviceOrientation();
-  if (currLatLng != null) {
-    socket.emit("update-coordinates", currLatLng);
-  }
-});
+const calculateCentroid = (acc, user, idx, src) => {
+  acc.lat += user.getPosition().lat() / src.length;
+  acc.lng += user.getPosition().lng() / src.length;
+  return acc;
+};
 
-var rooms = [];
+const sortByAngle = (a, b) => a.angle - b.angle;
 
-function displayRooms() {
-  $("#rooms-list").html(
-    rooms
-      .map((id) =>
-        sessionID === id
-          ? `<div>${id}</div><div></div>`
-          : `<div>${id}</div><button onclick="join('${id}')">Join</button>`
+function Sessions() {
+  this.sessions = [];
+  this.currentSessionID = undefined;
+  this.currentUser = undefined;
+  this.users = [];
+  this.polyline = undefined;
+}
+
+Sessions.prototype.displaySessions = function() {
+  // console.log("displaySessions", this.sessions);
+  $("#current-session").html(this.currentSessionID);
+  $("#available-sessions").html(
+    this.sessions
+      .map(
+        id =>
+          `<div>${id}</div><button onclick="sessions.joinSession('${id}')">Join</button>`
       )
       .join("")
   );
+};
+
+Sessions.prototype.joinSession = function(sessionId) {
+  this.setCurrentSession(sessionId);
+  socket.emit("join-session", sessionId);
+};
+
+Sessions.prototype.setCurrentSession = function(id) {
+  this.currentSessionID = id;
+  this.displaySessions();
+};
+
+Sessions.prototype.setSessions = function(sessions) {
+  this.sessions = sessions;
+  this.displaySessions();
+};
+
+Sessions.prototype.addSession = function(sessionId) {
+  this.sessions.push(sessionId);
+  this.displaySessions();
+};
+
+Sessions.prototype.deleteSession = function(sessionId) {
+  this.sessions = this.sessions.filter(s => s !== sessionId);
+  this.displaySessions();
+};
+
+Sessions.prototype.setUsers = function(users) {
+  this.users.forEach(user => user.setMap(null));
+  this.users = [];
+  users.forEach(user => this.addUser(user));
+};
+
+Sessions.prototype.updateCurrentUserPosition = function(lng, lat) {
+  if (this.currentUser !== undefined) {
+    this.currentUser.setPosition({ lng, lat });
+    this.drawLines();
+  } else {
+    let homeMarker = new google.maps.Marker({
+      map,
+      position: { lng, lat },
+      title: "Home",
+      icon: {
+        path:
+          "M39.167,30c0,5.062-4.104,9.167-9.166,9.167c-5.063,0-9.167-4.104-9.167-9.167c0-9.125,8.416-18,9.167-18 C30.75,12,39.167,20.875,39.167,30z",
+        strokeWeight: 2,
+        strokeColor: "#29ABE2",
+        fillColor: "#29ABE2",
+        fillOpacity: 1.0,
+        scale: 0.75,
+        anchor: new google.maps.Point(30, 30),
+        rotation: 0
+      }
+    });
+
+    google.maps.event.addListener(homeMarker, "mouseup", function(event) {
+      spriteSound.play();
+      homeMarker.setAnimation(google.maps.Animation.BOUNCE);
+      setTimeout(function() {
+        homeMarker.setAnimation(null);
+      }, 600);
+    });
+
+    this.currentUser = homeMarker;
+  }
+};
+
+Sessions.prototype.updateCurrentUserRotation = function(rotation) {
+  if (this.currentUser !== undefined) {
+    let icon = this.currentUser.getIcon();
+    icon.rotation = rotation;
+    this.currentUser.setIcon(icon);
+  }
 }
 
-function join(id) {
-  socket.emit("room-join", id);
-  sessionID = id;
-  displayRooms();
-}
+Sessions.prototype.addUser = function(user) {
+  this.users.push(
+    new google.maps.Marker({
+      id: user.id,
+      map,
+      position: { lat: user.lat, lng: user.lng },
+      icon: {
+        path:
+          "M39.167,30c0,5.062-4.104,9.167-9.166,9.167c-5.063,0-9.167-4.104-9.167-9.167c0-9.125,8.416-18,9.167-18 C30.75,12,39.167,20.875,39.167,30z",
+        strokeWeight: 2,
+        fillColor: "#919191",
+        strokeColor: "#919191",
+        fillOpacity: 1.0,
+        scale: 0.75,
+        anchor: new google.maps.Point(30, 30),
+        rotation: user.heading
+      }
+    })
+  );
+  this.drawLines();
+};
 
-function check() {
-  socket.emit("room-check");
-}
+Sessions.prototype.deleteUser = function(userId) {
+  const index = this.users.findIndex(u => u.id === userId);
+  if (index !== -1) {
+    this.users[index].setMap(null);
+    this.users.splice(index, 1);
+    this.drawLines();
+  }
+};
 
-socket.on("room-msg", function () {
-  console.log("room-msg");
+Sessions.prototype.drawLines = function() {
+  if (this.users.length > 0) {
+    if (this.polyline !== undefined) {
+      this.polyline.setMap(null);
+    }
+
+    const users = this.users.concat(this.currentUser);
+
+    const center = users.reduce(calculateCentroid, {
+      lat: 0,
+      lng: 0
+    });
+
+    const angles = users.map(user => {
+      const lat = user.getPosition().lat();
+      const lng = user.getPosition().lng();
+      return {
+        lat,
+        lng,
+        angle: (Math.atan2(lat - center.lat, lng - center.lng) * 180) / Math.PI
+      };
+    });
+
+    let groupCoordsSorted = angles.sort(sortByAngle);
+    groupCoordsSorted.push(groupCoordsSorted[0]);
+
+    this.polyline = new google.maps.Polyline({
+      map,
+      strokeColor: "#f70000",
+      strokeOpacity: 1,
+      strokeOpacity: 1,
+      strokeWeight: 5,
+      fillColor: "#f70000",
+      fillOpacity: 0.5,
+      path: groupCoordsSorted
+    });
+  } else {
+    if (this.polyline !== undefined) {
+      this.polyline.setMap(null);
+    }
+  }
+};
+
+Sessions.prototype.updateUserCoordinates = function(userId, lng, lat) {
+  const index = this.users.findIndex(u => u.id === userId);
+  if (index !== -1) {
+    this.users[index].setPosition({ lng, lat });
+    this.drawLines();
+  }
+};
+
+Sessions.prototype.updateUserRotation = function(userId, rotation) {
+  const index = this.users.findIndex(u => u.id === userId);
+  if (index !== -1) {
+    var icon = this.users[index].getIcon();
+    icon.rotation = rotation;
+    this.users[index].setIcon(icon);
+  }
+};
+
+Sessions.prototype.centerMap = function() {
+  map.panTo(this.currentUser.getPosition());
+};
+
+var sessions = new Sessions();
+
+socket.on("connect", function() {
+  sessions.setCurrentSession(socket.id);
+  // socket.emit("new-client", "mobile");
+  tryGeolocation();
+  requestDeviceOrientation();
+  /*if (currLatLng != null) {
+    socket.emit("update-coordinates", currLatLng);
+  }*/
 });
 
-socket.on("room-list", function (list) {
-  rooms = list;
-  displayRooms();
+socket.on("available-sessions", function(list) {
+  sessions.setSessions(list);
 });
 
-socket.on("room-add", function (room) {
-  console.log("room-add", room);
-  rooms.push(room);
-  displayRooms();
+socket.on("session-users", function(users) {
+  sessions.setUsers(users);
 });
 
-socket.on("room-delete", function (room) {
-  console.log("room-delete", room);
-  rooms = rooms.filter((r) => r !== room);
-  displayRooms();
+socket.on("new-session-available", function(sessionId) {
+  sessions.addSession(sessionId);
 });
 
-socket.on("receive-group-coordinates", function (groupCoords) {
-  // console.log(groupCoords);
+socket.on("session-deleted", function(sessionId) {
+  sessions.deleteSession(sessionId);
+});
+
+socket.on("new-user-joined", function(user) {
+  sessions.addUser(user);
+});
+
+socket.on("user-disconnected", function(userId) {
+  sessions.deleteUser(userId);
+});
+
+socket.on("user-left", function(userId) {
+  sessions.deleteUser(userId);
+});
+
+socket.on("coordinates-updated", function(userId, lng, lat) {
+  sessions.updateUserCoordinates(userId, lng, lat);
+});
+
+socket.on("heading-updated", function(userId, heading) {
+  sessions.updateUserRotation(userId, heading);
+});
+
+/*socket.on("receive-group-coordinates", function (groupCoords) {
   drawLines(groupCoords);
   if (showArrows) {
     drawMarkers(groupCoords);
   }
-});
+});*/
 
-socket.on("ready-status", function (counts) {
+socket.on("ready-status", function(counts) {
   console.log(counts);
   // $("#compassInfo").html("Users Ready: " + counts.users + "/" + counts.ready);
 });
 
-socket.on("start-next", function (data) {
+socket.on("start-next", function(data) {
   console.log("start : ", data);
 });
 
-function updateHomeMarkerPosition(position) {
+/*function updateHomeMarkerPosition(position) {
   if (google.maps != null) {
     var latlng = new google.maps.LatLng(
       position.coords.latitude,
@@ -673,7 +860,7 @@ function updateHomeMarkerPosition(position) {
     );
     homeMarker.setPosition(latlng);
   }
-}
+}*/
 
 function updateHomeMarkerRotation(data) {
   compassOrientation = data.z;
@@ -683,9 +870,7 @@ function updateHomeMarkerRotation(data) {
   }
 
   if (compassOrientation != lastCompassOrientation) {
-    var icon = homeMarker.getIcon();
-    icon.rotation = compassOrientation;
-    homeMarker.setIcon(icon);
+    sessions.updateCurrentUserRotation(compassOrientation);
 
     //Only sending rotation updates with location updates
     socket.emit("update-heading", compassOrientation);
@@ -696,25 +881,25 @@ function updateHomeMarkerRotation(data) {
 //setup sensor listeners
 //// TODO:  detect if ios12 and user needs to turn on sensor access
 function setupSensorListeners() {
-  window.addEventListener("deviceorientation", (event) => {
+  window.addEventListener("deviceorientation", event => {
     hasSensorAccess = true;
     var data = "";
     if ("webkitCompassHeading" in event) {
       data = {
         info:
           "Received from deviceorientation webkitCompassHeading - iOS Safari,  Chrome, Firefox",
-        z: event.webkitCompassHeading,
+        z: event.webkitCompassHeading
       };
       // Android - Chrome <50
     } else if (event.absolute) {
       data = {
         info: "Received from deviceorientation with absolute=true & alpha val",
-        z: event.alpha,
+        z: event.alpha
       };
     } else {
       data = {
         info: "absolute=false, heading might not be absolute to magnetic north",
-        z: 360 - event.alpha,
+        z: 360 - event.alpha
       };
     }
     updateHomeMarkerRotation(data);
@@ -729,15 +914,13 @@ function requestDeviceOrientation() {
     typeof DeviceOrientationEvent.requestPermission === "function"
   ) {
     DeviceOrientationEvent.requestPermission()
-      .then((response) => {
-        console.log("DeviceOrientationEvent response:", response);
+      .then(response => {
         if (response == "granted") {
           setupSensorListeners();
           $("#activateSensors").html("Sensors On");
         }
       })
-      .catch(function (err) {
-        console.log("DeviceOrientationEvent error:", err);
+      .catch(function(err) {
         $("#errorInfo").html("Cannot get permission", err.toString());
       });
   } else {
@@ -750,13 +933,13 @@ function requestDeviceOrientation() {
 function initMap() {
   var myLatLng = {
     lat: -25.363,
-    lng: 131.044,
+    lng: 131.044
   };
   map = new google.maps.Map(document.getElementById("map"), {
     zoom: 13,
     center: {
       lat: 45.536384,
-      lng: -73.628949,
+      lng: -73.628949
     },
     disableDefaultUI: true,
     styles: [
@@ -764,198 +947,198 @@ function initMap() {
         elementType: "geometry",
         stylers: [
           {
-            color: "#f5f5f5",
-          },
-        ],
+            color: "#f5f5f5"
+          }
+        ]
       },
       {
         elementType: "geometry",
         stylers: [
           {
-            color: "#f5f5f5",
-          },
-        ],
+            color: "#f5f5f5"
+          }
+        ]
       },
       {
         elementType: "labels",
         stylers: [
           {
-            visibility: "off",
-          },
-        ],
+            visibility: "off"
+          }
+        ]
       },
       {
         elementType: "labels.icon",
         stylers: [
           {
-            visibility: "off",
-          },
-        ],
+            visibility: "off"
+          }
+        ]
       },
       {
         elementType: "labels.text.fill",
         stylers: [
           {
-            color: "#616161",
-          },
-        ],
+            color: "#616161"
+          }
+        ]
       },
       {
         elementType: "labels.text.stroke",
         stylers: [
           {
-            color: "#f5f5f5",
-          },
-        ],
+            color: "#f5f5f5"
+          }
+        ]
       },
       {
         featureType: "administrative.land_parcel",
         stylers: [
           {
-            visibility: "off",
-          },
-        ],
+            visibility: "off"
+          }
+        ]
       },
       {
         featureType: "administrative.land_parcel",
         elementType: "labels.text.fill",
         stylers: [
           {
-            color: "#bdbdbd",
-          },
-        ],
+            color: "#bdbdbd"
+          }
+        ]
       },
       {
         featureType: "administrative.neighborhood",
         stylers: [
           {
-            visibility: "off",
-          },
-        ],
+            visibility: "off"
+          }
+        ]
       },
       {
         featureType: "poi",
         elementType: "geometry",
         stylers: [
           {
-            color: "#eeeeee",
-          },
-        ],
+            color: "#eeeeee"
+          }
+        ]
       },
       {
         featureType: "poi",
         elementType: "labels.text.fill",
         stylers: [
           {
-            color: "#757575",
-          },
-        ],
+            color: "#757575"
+          }
+        ]
       },
       {
         featureType: "poi.park",
         elementType: "geometry",
         stylers: [
           {
-            color: "#e5e5e5",
-          },
-        ],
+            color: "#e5e5e5"
+          }
+        ]
       },
       {
         featureType: "poi.park",
         elementType: "labels.text.fill",
         stylers: [
           {
-            color: "#9e9e9e",
-          },
-        ],
+            color: "#9e9e9e"
+          }
+        ]
       },
       {
         featureType: "road",
         elementType: "geometry",
         stylers: [
           {
-            color: "#ffffff",
-          },
-        ],
+            color: "#ffffff"
+          }
+        ]
       },
       {
         featureType: "road.arterial",
         elementType: "labels.text.fill",
         stylers: [
           {
-            color: "#757575",
-          },
-        ],
+            color: "#757575"
+          }
+        ]
       },
       {
         featureType: "road.highway",
         elementType: "geometry",
         stylers: [
           {
-            color: "#dadada",
-          },
-        ],
+            color: "#dadada"
+          }
+        ]
       },
       {
         featureType: "road.highway",
         elementType: "labels.text.fill",
         stylers: [
           {
-            color: "#616161",
-          },
-        ],
+            color: "#616161"
+          }
+        ]
       },
       {
         featureType: "road.local",
         elementType: "labels.text.fill",
         stylers: [
           {
-            color: "#9e9e9e",
-          },
-        ],
+            color: "#9e9e9e"
+          }
+        ]
       },
       {
         featureType: "transit.line",
         elementType: "geometry",
         stylers: [
           {
-            color: "#e5e5e5",
-          },
-        ],
+            color: "#e5e5e5"
+          }
+        ]
       },
       {
         featureType: "transit.station",
         elementType: "geometry",
         stylers: [
           {
-            color: "#eeeeee",
-          },
-        ],
+            color: "#eeeeee"
+          }
+        ]
       },
       {
         featureType: "water",
         elementType: "geometry",
         stylers: [
           {
-            color: "#c9c9c9",
-          },
-        ],
+            color: "#c9c9c9"
+          }
+        ]
       },
       {
         featureType: "water",
         elementType: "labels.text.fill",
         stylers: [
           {
-            color: "#9e9e9e",
-          },
-        ],
-      },
-    ],
+            color: "#9e9e9e"
+          }
+        ]
+      }
+    ]
   });
 
   //Uncomment below for debugging mode - add 'location' points with mouse click
 
-  guideLine = new google.maps.Polyline({
+  /*guideLine = new google.maps.Polyline({
     strokeColor: "#989898",
     strokeOpacity: 0.1,
     strokeWeight: 5,
@@ -968,10 +1151,9 @@ function initMap() {
   google.maps.event.addListener(guideLine.getPath(), "insert_at", insertAt);
   google.maps.event.addListener(guideLine.getPath(), "remove_at", removeAt);
   google.maps.event.addListener(guideLine.getPath(), "set_at", setAt);
+  map.addListener("click", addLatLng);*/
 
-  // map.addListener("click", addLatLng);
-
-  var image = {
+  /*var image = {
     path:
       "M39.167,30c0,5.062-4.104,9.167-9.166,9.167c-5.063,0-9.167-4.104-9.167-9.167c0-9.125,8.416-18,9.167-18 C30.75,12,39.167,20.875,39.167,30z",
     strokeWeight: 2,
@@ -999,25 +1181,24 @@ function initMap() {
 
   google.maps.event.addListener(homeMarker, "mouseup", function (event) {
     spriteSound.play();
-
     homeMarker.setAnimation(google.maps.Animation.BOUNCE);
     setTimeout(function () {
       homeMarker.setAnimation(null);
     }, 600);
-  });
+  });*/
 
-  var id = getCookie("id");
+  /*var id = getCookie("id");
   if (id != null) {
     console.log("has id: " + id);
     cookieID = id;
   } else {
     console.log("has no id : " + id);
     socket.emit("request-id");
-  }
+  }*/
 }
 
 //Print errors as they happen
-window.onerror = function (msg, url, lineNo, columnNo, error) {
+window.onerror = function(msg, url, lineNo, columnNo, error) {
   var string = msg.toLowerCase();
   var substring = "script error";
   if (string.indexOf(substring) > -1) {
@@ -1028,7 +1209,7 @@ window.onerror = function (msg, url, lineNo, columnNo, error) {
       "URL: " + url,
       "Line: " + lineNo,
       "Column: " + columnNo,
-      "Error object: " + JSON.stringify(error),
+      "Error object: " + JSON.stringify(error)
     ].join(" - ");
 
     console.log("captured error:", message);
