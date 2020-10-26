@@ -9,20 +9,9 @@
 </head>
 
 <body>
-  <!-- <button onclick="tryGeolocation()">Try It</button> -->
-  <div id="compassInfo"> </div>
   <div id="map"></div>
-  <!-- <button id="toggleRecord" onclick="toggleRecord()">Record</button> -->
-  <!-- <button id="centerMap" onclick="center()">Center Map</button> -->
-  <!-- <button id="doneSection" onclick="toggleSection()">Done?</button> -->
-  <!-- <button id="readyButton" onclick="readyToStart()">Start</button> -->
-  <!-- <button id="activateSensors" onclick="activateSensors()">Activate Sensors</button> -->
-  <!-- <button id="activateGPS" onclick="activateGPS()">Activate GPS</button> -->
-
-  <div id="dialog-message" title="Info">
-    <p id="dialog-content"> </p>
-
-  </div>
+  <button id="centerMap" onclick="centerMap()"><img class="map-button" src="/images/center-map-outline.png" > </button>
+  <button id="doneSection" onclick="toggleDone()"><img class="map-button" id="doneIcon" src="/images/heart-button-blank-trans.png" ></button>
 
 
   <script src="https://code.jquery.com/jquery-1.11.1.js" type='text/javascript'></script>

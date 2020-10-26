@@ -35,9 +35,10 @@ var iconParameters;
 
 socket.on('connect', function() {
 
-  socket.emit('start-playback', 'recording20201022-9_52_33.json')
+  socket.emit('start-playback', 'recording20201022-14_37_5.json');
   // sessionID = socket.id;
   console.log("requested playback");
+  $("#doneIcon").attr("src","/images/heart-button-blank-trans.png");
 
 });
 
@@ -113,112 +114,128 @@ function calculateSimilarity(groupCoordsSorted) {
   console.log("similarity", similarity);
 }
 
-//Draw lines between the received points
+// //Draw lines between the received points
+// function drawLines(groupCoords) {
+//
+//   var dist = 0;
+//
+//   // console.log("num lines: ", groupPolyLines.length);
+//   if (groupCoords.length > 1) {
+//
+//     // console.log(groupCoords);
+//     //clear polylines
+//     for (var i = 0; i < groupPolyLines.length; i++) {
+//       groupPolyLines[i].setMap(null);
+//     }
+//     //clear all polylines
+//     groupPolyLines.splice(0, groupPolyLines.length);
+//     //
+//     // const center = groupCoords.reduce(calculateCentroid, {
+//     //   lat: 0,
+//     //   lng: 0
+//     // });
+//     //
+//     // const angles = groupCoords.map(({
+//     //   lat,
+//     //   lng,
+//     //   id,
+//     //   ready,
+//     //   connectTimestamp
+//     // }) => {
+//     //   return {
+//     //     lat,
+//     //     lng,
+//     //     id,
+//     //     ready,
+//     //     connectTimestamp,
+//     //     angle: Math.atan2(lat - center.lat, lng - center.lng) * 180 / Math.PI
+//     //   };
+//     // });
+//
+//     // let groupCoordsSorted = angles.sort(sortByAngle);
+//
+//     //closing the loop
+//     // groupCoordsSorted.push(groupCoordsSorted[0]);
+//
+//     // lastSortedCoords = groupCoordsSorted;
+//
+//     var polyline = new google.maps.Polyline({
+//       strokeColor: '#f70000',
+//       strokeOpacity: 1,
+//       strokeOpacity: 1,
+//       strokeWeight: 5,
+//       fillColor: "#f70000",
+//       fillOpacity: 1,
+//       path: groupCoordsSorted
+//     });
+//     polyline.setMap(map);
+//
+//     // calculateSimilarity(groupCoordsSorted);
+//     groupPolyLines.push(polyline);
+//
+//     var trianglePolyline = new google.maps.Polygon({
+//       strokeColor: '#f70000',
+//       strokeOpacity: 1,
+//       strokeOpacity: 1,
+//       strokeWeight: 5,
+//       fillColor: '#f70000',
+//       fillOpacity: 1.0
+//     })
+//
+//     //Draw filled-in heart
+//     // console.log(groupCoordsSorted[0].connectTimestamp);
+//     // console.log(firstConnectTimestamp);
+//     // console.log("ttt");
+//
+//     for (var i = 0; i < groupCoordsSorted.length; i++) {
+//
+//       if (groupCoordsSorted[i].ready === true ) {
+//
+//         //Fill heart button here!
+//
+//         if (groupCoordsSorted[i].connectTimestamp === firstConnectTimestamp) {
+//             $("#doneIcon").attr("src","/images/heart-button.png")
+//             console.log("changing heart")
+//         }
+//
+//         trianglePolyline.setMap(map);
+//
+//         var path = trianglePolyline.getPath();
+//
+//         var a = new google.maps.LatLng(groupCoordsSorted[i].lat, groupCoordsSorted[i].lng);
+//         path.push(a);
+//
+//         var b = new google.maps.LatLng(center.lat, center.lng);
+//         path.push(b);
+//
+//         let nextIndex = i + 1;
+//         if (nextIndex > groupCoordsSorted.length - 1) {
+//           nextIndex = 1;
+//         }
+//         var c = new google.maps.LatLng(groupCoordsSorted[nextIndex].lat, groupCoordsSorted[nextIndex].lng);
+//         path.push(c);
+//
+//         groupPolyLines.push(trianglePolyline);
+//       }
+//     }
+//   }
+// }
+
+// // Original line drawing function that requires untangling
 function drawLines(groupCoords) {
-
-  var dist = 0;
-
-  // console.log("num lines: ", groupPolyLines.length);
-  if (groupCoords.length > 1) {
-
-    // console.log(groupCoords);
-    //clear polylines
-    for (var i = 0; i < groupPolyLines.length; i++) {
-      groupPolyLines[i].setMap(null);
-    }
-    //clear all polylines
-    groupPolyLines.splice(0, groupPolyLines.length);
-
-    const center = groupCoords.reduce(calculateCentroid, {
-      lat: 0,
-      lng: 0
-    });
-
-    const angles = groupCoords.map(({
-      lat,
-      lng,
-      id,
-      ready
-    }) => {
-      return {
-        lat,
-        lng,
-        id,
-        ready,
-        angle: Math.atan2(lat - center.lat, lng - center.lng) * 180 / Math.PI
-      };
-    });
-
-    let groupCoordsSorted = angles.sort(sortByAngle);
-
-    //closing the loop
-    groupCoordsSorted.push(groupCoordsSorted[0]);
-
-    lastSortedCoords = groupCoordsSorted;
-
-    var polyline = new google.maps.Polyline({
-      strokeColor: '#f70000',
-      strokeOpacity: 1,
-      strokeOpacity: 1,
-      strokeWeight: 5,
-      fillColor: "#f70000",
-      fillOpacity: 1,
-      path: groupCoordsSorted
-    });
-    polyline.setMap(map);
-
-    // calculateSimilarity(groupCoordsSorted);
-    groupPolyLines.push(polyline);
-
-    var trianglePolyline = new google.maps.Polygon({
-      strokeColor: '#f70000',
-      strokeOpacity: 1,
-      strokeOpacity: 1,
-      strokeWeight: 5,
-      fillColor: '#f70000',
-      fillOpacity: 1.0
-    })
-
-    //Draw filled-in heart
-    for (var i = 0; i < groupCoordsSorted.length; i++) {
-      if (groupCoordsSorted[i].ready === true || lastMode === 3) {
-
-        trianglePolyline.setMap(map);
-
-        var path = trianglePolyline.getPath();
-
-        var a = new google.maps.LatLng(groupCoordsSorted[i].lat, groupCoordsSorted[i].lng);
-        path.push(a);
-
-        var b = new google.maps.LatLng(center.lat, center.lng);
-        path.push(b);
-
-        let nextIndex = i + 1;
-        if (nextIndex > groupCoordsSorted.length - 1) {
-          nextIndex = 1;
-        }
-        var c = new google.maps.LatLng(groupCoordsSorted[nextIndex].lat, groupCoordsSorted[nextIndex].lng);
-        path.push(c);
-
-        groupPolyLines.push(trianglePolyline);
-      }
-    }
-  }
-}
-
-// Original line drawing function that requires untangling
-function drawFixedLines(groupCoords) {
 
   //Line drawing code for original version with untangling
   var path = fixedPolyLine.getPath();
-  path.clear();
+  path.clear()
 
+  //Why aren't we just drawing the markers here? If we have extra, set map to null, if we need more add one to list?
   //Add positions of other people
   for (var i = 0; i < groupCoords.length; i++) {
     var ll = new google.maps.LatLng(groupCoords[i].lat, groupCoords[i].lng);
     // console.log("adding new coordinate");
     path.push(ll);
   }
+
 
   // //close shape by bringing it back to the first person
   if (groupCoords.length > 1) {
@@ -238,8 +255,17 @@ function drawFixedLines(groupCoords) {
     lng: 0
   });
 
+  var readyCount = 0;
+  //Draw Triangles
   for (var i = 0; i < groupCoords.length; i++) {
-    if (groupCoords[i].ready === true ) { //|| lastMode === 3
+    if (groupCoords[i].ready === true) { //|| lastMode === 3
+
+      if (groupCoords[i].connectTimestamp === firstConnectTimestamp) {
+          $("#doneIcon").attr("src","/images/heart-button.png")
+          console.log("changing heart")
+      }
+
+      readyCount++;
 
       var trianglePolyline = new google.maps.Polygon({
         strokeColor: '#f70000',
@@ -270,42 +296,59 @@ function drawFixedLines(groupCoords) {
       groupPolyLines.push(trianglePolyline);
     }
   }
+  //
+  // console.log(readyCount, groupCoords.length, showArrows);
+  // if(readyCount >= groupCoords.length){
+  //   showArrows = false;
+  //   clearMarkers(groupCoords.length);
+  //   homeMarker.setMap(null);
+  // }
+
 }
 
+function drawHomeTap(){
 
-//Called every time a socket is disconnected
-function clearMarkers(numberToClear) {
-
-  console.log("clear ", numberToClear, " markers");
-  var index = 0;
-  while (index < numberToClear) {
-    console.log(
-      "removing marker: "
-      // groupMarkers[groupMarkers.length - 1].getTitle()
-    );
-    if (groupMarkers.length - 1 > 0) {
-      groupMarkers[groupMarkers.length - 1].setMap(null);
-      // groupPolyLines.splice(groupMarkers.length-1,1);
-      groupMarkers.pop();
-    }
-    index++;
-    console.log("total markers : ", groupMarkers.length);
+  if (window.navigator.vibrate) {
+    window.navigator.vibrate(500);
   }
 
+  homeMarker.setAnimation(google.maps.Animation.BOUNCE);
+  setTimeout(function() {
+    homeMarker.setAnimation(null)
+  }, 600);
+
+  // var key = "arrival1";
+  spriteSound.play(); //key
 }
 
+function drawTapResponse(markerId) {
+
+  let matchIndex = -1;
+  for (var i = 0; i < groupMarkers.length; i++) {
+    if (groupMarkers[i].getTitle() === markerId) {
+      matchIndex = i;
+    }
+  }
+  console.log("tap id: ", matchIndex);
+
+  if (matchIndex != -1) {
+    groupMarkers[matchIndex].setAnimation(google.maps.Animation.BOUNCE);
+  }
+
+  setTimeout(function() {
+    groupMarkers[matchIndex].setAnimation(null)
+  }, 600, matchIndex);
+
+}
 
 function drawMarkers(groupCoords) {
 
   var index = 0;
-
-  iconParameters.strokeColor = "#919191";
-  iconParameters.fillColor = "#919191";
-
   while (groupMarkers.length < groupCoords.length) {
 
     // var image = {
-    //   path: "M39.167,30c0,5.062-4.104,9.167-9.166,9.167c-5.063,0-9.167-4.104-9.167-9.167c0-9.125,8.416-18,9.167-18 C30.75,12,39.167,20.875,39.167,30z",
+    //   // path: "M39.167,30c0,5.062-4.104,9.167-9.166,9.167c-5.063,0-9.167-4.104-9.167-9.167c0-9.125,8.416-18,9.167-18 C30.75,12,39.167,20.875,39.167,30z",
+    //   url: '../images/g_marker.svg',
     //   strokeWeight: 2,
     //   fillColor: "#919191",
     //   strokeColor: "#919191",
@@ -319,35 +362,47 @@ function drawMarkers(groupCoords) {
       icon: iconParameters
     });
 
+    google.maps.event.addListener(marker, 'mouseup', function(event) {
+      firstConnectTimestamp = +this.getTitle();
+      console.log("tapping : ", firstConnectTimestamp);
+      // socket.emit("send-tap", this.getTitle());
+
+      // drawTapResponse(this.getTitle());
+
+    });
+
     groupMarkers.push(marker);
-    // console.log("adding marker, total markers: ", groupMarkers.length);
+    console.log("adding marker, total markers: ", groupMarkers.length);
     index++;
   }
 
-  while(groupMarkers.length > groupCoords.length){
+  while (groupMarkers.length > groupCoords.length) {
 
-      groupMarkers[groupMarkers.length-1].setMap(null);
-      groupMarkers.pop();
+    groupMarkers[groupMarkers.length - 1].setMap(null);
+    groupMarkers.pop();
 
-      // console.log("removing marker, total markers: ", groupMarkers.length);
+    console.log("removing marker, total markers: ", groupMarkers.length);
   }
 
 
+  // iconParameters.strokeColor = "#919191";
+  // iconParameters.fillColor = "#919191";
 
   //cycle through list of incoming coords
   for (var c = 0; c < groupCoords.length; c++) {
-    //declare image, grab the heading value from the incoming array
-    // var image = {
-    //   path: "M39.167,30c0,5.062-4.104,9.167-9.166,9.167c-5.063,0-9.167-4.104-9.167-9.167c0-9.125,8.416-18,9.167-18 C30.75,12,39.167,20.875,39.167,30z",
-    //   strokeWeight: 2,
-    //   fillColor: "#919191",
-    //   strokeColor: "#919191",
-    //   fillOpacity: 1.0,
-    //   scale: 0.75,
-    //   anchor: new google.maps.Point(30, 30),
-    //   rotation: groupCoords[c].heading
-    // };
+
     iconParameters.rotation = groupCoords[c].heading;
+
+    //If it's not the simulated user, draw gray
+    if (groupMarkers[c].getTitle() != firstConnectTimestamp) {
+      iconParameters.strokeColor = "#919191";
+      iconParameters.fillColor = "#919191";
+    } else {
+      //Draw blue
+      iconParameters.strokeColor = "#2A9DD8";
+      iconParameters.fillColor = "#2A9DD8";
+
+    }
 
     //Get new coordinate
     var lat = groupCoords[c].lat;
@@ -357,14 +412,12 @@ function drawMarkers(groupCoords) {
     //Set marker position
     groupMarkers[c].setPosition(latlng);
     groupMarkers[c].setIcon(iconParameters);
-    groupMarkers[c].setTitle(groupCoords[c].id);
-
+    // groupMarkers[c].setTitle(groupCoords[c].id);
+    groupMarkers[c].setTitle(String(groupCoords[c].connectTimestamp));
+    groupMarkers[c].setMap(map);
     //Hide the marker if it's our own sessionId
     // if (groupMarkers[c].getTitle() != sessionID) {
-      groupMarkers[c].setMap(map);
-    // } else {
-      // groupMarkers[c].setMap(null);
-    // }
+
   }
 }
 
@@ -373,14 +426,15 @@ socket.on("clear-markers", function(number) {
 })
 
 socket.on('connect', function() {
-
+  // if (groupCoordsSorted[i].getTitle() === firstConnectTimestamp) {
+      // $("#doneIcon").attr("src","/images/heart-button.png")
+  // }
 });
 
 
 socket.on("receive-group-coordinates-playback", function(groupCoords) {
   // console.log(groupCoords);
-  // drawLines(groupCoords);
-  drawFixedLines(groupCoords);
+  drawLines(groupCoords);
 
   if (showArrows) {
     drawMarkers(groupCoords);
@@ -403,7 +457,7 @@ function initMap() {
   // };
 
   map = new google.maps.Map(document.getElementById("map"), {
-    zoom: 13,
+    zoom: 18,
     center: {
       lat: 45.536384,
       lng: -73.628949
