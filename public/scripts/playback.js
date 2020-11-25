@@ -457,10 +457,10 @@ function initMap() {
   // };
 
   map = new google.maps.Map(document.getElementById("map"), {
-    zoom: 18,
+    zoom: 20,
     center: {
-      lat: 45.536384,
-      lng: -73.628949
+      lat: 45.5357741,
+      lng:  -73.6278572
     },
     disableDefaultUI: true,
     // mapTypeId: 'satellite',
