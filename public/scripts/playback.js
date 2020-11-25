@@ -35,7 +35,7 @@ var iconParameters;
 
 socket.on('connect', function() {
 
-  socket.emit('start-playback', 'recording20201022-14_37_5.json');
+  socket.emit('start-playback', 'recording 20201009-18_23_50.json');
   // sessionID = socket.id;
   console.log("requested playback");
   $("#doneIcon").attr("src","/images/heart-button-blank-trans.png");

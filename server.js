@@ -231,7 +231,7 @@ io.on('connection', function(socket) {
           // playbackIndex= 0;
           clearInterval(playbackInterval);
         }
-      }, 250)
+      }, 500) //250 for oct 22, 500 for oct 9 
     }
 
     //Load file
