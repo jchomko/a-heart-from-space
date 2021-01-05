@@ -45,11 +45,7 @@ var iconParameters = {
 
 //Audio
 var spriteSound = new Howl({
-<<<<<<< HEAD
-  src: ["Ticket-machine-sound.mp3"],
-=======
   src: ['../audio/Ticket-machine-sound.mp3']
->>>>>>> cleanup
   //,
   // sprite: {
   //   arrival1: [0, 2500],
@@ -264,7 +260,26 @@ function setup(){
   requestTimestamp();
   // clearMarkers();
 
-<<<<<<< HEAD
+  lastMode = currentMode;
+  // don't show dialog
+  // tryGeolocation();
+  // requestDeviceOrientation();
+}
+
+  //Socket Communication - cleanup version
+  socket.on('connect', function() {
+    // setup();
+    tryGeolocation();
+    requestDeviceOrientation();
+
+  });
+
+
+  socket.on("receive-tap", function() {
+    drawHomeTap();
+  })
+
+
 function setAt(index) {
   polylineChanged();
 }
@@ -333,7 +348,7 @@ socket.on("receive-id", function (id) {
 socket.on("receive-start-status", function (startStatus) {
   console.log(" is started already ? :", startStatus);
   if (startStatus === false) {
-=======
+
   socket.emit('new-client', 'mobile')
   sessionID = socket.id;
   console.log("connected", socket.connected, sessionID);
@@ -355,7 +370,7 @@ socket.on("receive-start-status", function (startStatus) {
 function showDialogue(currentMode){
 
   if (currentMode === 0 && lastMode != currentMode) {
->>>>>>> cleanup
+
     // show dialog
     $("#dialog-content").html(
       "Hello, welcome. This is an experiment in digitally mediated collective action. When you press start, you'll receive some requests for sensor access, please accept them."
@@ -399,9 +414,9 @@ function showDialogue(currentMode){
     tryGeolocation();
     requestDeviceOrientation();
   }
-});
+}
 
-<<<<<<< HEAD
+
 socket.on("connect", function () {
   sessionID = socket.id;
   console.log("connected", socket.connected, sessionID);
@@ -474,27 +489,7 @@ socket.on("ready-status", function (counts) {
 socket.on("start-next", function (data) {
   console.log("start : ", data);
 });
-=======
-  lastMode = currentMode;
-  // don't show dialog
-  // tryGeolocation();
-  // requestDeviceOrientation();
-}
 
-//Socket Communication
-
-socket.on('connect', function() {
-  // setup();
-  tryGeolocation();
-  requestDeviceOrientation();
-
-});
-
-
-socket.on("receive-tap", function() {
-  drawHomeTap();
-})
->>>>>>> cleanup
 
 // socket.on("receive-timestamp", function(ts) {
 //   // I suppose sometimes the timestamp might not be set before we send off a packet of data, maybe that's a problem?
@@ -508,7 +503,7 @@ socket.on("receive-start-status", function(currentMode) {
 
     console.log("current mode :", currentMode);
     showDialogue(currentMode);
-})
+});
 
 socket.on("receive-group-coordinates", function(groupCoords) {
 
