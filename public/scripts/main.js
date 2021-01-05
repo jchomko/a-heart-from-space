@@ -260,95 +260,6 @@ function setup(){
   requestTimestamp();
   // clearMarkers();
 
-  lastMode = currentMode;
-  // don't show dialog
-  // tryGeolocation();
-  // requestDeviceOrientation();
-}
-
-  //Socket Communication - cleanup version
-  socket.on('connect', function() {
-    // setup();
-    tryGeolocation();
-    requestDeviceOrientation();
-
-  });
-
-
-  socket.on("receive-tap", function() {
-    drawHomeTap();
-  })
-
-
-function setAt(index) {
-  polylineChanged();
-}
-//End debug drawing functions
-
-function convertCoordinates(coordsToConvert) {
-  var formattedCoords = [];
-  for (var i = 0; i < coordsToConvert.length; i++) {
-    var formattedCoord = {
-      lat: coordsToConvert[i].lat(),
-      lng: coordsToConvert[i].lng(),
-    };
-    formattedCoords.push(formattedCoord);
-  }
-  return formattedCoords;
-}
-
-//Calculate distance between two points
-function distance(lat1, lon1, lat2, lon2) {
-  var R = 6371; // km (change this constant to get miles)
-  var dLat = ((lat2 - lat1) * Math.PI) / 180;
-  var dLon = ((lon2 - lon1) * Math.PI) / 180;
-  var a =
-    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos((lat1 * Math.PI) / 180) *
-      Math.cos((lat2 * Math.PI) / 180) *
-      Math.sin(dLon / 2) *
-      Math.sin(dLon / 2);
-  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  var d = R * c;
-
-  // if (d>1) return Math.round(d)+"km";
-  // else if (d<=1) return Math.round(d*1000)+"m";
-  // if (d>1) return Math.round(d);
-  // else if (d<=1) return Math.round(d*1000);
-
-  //meters
-  return d * 1000;
-}
-
-socket.on("receive-tap", function () {
-  console.log("vibrate");
-  if (window.navigator.vibrate) {
-    window.navigator.vibrate(500);
-  }
-
-  homeMarker.setAnimation(google.maps.Animation.BOUNCE);
-  setTimeout(function () {
-    homeMarker.setAnimation(null);
-  }, 600);
-
-  // var key = "arrival1";
-  spriteSound.play(); //key
-});
-
-socket.on("clear-markers", function (number) {
-  clearMarkers(number);
-});
-
-socket.on("receive-id", function (id) {
-  setCookie("id", id, 1);
-  console.log("setting id cookie to : " + id);
-  // cookieID = id;
-});
-
-socket.on("receive-start-status", function (startStatus) {
-  console.log(" is started already ? :", startStatus);
-  if (startStatus === false) {
-
   socket.emit('new-client', 'mobile')
   sessionID = socket.id;
   console.log("connected", socket.connected, sessionID);
@@ -370,126 +281,80 @@ socket.on("receive-start-status", function (startStatus) {
 function showDialogue(currentMode){
 
   if (currentMode === 0 && lastMode != currentMode) {
-
     // show dialog
-    $("#dialog-content").html(
-      "Hello, welcome. This is an experiment in digitally mediated collective action. When you press start, you'll receive some requests for sensor access, please accept them."
-    );
-    $("#dialog-content").css("visibility", "visible");
 
-    $("#dialog-message").dialog({
-      autoOpen: true,
-      modal: true,
-      closeOnEscape: true,
-      open: function () {
-        //Click anywhere to close
-        $(".ui-widget-overlay").bind("click", function () {
-          $("#dialog-message").dialog("close");
-        });
-      },
-      buttons: {
-        Start: function () {
-          $(this).dialog("close");
-          // window.location.href = target
-          // readyToStart();
+    createDialogue("Hello, welcome. First we'll try a making a square. When you think the square is good enough, press the 'Done' button, which will fill your section. When the square is full of colour, we'll receive the next instruction.")
 
-          socket.emit("ready-to-start", true);
-          tryGeolocation();
-          requestDeviceOrientation();
-        },
-      },
-      position: {
-        my: "center center",
-        at: "center center",
-        of: window,
-      },
-    });
+    $("#doneSection").html("Done?");
+    $("#doneSection").css("background-color", "rgb(220,220,220)")
 
-    $("#dialog-message")
-      .siblings(".ui-dialog-buttonpane")
-      .find("button:eq(1)")
-      .focus();
-  } else {
-    // don't show dialog
-    tryGeolocation();
-    requestDeviceOrientation();
+    if (trianglePolylineTemp != null) {
+      trianglePolylineTemp.setMap(null);
+    }
+    drawDone = false;
+
+
+  } else if (currentMode === 1 && lastMode != currentMode) {
+    //show dialog to create square
+    createDialogue("Great! Now let's try to make a circle. When you're happy with the circle, press the 'Done' button.")
+    // toggleSection();
+
+    $("#doneSection").html("Done?");
+    $("#doneSection").css("background-color", "rgb(220,220,220)")
+
+    if (trianglePolylineTemp != null) {
+      trianglePolylineTemp.setMap(null);
+    }
+    drawDone = false;
+
+
+  } else if (currentMode === 2 && lastMode != currentMode) {
+
+    createDialogue("Lovely! Now let's make our heart. When you're happy with our heart, press the 'Done' button.")
+    // toggleSection();
+    $("#doneSection").html("Done?");
+    $("#doneSection").css("background-color", "rgb(220,220,220)")
+
+    if (trianglePolylineTemp != null) {
+      trianglePolylineTemp.setMap(null);
+    }
+    drawDone = false;
+
+    //show dialog to create circle
+
+  } else if (currentMode === 3 && lastMode != currentMode) {
+    //show dialog to create circle
+    createDialogue("Thank you for taking part! Take a screenshot and share with #aheartfromspace :)");
+    // toggleSection();
+    $("#doneSection").html("Done?");
+    $("#doneSection").css("background-color", "rgb(220,220,220)")
+    $("#doneSection").css("visibility", "hidden");
+    // if (trianglePolylineTemp != null) {
+    //   trianglePolylineTemp.setMap(null);
+    // }
+    drawDone = false;
+
   }
+
+  lastMode = currentMode;
+  // don't show dialog
+  // tryGeolocation();
+  // requestDeviceOrientation();
 }
 
+//Socket Communication
 
-socket.on("connect", function () {
-  sessionID = socket.id;
-  console.log("connected", socket.connected, sessionID);
-  socket.emit("new-client", "mobile");
+socket.on('connect', function() {
+  // setup();
   tryGeolocation();
   requestDeviceOrientation();
-  if (currLatLng != null) {
-    socket.emit("update-coordinates", currLatLng);
-  }
+
 });
 
-var rooms = [];
 
-function displayRooms() {
-  $("#rooms-list").html(
-    rooms
-      .map((id) =>
-        sessionID === id
-          ? `<div>${id}</div><div></div>`
-          : `<div>${id}</div><button onclick="join('${id}')">Join</button>`
-      )
-      .join("")
-  );
-}
-
-function join(id) {
-  socket.emit("room-join", id);
-  sessionID = id;
-  displayRooms();
-}
-
-function check() {
-  socket.emit("room-check");
-}
-
-socket.on("room-msg", function () {
-  console.log("room-msg");
-});
-
-socket.on("room-list", function (list) {
-  rooms = list;
-  displayRooms();
-});
-
-socket.on("room-add", function (room) {
-  console.log("room-add", room);
-  rooms.push(room);
-  displayRooms();
-});
-
-socket.on("room-delete", function (room) {
-  console.log("room-delete", room);
-  rooms = rooms.filter((r) => r !== room);
-  displayRooms();
-});
-
-socket.on("receive-group-coordinates", function (groupCoords) {
-  // console.log(groupCoords);
-  drawLines(groupCoords);
-  if (showArrows) {
-    drawMarkers(groupCoords);
-  }
-});
-
-socket.on("ready-status", function (counts) {
-  console.log(counts);
-  // $("#compassInfo").html("Users Ready: " + counts.users + "/" + counts.ready);
-});
-
-socket.on("start-next", function (data) {
-  console.log("start : ", data);
-});
-
+socket.on("receive-tap", function() {
+  drawHomeTap();
+})
 
 // socket.on("receive-timestamp", function(ts) {
 //   // I suppose sometimes the timestamp might not be set before we send off a packet of data, maybe that's a problem?
@@ -503,7 +368,7 @@ socket.on("receive-start-status", function(currentMode) {
 
     console.log("current mode :", currentMode);
     showDialogue(currentMode);
-});
+})
 
 socket.on("receive-group-coordinates", function(groupCoords) {
 
@@ -527,7 +392,7 @@ window.onerror = function(msg, url, lineNo, columnNo, error) {
       "URL: " + url,
       "Line: " + lineNo,
       "Column: " + columnNo,
-      "Error object: " + JSON.stringify(error),
+      "Error object: " + JSON.stringify(error)
     ].join(" - ");
 
     console.log("captured error:", message);
