@@ -58,12 +58,15 @@ console.log("had done intro: ", hasDoneIntro);
 
 //Frontend Functions
 //Start function
-function joinHeart(){
+function startSession(){
 
   $("#introduction").css("display","none");
   setup();
 
   setCookie("intro-done", true, 1)
+
+  centerMap();
+
   // $("#welcome").css("display", "none")
   // $("#sensor-setup").css("display", "inline")
   //
@@ -85,11 +88,14 @@ function showDoneIntro(){
 
 function hideIntroduction(){
     $("#introduction").css("display","none");
+    centerMap();
 }
 
 function skipIntro(){
   $("#introduction").css("display","none");
   setup();
+  centerMap();
+
 }
 //Utility Functions
 

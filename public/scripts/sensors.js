@@ -40,7 +40,7 @@ function requestDeviceOrientation() {
         }
       })
       .catch(function(err) {
-        createDialogue("Please tap the 'Activate Sensors' button in the top right corner to set up the compass.")
+        // createDialogue("Please tap the 'Activate Sensors' button in the top right corner to set up the compass.")
         console.log("DeviceOrientationEvent error:", err);
         $("#errorInfo").html("Cannot get permission", err.toString());
       });
