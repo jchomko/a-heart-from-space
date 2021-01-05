@@ -12,9 +12,122 @@ body {
   height: 100%;
   margin: 0;
   padding: 0;
+  background-color: lightgray;
 }
 
-#compassInfo{
+#introduction {
+  background-color: rgb(245, 246, 245);
+  display: inline;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  z-index: 10;
+}
+
+#welcome {
+  /* display: inline; */
+  position: relative;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+#sensor-setup {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+#done-button-intro {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+#introtext {
+  position: relative;
+  margin: 5%;
+  /* font: sans-serif; */
+  font-family: sans-serif;
+}
+
+#sensor-gps {
+  position: absolute;
+  bottom: 50%;
+  left: 70%;
+  transform: translate(-50%, -50%);
+  width: 30%;
+  height: 50px;
+  background-color: rgb(220, 220, 220);
+}
+
+#sensor-compass {
+  position: absolute;
+  bottom: 50%;
+  left: 30%;
+  transform: translate(-50%, -50%);
+  width: 30%;
+  height: 50px;
+  background-color: rgb(220, 220, 220);
+}
+
+#start-new-heart {
+  position: absolute;
+  bottom: 20px;
+  left: 30%;
+  transform: translate(-50%, 0);
+  width: 30%;
+  height: 50px;
+  background-color: rgb(220, 220, 220);
+}
+
+#heart-photo{
+  position: relative;
+  height: 20%;
+}
+
+#join-heart {
+  /* position: absolute;
+  bottom: 20px;
+  left: 70%;
+  transform: translate(-50%, 0);
+  width: 30%;
+  height: 50px;
+  background-color: rgb(220, 220, 220); */
+  position: absolute;
+  /* margin: 5%; */
+  left: 50%;
+  transform: translate(-50%, 0);
+  width: 90%;
+  height: 10%;
+  bottom: 5%;
+  background-color: rgb(220, 220, 220);
+}
+
+#skip-intro {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  /* transform:translate(-50%,0); */
+  width: 30%;
+  height: 30px;
+  background-color: rgb(220, 220, 220);
+}
+
+#compassInfo {
   z-index: 10;
   position: absolute;
   bottom: 0;
@@ -29,34 +142,59 @@ body {
   height: 40px;
 }
 
+.map-button {
+  width: 60px;
+  height: 60px;
+}
+
 #centerMap {
   position: absolute;
-  bottom: 0px;
+  bottom: 20px;
   right: 0px;
-  width: 80px;
-  height: 50px;
+  border: none;
+  /* width: 5%; */
+  /* background-color: rgb(220, 220, 220); */
+  /* background-image: url("/public/images/center.png");
+  background: no-repeat top left;
+  background-size: cover; */
+  /* background-size: auto; */
+}
+
+#doneSection {
+  position: absolute;
+  bottom: 90px;
+  right: 0px;
+  border: none;
+  z-index: 10;
+  /* width: 5%; */
+  /* position: absolute;
+  top: 4%;
+  left: 50%;
+  width: 50%;
+  transform: translate(-50%, 0);
+  height: 7%;
   background-color: rgb(220, 220, 220);
-  /* background-image: "images/center.png"; */
+  border-radius: 18px;
+  font-size: 16px; */
 }
 
 #readyButton {
   position: absolute;
   top: 0;
-  left: 80px;
+  left: 50%;
+  transform: translate(-50%, 0);
   height: 50px;
   background-color: rgb(220, 220, 220);
   width: 80px;
 }
 
-#doneSection {
+#toggleRecord {
   position: absolute;
-  /* bottom:0; */
-  /* left: 0; */
   top: 0;
-  left: 0;
-  width: 80px;
+  left: 0px;
   height: 50px;
   background-color: rgb(220, 220, 220);
+  width: 80px;
 }
 
 #activateSensors {
@@ -97,6 +235,7 @@ body {
   /* background: #fdf7f3ed */
 }
 
+
 .rooms {
   position: absolute;
   bottom: 10px;
@@ -110,4 +249,41 @@ body {
   grid-row-gap: 5px;
   grid-column-gap: 5px;
   align-items: center;
+
+/* Desktop */
+
+html, body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  background-color: whitesmoke;
+  /* background-color: red; /* same colour of container */
+}
+
+*, *:before, *:after {
+  box-sizing: border-box;
+}
+
+.desktop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  height: 100%;
+  width: 100%;
+  /* background-color: rgb(230, 230, 255); /* same colour of container */
+}
+
+#desktop-text {
+  position: absolute;
+  top: 10%;
+  left: 10%;
+  margin-bottom: 30%;
+  height: 100%;
+  margin-right: 10%;
+  max-width: 800px;
+  font-family: sans-serif;
+  background-color: whitesmoke;
+  /* same colour of container */
+
 }

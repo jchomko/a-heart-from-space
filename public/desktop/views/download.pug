@@ -1,0 +1,7 @@
+html
+  heading
+    title=title
+  body
+    for files in message
+      a(href='/logs/'+files download=files) /logs/#{files}
+      | #{' '}

@@ -1,30 +1,55 @@
+//Connectivity
 var socket = io();
 
-var currLatLng;
+//Map
 var map;
+var guideLine;
+
+//Drawing
 var groupMarkers = [];
-var groupPolyLines = [];
-var homeMarkerID;
-var sessionID;
+var groupPolyLines = []; //Used for triangle drawing
+var fixedPolyLine;
+var homeMarker;
+// var homeMarkerID;
+
+//Sensor variables
 var bestAccuracy = 1000;
 var hasSensorAccess = false;
 var compassOrientation = 0;
-var markerArray = [];
-var homeMarker;
 var lastCompassOrientation = 0;
+var currLatLng;
+
+//Operations variables
 var showArrows = true;
-var guideLine;
-var drawDone = false;
 var sensorsActive = false;
 var gpsActive = false;
 var sensorsActive = false;
+var watchPositionId = null;
+var drawDone = false;
 var lastMode = null;
+var sessionID;
+var firstConnectTimestamp;
 
-var trianglePolylineTemp;
-var lastSortedCoords = [];
+//Icon
+var iconParameters = {
+  path: "M39.167,30c0,5.062-4.104,9.167-9.166,9.167c-5.063,0-9.167-4.104-9.167-9.167c0-9.125,8.416-18,9.167-18 C30.75,12,39.167,20.875,39.167,30z",
+  // path: d="M147.865,84.126c-5.791-4.405-13.443-7.083-21.834-7.083c-8.422,0-16.101,2.698-21.899,7.132l0.031,0.041l21.868-31.583l0,0l21.868,31.583 M126.031,155.469c16.551,0,29.969-13.418,29.969-29.969c0-16.551-13.418-29.969-29.969-29.969c-16.551,0-29.969,13.417-29.969,29.969C96.062,142.051,109.48,155.469,126.031,155.469z",
+  strokeWeight: 0,
+  strokeColor: "#2A9DD8",
+  fillColor: "#2A9DD8",
+  fillOpacity: 0.7,
+  scale: 0.7,
+  // anchor: new google.maps.Point(125, 125), - anchor is set in map.js because it must be a google variable
+  rotation: 0
+};
 
+//Audio
 var spriteSound = new Howl({
+<<<<<<< HEAD
   src: ["Ticket-machine-sound.mp3"],
+=======
+  src: ['../audio/Ticket-machine-sound.mp3']
+>>>>>>> cleanup
   //,
   // sprite: {
   //   arrival1: [0, 2500],
@@ -32,7 +57,53 @@ var spriteSound = new Howl({
   // }
 });
 
-//Set cookie - not yet used
+var hasDoneIntro = getCookie("intro-done");
+console.log("had done intro: ", hasDoneIntro);
+
+//Frontend Functions
+//Start function
+function startSession(){
+
+  $("#introduction").css("display","none");
+  setup();
+
+  setCookie("intro-done", true, 1)
+
+  centerMap();
+
+  // $("#welcome").css("display", "none")
+  // $("#sensor-setup").css("display", "inline")
+  //
+  // //Hide gps button if we already have access
+  // if(gpsActive){
+  //   $("#sensor-gps").css("display", "none")
+  // }
+  //
+  // if(hasSensorAccess){
+  //   $("#sensor-compass").css("display", "none")
+  // }
+}
+
+function showDoneIntro(){
+  $("#introduction").css("z-index","1");
+  $("#sensor-setup").css("display", "none");
+  $("#done-button-intro").css("display","inline");
+}
+
+function hideIntroduction(){
+    $("#introduction").css("display","none");
+    centerMap();
+}
+
+function skipIntro(){
+  $("#introduction").css("display","none");
+  setup();
+  centerMap();
+
+}
+//Utility Functions
+
+//Set cookie
 function setCookie(c_name, value, exdays) {
   var exdate = new Date();
   exdate.setDate(exdate.getDate() + exdays);
@@ -41,7 +112,7 @@ function setCookie(c_name, value, exdays) {
   document.cookie = c_name + "=" + c_value;
 }
 
-//Retrieve cookie - not yet used
+//Retrieve cookie
 function getCookie(c_name) {
   var i, x, y;
   var ARRcookies = document.cookie.split(";");
@@ -55,17 +126,67 @@ function getCookie(c_name) {
   }
 }
 
-function readyToStart() {
-  //remove ready dialogue
-  socket.emit("ready-to-start", true);
-}
-//Center map to current position (if it's been set)
-function center() {
-  // requestDeviceOrientation();
-  map.panTo(new google.maps.LatLng(currLatLng.lat, currLatLng.lng));
+//Request timestamp
+function requestTimestamp(){
+  var ct = getCookie("timestamp");
+  if (ct != null) {
+    console.log("has timestamp : " + ct);
+    //Read the value as numeric - mix between numeric and non-numeric values was causing issues
+    firstConnectTimestamp = +ct;
+    $("#compassInfo").html(firstConnectTimestamp);
+  } else {
+    console.log("no timestamp saved in cookies ");
+    // socket.emit("request-timestamp");
+    firstConnectTimestamp = Date.now();
+    setCookie("timestamp", firstConnectTimestamp, 1)
+    console.log("saving timestamp : ", firstConnectTimestamp);
+  }
 }
 
-function activateSensors() {
+//Create dialogue
+function createDialogue(dialogueText) {
+
+  $("#dialog-content").html(dialogueText);
+  $("#dialog-content").css("visibility", "visible");
+  $("#dialog-message").dialog({
+    autoOpen: true,
+    modal: true,
+    closeOnEscape: true,
+    open: function() {
+      //Click anywhere to close
+      $('.ui-widget-overlay').bind('click', function() {
+        $('#dialog-message').dialog('close');
+      })
+    },
+    buttons: {
+      "OK": function() {
+        $(this).dialog("close");
+        // window.location.href = target
+        // readyToStart();
+        // socket.emit("ready-to-start", true);
+        // tryGeolocation();
+        // requestDeviceOrientation();
+      }
+    },
+    position: {
+      my: "center center",
+      at: "center center",
+      of: window
+    }
+  });
+
+  $("#dialog-message").siblings('.ui-dialog-buttonpane').find('button:eq(1)').focus();
+
+}
+
+
+// function readyToStart(){
+//   //remove ready dialogue
+//   socket.emit("ready-to-start", true);
+// }
+
+//Activate Compass
+function toggleSensorsButton() {
   if (!sensorsActive) {
     requestDeviceOrientation();
     $("#activateSensors").html("Sensors On");
@@ -77,418 +198,73 @@ function activateSensors() {
   sensorsActive = true;
 }
 
-function activateGPS() {
+//Activate GPS
+function toggleGPSButton() {
   if (!gpsActive) {
     tryGeolocation();
     $("#activateGPS").html("GPS On");
+    centerMap();
+    gpsActive = true;
+
+    showDoneIntro();
   }
   // else{
   //   $("#activateGPS").html("Activate GPS");
   // }
   // gpsActive = !gpsActive;
-  gpsActive = true;
 }
 
-function doneSection() {
+//Done button - triggers triangle drawing when done.
+function toggleDone() {
+  console.log(drawDone)
   if (!drawDone) {
-
-    drawTriangle();
-    $("#doneSection").html("Fill On");
-    $("#doneSection").css("background-color", "rgb(250,180,180)");
+    // drawTriangle();
+    // $("#doneSection").html("Done");
+    $("#doneIcon").attr("src","/images/heart-button.png")
+    // $("#doneSection").css("background-color", "rgb(180,260,180)")
     // socket.emit("draw-triangle", true)
-
     // drawDone = true;
-    socket.emit("draw-triangle", true)
+    // socket.emit("draw-triangle", true)
+    // socket.emit("update-done-status", true)
+    socket.emit("update-done-status", true)
+
 
   } else {
-    $("#doneSection").html("Activate Fill");
-    $("#doneSection").css("background-color", "rgb(220,220,220)");
-    if (trianglePolylineTemp != null) {
-      trianglePolylineTemp.setMap(null);
-      console.log("clearing triangle");
-    }
-
-    // socket.emit("draw-triangle", false)
+    // $("#doneSection").html("Done");
+    $("#doneIcon").attr("src","/images/heart-button-blank-trans.png")
+    // $("#doneSection").css("background-color", "rgb(220,220,220)")
+    //Not used
+    // if (trianglePolylineTemp != null) {
+    //   trianglePolylineTemp.setMap(null);
+    //   console.log("clearing triangle");
+    // }
+    socket.emit("update-done-status", false)
   }
-
   drawDone = !drawDone;
-  // console.log(drawDone);
-  // we need to trigger the drawing immediately here, and then let it update with location for the others
-  // how do you distinguish which heart section is yours?
-  // it shoouuld be equally drawn between the sections so it's centered on you.
-  socket.emit("draw-triangle", drawDone);
 }
 
-//Geolocation success callback
-var browserGeolocationSuccess = function (position) {
-  // $("#activateGPS").html("GPS On");
-  activateGPS();
-
-  if (position.coords.accuracy < bestAccuracy) {
-    bestAccuracy = position.coords.accuracy;
-    console.log("bestAccuracy: " + bestAccuracy);
-  }
-  // if we have a high accuracy reading
-  // if using simulated position the accuracy will be fixed at 150
-  if (position.coords.accuracy < bestAccuracy + 10) {
-    //|| position.coords.accuracy === 150
-    currLatLng = {
-      lat: position.coords.latitude,
-      lng: position.coords.longitude,
-      heading: compassOrientation,
-      done: drawDone,
-    };
-    updateHomeMarkerPosition(position);
-    // console.log("accurate coordinates: " + JSON.stringify(myLatLng))
-    socket.emit("update-coordinates", currLatLng);
-  }
-};
-
-//Geolocation fail callback
-var browserGeolocationFail = function (error) {
-  switch (error.code) {
-    case error.TIMEOUT:
-      alert("Browser geolocation error !\n\nTimeout." + error.message);
-      break;
-    case error.PERMISSION_DENIED:
-      // alert("Permission Denied" + error.message);
-      alert(
-        "No location access - you might need to enable this in Settings -> Privacy -> Location Services -> Safari Websites. Change from 'Never' to 'While Usingthe App'"
-      );
-      break;
-    case error.POSITION_UNAVAILABLE:
-      alert(
-        "Browser geolocation error !\n\nPosition unavailable" + error.message
-      );
-      break;
-  }
-};
-
-//Get location of device  - navigator is just an html5 access for the browser
-function tryGeolocation() {
-  if (navigator.geolocation) {
-    navigator.geolocation.watchPosition(
-      browserGeolocationSuccess,
-      browserGeolocationFail,
-      {
-        enableHighAccuracy: true,
-        timeout: 10000,
-        maximumAge: 5000,
-      }
-    );
-  }
+//This function was to make sure that the done button is always showing the correct status
+function checkDoneButton(groupCoords) {
+  // for (var i = 0; i < groupCoords.length; i++) {
+  //   if (groupCoords[i].connectTimestamp === firstConnectTimestamp) {
+  //     if (groupCoords[i].ready) {
+  //       $("#doneSection").html("Done");
+  //       $("#doneSection").css("background-color", "rgb(180,260,180)")
+  //     } else {
+  //       $("#doneSection").html("Done");
+  //       $("#doneSection").css("background-color", "rgb(220,220,220)")
+  //     }
+  //   }
+  // }
 }
 
-//Request for position must come from user action, hence the prompt
-function askForLocation() {
-  if (
-    confirm(
-      "This website requires access to your GPS location. Press OK and you'll receive a request to access your location."
-    )
-  ) {
-    tryGeolocation();
-  }
-}
+//Called when socket connects
+function setup(){
 
-const calculateCentroid = (acc, { lat, lng }, idx, src) => {
-  acc.lat += lat / src.length;
-  acc.lng += lng / src.length;
-  return acc;
-};
+  requestTimestamp();
+  // clearMarkers();
 
-const sortByAngle = (a, b) => a.angle - b.angle;
-
-function calculateSimilarity(groupCoordsSorted) {
-  const curve = groupCoordsSorted.map((coords) => ({
-    x: coords.lng,
-    y: coords.lat,
-  }));
-  const similarity = curveMatcher.shapeSimilarity(curve, heartShape, {
-    rotations: 500,
-  });
-  console.log("similarity", similarity);
-}
-
-//Draw lines between the received points
-function drawLines(groupCoords) {
-  var dist = 0;
-
-  // console.log("num lines: ", groupPolyLines.length);
-  if (groupCoords.length > 1) {
-    // console.log(groupCoords);
-    //clear polylines
-    for (var i = 0; i < groupPolyLines.length; i++) {
-      groupPolyLines[i].setMap(null);
-    }
-    //clear all polylines
-    groupPolyLines.splice(0, groupPolyLines.length);
-
-    const center = groupCoords.reduce(calculateCentroid, {
-      lat: 0,
-      lng: 0,
-    });
-
-    const angles = groupCoords.map(({ lat, lng, id, done }) => {
-      return {
-        lat,
-        lng,
-        id,
-        done,
-        angle: (Math.atan2(lat - center.lat, lng - center.lng) * 180) / Math.PI,
-      };
-    });
-
-    let groupCoordsSorted = angles.sort(sortByAngle);
-
-    //closing the loop
-    groupCoordsSorted.push(groupCoordsSorted[0]);
-
-    lastSortedCoords = groupCoordsSorted;
-
-    var polyline = new google.maps.Polyline({
-      strokeColor: "#f70000",
-      strokeOpacity: 1,
-      strokeOpacity: 1,
-      strokeWeight: 5,
-      fillColor: "#f70000",
-      fillOpacity: 0.5,
-      path: groupCoordsSorted,
-    });
-    polyline.setMap(map);
-
-    // calculateSimilarity(groupCoordsSorted);
-    groupPolyLines.push(polyline);
-
-    //Draw filled-in heart
-    for (var i = 0; i < groupCoordsSorted.length; i++) {
-      if (groupCoordsSorted[i].done === true) {
-        var trianglePolyline = new google.maps.Polygon({
-          strokeColor: "#f70000",
-          strokeOpacity: 1,
-          strokeOpacity: 1,
-          strokeWeight: 5,
-          fillColor: "#f70000",
-          fillOpacity: 1.0,
-        });
-        trianglePolyline.setMap(map);
-
-        var path = trianglePolyline.getPath();
-
-        var a = new google.maps.LatLng(
-          groupCoordsSorted[i].lat,
-          groupCoordsSorted[i].lng
-        );
-        path.push(a);
-
-        var b = new google.maps.LatLng(center.lat, center.lng);
-        path.push(b);
-
-        let nextIndex = i + 1;
-        if (nextIndex > groupCoordsSorted.length - 1) {
-          nextIndex = 1;
-        }
-        var c = new google.maps.LatLng(
-          groupCoordsSorted[nextIndex].lat,
-          groupCoordsSorted[nextIndex].lng
-        );
-        path.push(c);
-
-        groupPolyLines.push(trianglePolyline);
-      }
-    }
-  }
-}
-
-function drawTapResponse(markerId) {
-  let matchIndex = -1;
-  for (var i = 0; i < groupMarkers.length; i++) {
-    if (groupMarkers[i].getTitle() === markerId) {
-      matchIndex = i;
-    }
-  }
-  console.log("tap id: ", matchIndex);
-
-  if (matchIndex != -1) {
-    groupMarkers[matchIndex].setAnimation(google.maps.Animation.BOUNCE);
-  }
-
-  setTimeout(
-    function () {
-      groupMarkers[matchIndex].setAnimation(null);
-    },
-    600,
-    matchIndex
-  );
-}
-
-function drawTriangle() {
-  //find which index you are on the sorted list
-  //then just increment one up or down on the list to get the next point
-  //but that means we need to keep the id in the coordinates
-  console.log("last sorted coords :", lastSortedCoords);
-
-  let matchIndex = -1;
-  for (var i = 0; i < lastSortedCoords.length; i++) {
-    if (lastSortedCoords[i].id === sessionID) {
-      matchIndex = i;
-    }
-  }
-
-  if (matchIndex != -1) {
-    console.log("drawing line, id: ", matchIndex);
-    trianglePolylineTemp = new google.maps.Polygon({
-      strokeColor: "#f70000",
-      strokeOpacity: 1,
-      strokeOpacity: 1,
-      strokeWeight: 5,
-      fillColor: "#f70000",
-      fillOpacity: 1.0,
-    });
-    trianglePolylineTemp.setMap(map);
-
-    var path = trianglePolylineTemp.getPath();
-
-    const center = lastSortedCoords.reduce(calculateCentroid, {
-      lat: 0,
-      lng: 0,
-    });
-
-    var a = new google.maps.LatLng(
-      lastSortedCoords[matchIndex].lat,
-      lastSortedCoords[matchIndex].lng
-    );
-    path.push(a);
-
-    var b = new google.maps.LatLng(center.lat, center.lng);
-    path.push(b);
-
-    let nextIndex = matchIndex + 1;
-    if (nextIndex > lastSortedCoords.length - 1) {
-      nextIndex = 1;
-    }
-    var c = new google.maps.LatLng(
-      lastSortedCoords[nextIndex].lat,
-      lastSortedCoords[nextIndex].lng
-    );
-    path.push(c);
-
-    groupPolyLines.push(trianglePolylineTemp);
-
-    //once we've drawn our triangle we need to send a signal to others that we've drawn our triangles!
-    //then that needs to get embedded in the data that streams to the phone
-    //and so if an ID has a marker of being finished we draw a triangle for it
-    //(or include it in our triangle if it's adjacent)
-  }
-}
-
-//Called every time a socket is disconnected
-function clearMarkers(numberToClear) {
-  console.log("clear ", numberToClear, " markers");
-  var index = 0;
-  while (index < numberToClear) {
-    console.log(
-      "removing marker: "
-      // groupMarkers[groupMarkers.length - 1].getTitle()
-    );
-    if (groupMarkers.length - 1 > 0) {
-      groupMarkers[groupMarkers.length - 1].setMap(null);
-      // groupPolyLines.splice(groupMarkers.length-1,1);
-      groupMarkers.pop();
-    }
-    index++;
-    console.log("total markers : ", groupMarkers.length);
-  }
-}
-
-function drawMarkers(groupCoords) {
-  var index = 0;
-  while (groupMarkers.length < groupCoords.length) {
-    var image = {
-      path:
-        "M39.167,30c0,5.062-4.104,9.167-9.166,9.167c-5.063,0-9.167-4.104-9.167-9.167c0-9.125,8.416-18,9.167-18 C30.75,12,39.167,20.875,39.167,30z",
-      strokeWeight: 2,
-      fillColor: "#919191",
-      strokeColor: "#919191",
-      fillOpacity: 1.0,
-      scale: 0.75,
-      anchor: new google.maps.Point(30, 30),
-      // rotation: groupCoords[c].heading
-    };
-
-    var marker = new google.maps.Marker({
-      icon: image,
-    });
-
-    google.maps.event.addListener(marker, "mouseup", function (event) {
-      console.log("tapping : ", this.getTitle());
-      socket.emit("send-tap", this.getTitle());
-
-      drawTapResponse(this.getTitle());
-    });
-
-    groupMarkers.push(marker);
-    console.log("adding marker, total markers: ", groupMarkers.length);
-    index++;
-  }
-
-  //cycle through list of incoming coords
-  for (var c = 0; c < groupCoords.length; c++) {
-    //declare image, grab the heading value from the incoming array
-    var image = {
-      path:
-        "M39.167,30c0,5.062-4.104,9.167-9.166,9.167c-5.063,0-9.167-4.104-9.167-9.167c0-9.125,8.416-18,9.167-18 C30.75,12,39.167,20.875,39.167,30z",
-      strokeWeight: 2,
-      fillColor: "#919191",
-      strokeColor: "#919191",
-      fillOpacity: 1.0,
-      scale: 0.75,
-      anchor: new google.maps.Point(30, 30),
-      rotation: groupCoords[c].heading,
-    };
-
-    //Get new coordinate
-    var lat = groupCoords[c].lat;
-    var lng = groupCoords[c].lng;
-    var latlng = new google.maps.LatLng(lat, lng);
-
-    //Set marker position
-    groupMarkers[c].setPosition(latlng);
-    groupMarkers[c].setIcon(image);
-    groupMarkers[c].setTitle(groupCoords[c].id);
-
-    //Hide the marker if it's our own sessionId
-    if (groupMarkers[c].getTitle() != sessionID) {
-      groupMarkers[c].setMap(map);
-    } else {
-      groupMarkers[c].setMap(null);
-    }
-  }
-}
-
-//Start debug drawing functions - Fired on map click - disabled for normal operation
-function addLatLng(event) {
-  var path = guideLine.getPath();
-  path.push(event.latLng);
-  // drawLines(guideLine.getPath().getArray());
-  drawLines(convertCoordinates(guideLine.getPath().getArray()));
-}
-
-function polylineChanged(index) {
-  drawLines(convertCoordinates(guideLine.getPath().getArray()));
-  // drawLines(guideLine.getPath().getArray());
-  // console.log("drawing lines : ", guideLine.getPath().getArray());
-}
-
-function insertAt(index) {
-  if (guideLine.getPath().length - index !== 1) {
-    polylineChanged();
-  }
-}
-
-function removeAt(index) {
-  polylineChanged();
-}
-
+<<<<<<< HEAD
 function setAt(index) {
   polylineChanged();
 }
@@ -557,6 +333,29 @@ socket.on("receive-id", function (id) {
 socket.on("receive-start-status", function (startStatus) {
   console.log(" is started already ? :", startStatus);
   if (startStatus === false) {
+=======
+  socket.emit('new-client', 'mobile')
+  sessionID = socket.id;
+  console.log("connected", socket.connected, sessionID);
+  // $("#compassInfo").html(sessionID);
+
+  tryGeolocation();
+  requestDeviceOrientation();
+
+  if (currLatLng != null && firstConnectTimestamp != null) {
+    socket.emit("update-coordinates", currLatLng);
+  }
+}
+
+//Welcome dialogue stuff not currently used
+// if (lastMode === 0 || lastMode === null) {
+//   createDialogue("Hello, welcome. A Heart from Space is a tool that allows you to draw shapes with others.")
+// }
+
+function showDialogue(currentMode){
+
+  if (currentMode === 0 && lastMode != currentMode) {
+>>>>>>> cleanup
     // show dialog
     $("#dialog-content").html(
       "Hello, welcome. This is an experiment in digitally mediated collective action. When you press start, you'll receive some requests for sensor access, please accept them."
@@ -602,6 +401,7 @@ socket.on("receive-start-status", function (startStatus) {
   }
 });
 
+<<<<<<< HEAD
 socket.on("connect", function () {
   sessionID = socket.id;
   console.log("connected", socket.connected, sessionID);
@@ -674,360 +474,54 @@ socket.on("ready-status", function (counts) {
 socket.on("start-next", function (data) {
   console.log("start : ", data);
 });
-
-function updateHomeMarkerPosition(position) {
-  if (google.maps != null) {
-    var latlng = new google.maps.LatLng(
-      position.coords.latitude,
-      position.coords.longitude
-    );
-    homeMarker.setPosition(latlng);
-  }
+=======
+  lastMode = currentMode;
+  // don't show dialog
+  // tryGeolocation();
+  // requestDeviceOrientation();
 }
 
-function updateHomeMarkerRotation(data) {
-  compassOrientation = data.z;
-  compassOrientation = compassOrientation + 0;
-  if (compassOrientation > 360) {
-    compassOrientation = compassOrientation - 360;
+//Socket Communication
+
+socket.on('connect', function() {
+  // setup();
+  tryGeolocation();
+  requestDeviceOrientation();
+
+});
+
+
+socket.on("receive-tap", function() {
+  drawHomeTap();
+})
+>>>>>>> cleanup
+
+// socket.on("receive-timestamp", function(ts) {
+//   // I suppose sometimes the timestamp might not be set before we send off a packet of data, maybe that's a problem?
+//   setCookie("timestamp", ts, 1)
+//   console.log("setting id cookie to : " + ts);
+//   firstConnectTimestamp = ts;
+//
+// });
+
+socket.on("receive-start-status", function(currentMode) {
+
+    console.log("current mode :", currentMode);
+    showDialogue(currentMode);
+})
+
+socket.on("receive-group-coordinates", function(groupCoords) {
+
+  drawLines(groupCoords);
+  if (showArrows) {
+    drawMarkers(groupCoords);
   }
+  checkDoneButton(groupCoords);
 
-  if (compassOrientation != lastCompassOrientation) {
-    var icon = homeMarker.getIcon();
-    icon.rotation = compassOrientation;
-    homeMarker.setIcon(icon);
+});
 
-    //Only sending rotation updates with location updates
-    socket.emit("update-heading", compassOrientation);
-    lastCompassOrientation = compassOrientation;
-  }
-}
-
-//setup sensor listeners
-//// TODO:  detect if ios12 and user needs to turn on sensor access
-function setupSensorListeners() {
-  window.addEventListener("deviceorientation", (event) => {
-    hasSensorAccess = true;
-    var data = "";
-    if ("webkitCompassHeading" in event) {
-      data = {
-        info:
-          "Received from deviceorientation webkitCompassHeading - iOS Safari,  Chrome, Firefox",
-        z: event.webkitCompassHeading,
-      };
-      // Android - Chrome <50
-    } else if (event.absolute) {
-      data = {
-        info: "Received from deviceorientation with absolute=true & alpha val",
-        z: event.alpha,
-      };
-    } else {
-      data = {
-        info: "absolute=false, heading might not be absolute to magnetic north",
-        z: 360 - event.alpha,
-      };
-    }
-    updateHomeMarkerRotation(data);
-  });
-  // alert("Can't access compass! You can enable permission at Settings -> Safari -> Motion & Orientation Access.")
-}
-
-function requestDeviceOrientation() {
-  //Check if we need to request access to sensors
-  if (
-    typeof DeviceOrientationEvent !== "undefined" &&
-    typeof DeviceOrientationEvent.requestPermission === "function"
-  ) {
-    DeviceOrientationEvent.requestPermission()
-      .then((response) => {
-        console.log("DeviceOrientationEvent response:", response);
-        if (response == "granted") {
-          setupSensorListeners();
-          $("#activateSensors").html("Sensors On");
-        }
-      })
-      .catch(function (err) {
-        console.log("DeviceOrientationEvent error:", err);
-        $("#errorInfo").html("Cannot get permission", err.toString());
-      });
-  } else {
-    setupSensorListeners();
-    $("#activateSensors").html("Sensors On");
-  }
-}
-
-//Function called by async script call at bottom of index.html
-function initMap() {
-  var myLatLng = {
-    lat: -25.363,
-    lng: 131.044,
-  };
-  map = new google.maps.Map(document.getElementById("map"), {
-    zoom: 13,
-    center: {
-      lat: 45.536384,
-      lng: -73.628949,
-    },
-    disableDefaultUI: true,
-    styles: [
-      {
-        elementType: "geometry",
-        stylers: [
-          {
-            color: "#f5f5f5",
-          },
-        ],
-      },
-      {
-        elementType: "geometry",
-        stylers: [
-          {
-            color: "#f5f5f5",
-          },
-        ],
-      },
-      {
-        elementType: "labels",
-        stylers: [
-          {
-            visibility: "off",
-          },
-        ],
-      },
-      {
-        elementType: "labels.icon",
-        stylers: [
-          {
-            visibility: "off",
-          },
-        ],
-      },
-      {
-        elementType: "labels.text.fill",
-        stylers: [
-          {
-            color: "#616161",
-          },
-        ],
-      },
-      {
-        elementType: "labels.text.stroke",
-        stylers: [
-          {
-            color: "#f5f5f5",
-          },
-        ],
-      },
-      {
-        featureType: "administrative.land_parcel",
-        stylers: [
-          {
-            visibility: "off",
-          },
-        ],
-      },
-      {
-        featureType: "administrative.land_parcel",
-        elementType: "labels.text.fill",
-        stylers: [
-          {
-            color: "#bdbdbd",
-          },
-        ],
-      },
-      {
-        featureType: "administrative.neighborhood",
-        stylers: [
-          {
-            visibility: "off",
-          },
-        ],
-      },
-      {
-        featureType: "poi",
-        elementType: "geometry",
-        stylers: [
-          {
-            color: "#eeeeee",
-          },
-        ],
-      },
-      {
-        featureType: "poi",
-        elementType: "labels.text.fill",
-        stylers: [
-          {
-            color: "#757575",
-          },
-        ],
-      },
-      {
-        featureType: "poi.park",
-        elementType: "geometry",
-        stylers: [
-          {
-            color: "#e5e5e5",
-          },
-        ],
-      },
-      {
-        featureType: "poi.park",
-        elementType: "labels.text.fill",
-        stylers: [
-          {
-            color: "#9e9e9e",
-          },
-        ],
-      },
-      {
-        featureType: "road",
-        elementType: "geometry",
-        stylers: [
-          {
-            color: "#ffffff",
-          },
-        ],
-      },
-      {
-        featureType: "road.arterial",
-        elementType: "labels.text.fill",
-        stylers: [
-          {
-            color: "#757575",
-          },
-        ],
-      },
-      {
-        featureType: "road.highway",
-        elementType: "geometry",
-        stylers: [
-          {
-            color: "#dadada",
-          },
-        ],
-      },
-      {
-        featureType: "road.highway",
-        elementType: "labels.text.fill",
-        stylers: [
-          {
-            color: "#616161",
-          },
-        ],
-      },
-      {
-        featureType: "road.local",
-        elementType: "labels.text.fill",
-        stylers: [
-          {
-            color: "#9e9e9e",
-          },
-        ],
-      },
-      {
-        featureType: "transit.line",
-        elementType: "geometry",
-        stylers: [
-          {
-            color: "#e5e5e5",
-          },
-        ],
-      },
-      {
-        featureType: "transit.station",
-        elementType: "geometry",
-        stylers: [
-          {
-            color: "#eeeeee",
-          },
-        ],
-      },
-      {
-        featureType: "water",
-        elementType: "geometry",
-        stylers: [
-          {
-            color: "#c9c9c9",
-          },
-        ],
-      },
-      {
-        featureType: "water",
-        elementType: "labels.text.fill",
-        stylers: [
-          {
-            color: "#9e9e9e",
-          },
-        ],
-      },
-    ],
-  });
-
-  //Uncomment below for debugging mode - add 'location' points with mouse click
-
-  guideLine = new google.maps.Polyline({
-    strokeColor: "#989898",
-    strokeOpacity: 0.1,
-    strokeWeight: 5,
-    editable: true,
-    // draggable: true
-  });
-
-  guideLine.setMap(map);
-
-  google.maps.event.addListener(guideLine.getPath(), "insert_at", insertAt);
-  google.maps.event.addListener(guideLine.getPath(), "remove_at", removeAt);
-  google.maps.event.addListener(guideLine.getPath(), "set_at", setAt);
-
-  // map.addListener("click", addLatLng);
-
-  var image = {
-    path:
-      "M39.167,30c0,5.062-4.104,9.167-9.166,9.167c-5.063,0-9.167-4.104-9.167-9.167c0-9.125,8.416-18,9.167-18 C30.75,12,39.167,20.875,39.167,30z",
-    strokeWeight: 2,
-    strokeColor: "#29ABE2",
-    fillColor: "#29ABE2",
-    fillOpacity: 1.0,
-    scale: 0.75,
-    anchor: new google.maps.Point(30, 30),
-    rotation: 0,
-  };
-
-  homeMarker = new google.maps.Marker({
-    title: "Home",
-    icon: image,
-  });
-
-  var imageBounds = {
-    north: 45.536384,
-    south: 45.535557,
-    west: -73.629249,
-    east: -73.628002,
-  };
-
-  homeMarker.setMap(map);
-
-  google.maps.event.addListener(homeMarker, "mouseup", function (event) {
-    spriteSound.play();
-
-    homeMarker.setAnimation(google.maps.Animation.BOUNCE);
-    setTimeout(function () {
-      homeMarker.setAnimation(null);
-    }, 600);
-  });
-
-  var id = getCookie("id");
-  if (id != null) {
-    console.log("has id: " + id);
-    cookieID = id;
-  } else {
-    console.log("has no id : " + id);
-    socket.emit("request-id");
-  }
-}
-
-//Print errors as they happen
-window.onerror = function (msg, url, lineNo, columnNo, error) {
+//Display any errors that come up
+window.onerror = function(msg, url, lineNo, columnNo, error) {
   var string = msg.toLowerCase();
   var substring = "script error";
   if (string.indexOf(substring) > -1) {
@@ -1047,3 +541,10 @@ window.onerror = function (msg, url, lineNo, columnNo, error) {
 
   return false;
 };
+
+//Called when browser loads
+requestTimestamp();
+//Call these only when we have done the tutorial
+// tryGeolocation();
+//Call this before tutorial to check if it's necessary
+// requestDeviceOrientation();
