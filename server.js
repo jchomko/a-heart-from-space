@@ -79,6 +79,7 @@ io.on("connection", function (socket) {
       return acc;
     }, [])
   );
+
   socket.broadcast.emit("room-add", socket.id);
 
   socket.on("request-id", function () {
@@ -90,16 +91,26 @@ io.on("connection", function (socket) {
     // var rooms = Object.keys(this.rooms);
     // socket.leave(rooms[0]);
     for (var i = 0; i < sessions.length; i++) {
+      // see if user is already in the list
       var userIndex = sessions[i].users.findIndex((u) => u === socket.id);
+      //if we have an index
       if (userIndex !== -1) {
+        //remove user from current session
         sessions[i].users.splice(userIndex, 1);
+        //leave session
         socket.leave(sessions[i].id, () => {
+          //join new session
           socket.join(newSession, () => {
+            //delete old session if empty
             if (sessions[i].users.length === 0) {
+              //probably don't need both of those
               socket.broadcast.emit("room-delete", sessions[i].id);
               socket.emit("room-delete", sessions[i].id);
+              //remove session from list
               sessions.splice(i, 1);
             }
+
+            //add new user to the new session
             var sessionIndex = sessions.findIndex((s) => s.id === newSession);
             sessions[sessionIndex].users.push(socket.id);
             // rooms = Object.keys(socket.rooms);
