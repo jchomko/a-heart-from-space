@@ -65,12 +65,14 @@ var browserGeolocationSuccess = function(position) {
       lat: position.coords.latitude,
       lng: position.coords.longitude,
       heading: compassOrientation,
-      connectTimestamp: firstConnectTimestamp
+      connectTimestamp: firstConnectTimestamp,
+      roomid: roomId
       // done: drawDone
     };
     updateHomeMarkerPosition(position);
     // console.log("accurate coordinates: " + JSON.stringify(myLatLng))
     if(firstConnectTimestamp != null){
+      //Send coordinates to server
       socket.emit("update-coordinates", currLatLng);
     }
     // toggleGPSButton();

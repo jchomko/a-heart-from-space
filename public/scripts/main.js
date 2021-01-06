@@ -29,6 +29,20 @@ var drawDone = false;
 var lastMode = null;
 var sessionID;
 var firstConnectTimestamp;
+var roomId = null;
+
+const queryParamsString = window.location.search.substr(1);
+console.log(queryParamsString);
+const queryParams = queryParamsString.split('&').reduce((accumulator, singleQueryParam) => {
+  const [key, value] = singleQueryParam.split('=');
+  accumulator[key] = value;
+  return accumulator;
+}, {})
+console.log(queryParams.heartid);
+if (queryParams.hasOwnProperty("heartid")) {
+  roomId = queryParams.heartid;
+}
+
 
 //Icon
 var iconParameters = {
@@ -58,9 +72,9 @@ console.log("had done intro: ", hasDoneIntro);
 
 //Frontend Functions
 //Start function
-function startSession(){
+function startSession() {
 
-  $("#introduction").css("display","none");
+  $("#introduction").css("display", "none");
   setup();
 
   setCookie("intro-done", true, 1)
@@ -80,19 +94,19 @@ function startSession(){
   // }
 }
 
-function showDoneIntro(){
-  $("#introduction").css("z-index","1");
+function showDoneIntro() {
+  $("#introduction").css("z-index", "1");
   $("#sensor-setup").css("display", "none");
-  $("#done-button-intro").css("display","inline");
+  $("#done-button-intro").css("display", "inline");
 }
 
-function hideIntroduction(){
-    $("#introduction").css("display","none");
-    centerMap();
+function hideIntroduction() {
+  $("#introduction").css("display", "none");
+  centerMap();
 }
 
-function skipIntro(){
-  $("#introduction").css("display","none");
+function skipIntro() {
+  $("#introduction").css("display", "none");
   setup();
   centerMap();
 
@@ -123,7 +137,7 @@ function getCookie(c_name) {
 }
 
 //Request timestamp
-function requestTimestamp(){
+function requestTimestamp() {
   var ct = getCookie("timestamp");
   if (ct != null) {
     console.log("has timestamp : " + ct);
@@ -216,7 +230,7 @@ function toggleDone() {
   if (!drawDone) {
     // drawTriangle();
     // $("#doneSection").html("Done");
-    $("#doneIcon").attr("src","/images/heart-button.png")
+    $("#doneIcon").attr("src", "/images/heart-button.png")
     // $("#doneSection").css("background-color", "rgb(180,260,180)")
     // socket.emit("draw-triangle", true)
     // drawDone = true;
@@ -227,7 +241,7 @@ function toggleDone() {
 
   } else {
     // $("#doneSection").html("Done");
-    $("#doneIcon").attr("src","/images/heart-button-blank-trans.png")
+    $("#doneIcon").attr("src", "/images/heart-button-blank-trans.png")
     // $("#doneSection").css("background-color", "rgb(220,220,220)")
     //Not used
     // if (trianglePolylineTemp != null) {
@@ -255,7 +269,7 @@ function checkDoneButton(groupCoords) {
 }
 
 //Called when socket connects
-function setup(){
+function setup() {
 
   requestTimestamp();
   // clearMarkers();
@@ -278,7 +292,7 @@ function setup(){
 //   createDialogue("Hello, welcome. A Heart from Space is a tool that allows you to draw shapes with others.")
 // }
 
-function showDialogue(currentMode){
+function showDialogue(currentMode) {
 
   if (currentMode === 0 && lastMode != currentMode) {
     // show dialog
@@ -352,7 +366,7 @@ function showDialogue(currentMode){
 // });
 
 
-socket.on("connect", function () {
+socket.on("connect", function() {
   sessionID = socket.id;
   console.log("connected", socket.connected, sessionID);
   socket.emit("new-client", "mobile");
@@ -367,13 +381,12 @@ var rooms = [];
 
 function displayRooms() {
   $("#rooms-list").html(
-    rooms
-      .map((id) =>
-        sessionID === id
-          ? `<div>${id}</div><div></div>`
-          : `<div>${id}</div><button onclick="join('${id}')">Join</button>`
-      )
-      .join("")
+    rooms.map((id) =>
+      sessionID === id ?
+      `<div>${id}</div><div></div>` :
+      `<div>${id}</div><button onclick="join('${id}')">Join</button>`
+    )
+    .join("")
   );
 }
 
@@ -387,22 +400,22 @@ function check() {
   socket.emit("room-check");
 }
 
-socket.on("room-msg", function () {
+socket.on("room-msg", function() {
   console.log("room-msg");
 });
 
-socket.on("room-list", function (list) {
+socket.on("room-list", function(list) {
   rooms = list;
   displayRooms();
 });
 
-socket.on("room-add", function (room) {
+socket.on("room-add", function(room) {
   console.log("room-add", room);
   rooms.push(room);
   displayRooms();
 });
 
-socket.on("room-delete", function (room) {
+socket.on("room-delete", function(room) {
   console.log("room-delete", room);
   rooms = rooms.filter((r) => r !== room);
   displayRooms();
@@ -424,8 +437,8 @@ socket.on("receive-tap", function() {
 
 socket.on("receive-start-status", function(currentMode) {
 
-    console.log("current mode :", currentMode);
-    showDialogue(currentMode);
+  console.log("current mode :", currentMode);
+  showDialogue(currentMode);
 })
 
 socket.on("receive-group-coordinates", function(groupCoords) {
@@ -462,6 +475,12 @@ window.onerror = function(msg, url, lineNo, columnNo, error) {
 
 //Called when browser loads
 requestTimestamp();
+
+if (queryParams.hasOwnProperty("heartid")) {
+  roomId = queryParams.heartid;
+  join(queryParams.heartid);
+  hideIntroduction();
+}
 //Call these only when we have done the tutorial
 // tryGeolocation();
 //Call this before tutorial to check if it's necessary

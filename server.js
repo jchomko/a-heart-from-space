@@ -5,6 +5,7 @@ var fs = require('fs')
 var useragent = require('express-useragent')
 var sslRedirect = require('heroku-ssl-redirect');
 app.engine('pug', require('pug').__express)
+var url = require('url');
 
 require('dotenv').config();
 
@@ -40,7 +41,7 @@ if (process.env.NODE_ENV != 'production') {
   });
   console.log("development")
 
-//Production config
+  //Production config
 } else {
 
   var http = require('http').createServer(app);
@@ -57,19 +58,43 @@ app.set("view engine", "pug");
 app.set("views", path.join(__dirname, "views"));
 app.use(express.static("public"));
 
-app.get("/", function (request, response) {
-  // response.redirect('/index.html')
+app.get("/", function(request, response) {
+
+  // const queryObject = url.parse(request.url,true).query;
+  // console.log(queryObject);
+  // if(Object.keys(request.query).length > 0){
+  //   if(request.query.hasOwnProperty("heartid")){
+  //     joinRoom(request.query.heartid)
+  //     console.log("joining room")
+  //     response.sendFile("/public/heart.html", {
+  //       root: __dirname,
+  //     });
+  //   }else{
+  //     console.log("no room to join, inputs are: ", request.query)
+  //     response.sendFile("/public/index.html", {
+  //       root: __dirname,
+  //     });
+  //   }
+  // }
+
   response.sendFile("/public/index.html", {
     root: __dirname,
   });
+  // response.redirect('/index.html')
+
 });
+
+
 
 var sessions = [];
 
-io.on("connection", function (socket) {
+io.on("connection", function(socket) {
   console.log("connected", socket.id);
 
-  sessions.push({ id: socket.id, users: [socket.id] });
+  sessions.push({
+    id: socket.id,
+    users: [socket.id]
+  });
   // io.to(socket.id).emit("room-list", rooms);
 
   socket.emit(
@@ -82,14 +107,18 @@ io.on("connection", function (socket) {
 
   socket.broadcast.emit("room-add", socket.id);
 
-  socket.on("request-id", function () {
+  socket.on("request-id", function() {
     io.to(this.id).emit("receive-id", idCounter);
     idCounter += 1;
   });
 
-  socket.on("room-join", function (newSession) {
+  socket.on("room-join", function(newSession) {
     // var rooms = Object.keys(this.rooms);
     // socket.leave(rooms[0]);
+    //can't break out this function from the socket
+    //better to do it on the frontend
+    // joinRoom(newSession);
+    // function joinRoom(newSession){
     for (var i = 0; i < sessions.length; i++) {
       // see if user is already in the list
       var userIndex = sessions[i].users.findIndex((u) => u === socket.id);
@@ -112,7 +141,17 @@ io.on("connection", function (socket) {
 
             //add new user to the new session
             var sessionIndex = sessions.findIndex((s) => s.id === newSession);
-            sessions[sessionIndex].users.push(socket.id);
+            if (sessionIndex != -1) {
+              sessions[sessionIndex].users.push(socket.id);
+              console.log("joined session:", sessions[sessionIndex]);
+            } else {
+              sessions.push({
+                id: newSession,
+                users: [socket.id]
+              })
+              console.log("created new session:", newSession);
+
+            }
             // rooms = Object.keys(socket.rooms);
             // console.log("room joined", rooms[0]);
             // io.to("room 237").emit("a new user has joined the room"); // broadcast to everyone in the room
@@ -121,9 +160,11 @@ io.on("connection", function (socket) {
         break;
       }
     }
+    // }
+
   });
 
-  socket.on("room-check", function () {
+  socket.on("room-check", function() {
     // var rooms = Object.keys(this.rooms);
     // console.log("room-check:", rooms[0]);
     // socket.to(rooms[0]).emit("room-msg");
@@ -142,7 +183,7 @@ io.on("connection", function (socket) {
   })*/
 
   //this happens automatically when the socket connection breaks
-  socket.on("disconnect", function () {
+  socket.on("disconnect", function() {
     /*var roomIndex = sessions.indexOf(this.id);
     if (roomIndex !== -1) {
       rooms.splice(roomIndex, 1);
@@ -201,7 +242,7 @@ io.on("connection", function (socket) {
 
   })
 
-  socket.on("addclient", function () {
+  socket.on("addclient", function() {
     //If user doesn't already exist
     if (usersList.indexOf(this.id) == -1) {
       //Add user to our list of users
@@ -227,7 +268,7 @@ io.on("connection", function (socket) {
     for (var i = 0; i < groupCoords.length; i++) {
       //if we find a match, we update the existing coordinate
       if (groupCoords[i].id === this.id) {
-      // if (groupCoords[i].connectTimestamp === targetSocketId) {
+        // if (groupCoords[i].connectTimestamp === targetSocketId) {
         // groupCoords[i].done = drawDone
         groupCoords[i].ready = state;
         exists = true
@@ -321,10 +362,10 @@ io.on("connection", function (socket) {
   })
 
   //Receive coordinates from each participant and add them to our list
-  socket.on("update-coordinates", function (coords) {
+  socket.on("update-coordinates", function(coords) {
     var sID = this.id;
     var formattedCoords = JSON.stringify(coords);
-    // console.log("received: " + formattedCoords + ", " + sID)
+    console.log("received: " + formattedCoords + ", " + sID)
 
     //If we don't have this ID already
     var exists = false
@@ -332,106 +373,235 @@ io.on("connection", function (socket) {
     var inactiveIds = []
 
 
-    for (var i = 0; i < groupCoords.length; i++) {
-      //if we find a match, we update the existing coordinate
-      //using timestamps means that we update any duplicate markers that are hanging around
-      // if (JSON.stringify(groupCoords[i].connectTimestamp) === JSON.stringify(coords.connectTimestamp)) {
-      if (groupCoords[i].connectTimestamp === coords.connectTimestamp) {
+    // for (var i = 0; i < sessions.length; i++) {
+    //   // see if user is already in the list
+    //   var userIndex = sessions[i].users.findIndex((u) => u === socket.id);
+    //   //if we have an index
+    //   if (userIndex !== -1) {
+    //     //remove user from current session
+    //     sessions[i].users.splice(userIndex, 1);
+    //     //leave session
+    //     socket.leave(sessions[i].id, () => {
+    //       //join new session
+    //       socket.join(newSession, () => {
+    //         //delete old session if empty
+    //         if (sessions[i].users.length === 0) {
+    //           //probably don't need both of those
+    //           socket.broadcast.emit("room-delete", sessions[i].id);
+    //           socket.emit("room-delete", sessions[i].id);
+    //           //remove session from list
+    //           sessions.splice(i, 1);
+    //         }
+    //
+    //         //add new user to the new session
+    //         var sessionIndex = sessions.findIndex((s) => s.id === newSession);
+    //         if (sessionIndex != -1) {
+    //           sessions[sessionIndex].users.push(socket.id);
+    //           console.log("joined session:", sessions[sessionIndex]);
+    //         } else {
+    //           sessions.push({
+    //             id: newSession,
+    //             users: [socket.id]
+    //           })
+    //           console.log("created new session:", newSession);
+    //
+    //         }
+    //         // rooms = Object.keys(socket.rooms);
+    //         // console.log("room joined", rooms[0]);
+    //         // io.to("room 237").emit("a new user has joined the room"); // broadcast to everyone in the room
+    //       });
+    //     });
+    //     break;
+    //   }
+    // }
 
-        groupCoords[i].lat = coords.lat
-        groupCoords[i].lng = coords.lng
-        groupCoords[i].heading = coords.heading
-        groupCoords[i].currentTimestamp = Date.now()
-        // groupCoords[i].done = coords.done
-        exists = true
+    if (coords.roomid != null) {
+      var sessionIndex = sessions.findIndex((s) => s.id === coords.roomid);
+      if (sessionIndex != -1) {
+        for (var i = 0; i < sessions[sessionIndex].users.length; i++) {
+          if (sessions[sessionIndex].users[i].connectTimestamp === coords.connectTimestamp) {
+            sessions[sessionIndex].users[i].lat = coords.lat;
+            sessions[sessionIndex].users[i].lng = coords.lng;
+            sessions[sessionIndex].users[i].heading = coords.heading;
+            sessions[sessionIndex].users[i].currentTimestamp = Date.now();
+            exists = true;
+            break;
+          }
+        }
+
+        //add new element to session
+        if (exists === false && typeof coords.connectTimestamp != "undefined") {
+          var person = {
+            id: this.id,
+            lat: coords.lat,
+            lng: coords.lng,
+            connectTimestamp: coords.connectTimestamp,
+            heading: coords.heading,
+            currentTimestamp: Date.now()
+          }
+          sessions[sessionIndex].users.push(person)
+
+          //we need to sort these users as well now
+          //Untangle group
+          const center = sessions[sessionIndex].users.reduce(calculateCentroid, {
+            lat: 0,
+            lng: 0
+          });
+
+          const angles = sessions[sessionIndex].users.map(({
+            lat,
+            lng,
+            id,
+            ready,
+            currentTimestamp,
+            connectTimestamp,
+            roomid
+          }) => {
+            return {
+              lat,
+              lng,
+              id,
+              ready,
+              currentTimestamp,
+              connectTimestamp,
+              roomid,
+              angle: Math.atan2(lat - center.lat, lng - center.lng) * 180 / Math.PI
+            };
+          });
+
+          // let groupCoordsSorted = angles.sort(sortByAngle);
+          sessions[sessionIndex].users = angles.sort(sortByAngle);
+        }
+
+        //If we haven't found the room in our list of sessions
+      } else {
+
+        //add new session with current user's id, and add user to the list
+        sessions.push({
+          id: coords.roomid,
+          users: [coords.roomid]
+        })
+
+        //find index of session (coudl just do last item in list)
+        var sessionIndex = sessions.findIndex((s) => s.id === coords.roomid);
+
+        //add user to new session
+        var person = {
+          id: this.id,
+          lat: coords.lat,
+          lng: coords.lng,
+          connectTimestamp: coords.connectTimestamp,
+          heading: coords.heading,
+          currentTimestamp: Date.now()
+        }
+        //push user in to new session
+        sessions[sessionIndex].users.push(person)
+        console.log("created new session:");
       }
 
-      //check all coordinates to see if they're fresh, remove if older than 25 seconds
-      //commented for testing purposes
-      // if (Date.now() - groupCoords[i].currentTimestamp > 25000) {
-      //   console.log(Date.now() - groupCoords[i].currentTimestamp)
-      //   inactiveIds.push(i);
-      // }
+
 
     }
 
-    //Remove any inactive ids
-    if (inactiveIds.length > 0) {
-      for (var i = 0; i < inactiveIds.length; i++) {
-
-        //It's not a good idea to actually remove the coordinate unless the socket is broken
-        //
-        console.log("removing inactive user: ", inactiveIds[i]);
-        groupCoords.splice(inactiveIds[i], 1)
-        // io.emit("clear-markers", 1)
-      }
-      inactiveIds = [];
-    }
-
-    //If ID doesn't match with existing IDs, we add a new entry
-    if (exists === false && typeof coords.connectTimestamp != "undefined") {
-      var person = {
-        id: this.id,
-        lat: coords.lat,
-        lng: coords.lng,
-        connectTimestamp: coords.connectTimestamp,
-        heading: coords.heading,
-        currentTimestamp: Date.now()
-      }
-      groupCoords.push(person)
-    }
-
-    //Sort coordinates so they're always in the same order - for untangling
-    // groupCoords.sort(function(a, b) {
-    //   return parseInt(a.connectTimestamp) - parseInt(b.connectTimestamp)
-    // });
-
-    //Sort coords by angle to centroid - no untangling required
-    //This should maybe be called with a button press
-    //In the current setup it will be called whenever someone reloads
-    //If someone reloads and their dot is far away, it will mess things up!
-    //We probably need an 'untangle' button that anyone can press
-    //The dot should be in the same spot if we allow caching of locations
-    //This only runs when we have a new addition or someone has reloaded the system
-    if (exists === false) {
-
-      //Untangle group
-      const center = groupCoords.reduce(calculateCentroid, {
-        lat: 0,
-        lng: 0
-      });
-
-      const angles = groupCoords.map(({
-        lat,
-        lng,
-        id,
-        ready,
-        currentTimestamp,
-        connectTimestamp
-      }) => {
-        return {
-          lat,
-          lng,
-          id,
-          ready,
-          currentTimestamp,
-          connectTimestamp,
-          angle: Math.atan2(lat - center.lat, lng - center.lng) * 180 / Math.PI
-        };
-      });
-
-      // let groupCoordsSorted = angles.sort(sortByAngle);
-      groupCoords = angles.sort(sortByAngle);
-
-      //closing the loop - not needed any more
-      // groupCoordsSorted.push(groupCoordsSorted[0]);
-      // groupCoords.push(groupCoords[0]);
-
-      console.log("new addition")
-      console.log(groupCoords.length);
-      console.log(groupCoords);
-
-    }
+    // for (var i = 0; i < groupCoords.length; i++) {
+    //   //if we find a match, we update the existing coordinate
+    //   //using timestamps means that we update any duplicate markers that are hanging around
+    //   // if (JSON.stringify(groupCoords[i].connectTimestamp) === JSON.stringify(coords.connectTimestamp)) {
+    //   if (groupCoords[i].connectTimestamp === coords.connectTimestamp) {
+    //
+    //     groupCoords[i].lat = coords.lat
+    //     groupCoords[i].lng = coords.lng
+    //     groupCoords[i].heading = coords.heading
+    //     groupCoords[i].currentTimestamp = Date.now()
+    //     // groupCoords[i].done = coords.done
+    //     exists = true
+    //   }
+    //
+    //   //check all coordinates to see if they're fresh, remove if older than 25 seconds
+    //   //commented for testing purposes
+    //   // if (Date.now() - groupCoords[i].currentTimestamp > 25000) {
+    //   //   console.log(Date.now() - groupCoords[i].currentTimestamp)
+    //   //   inactiveIds.push(i);
+    //   // }
+    // }
+    //
+    // //Remove any inactive ids
+    // // if (inactiveIds.length > 0) {
+    // //   for (var i = 0; i < inactiveIds.length; i++) {
+    // //
+    // //     //It's not a good idea to actually remove the coordinate unless the socket is broken
+    // //     //
+    // //     console.log("removing inactive user: ", inactiveIds[i]);
+    // //     groupCoords.splice(inactiveIds[i], 1)
+    // //     // io.emit("clear-markers", 1)
+    // //   }
+    // //   inactiveIds = [];
+    // // }
+    //
+    // //If ID doesn't match with existing IDs, we add a new entry
+    // if (exists === false && typeof coords.connectTimestamp != "undefined") {
+    //   var person = {
+    //     id: this.id,
+    //     lat: coords.lat,
+    //     lng: coords.lng,
+    //     connectTimestamp: coords.connectTimestamp,
+    //     heading: coords.heading,
+    //     currentTimestamp: Date.now()
+    //   }
+    //   groupCoords.push(person)
+    // }
+    //
+    // //Sort coordinates so they're always in the same order - for untangling
+    // // groupCoords.sort(function(a, b) {
+    // //   return parseInt(a.connectTimestamp) - parseInt(b.connectTimestamp)
+    // // });
+    //
+    // //Sort coords by angle to centroid - no untangling required
+    // //This should maybe be called with a button press
+    // //In the current setup it will be called whenever someone reloads
+    // //If someone reloads and their dot is far away, it will mess things up!
+    // //We probably need an 'untangle' button that anyone can press
+    // //The dot should be in the same spot if we allow caching of locations
+    // //This only runs when we have a new addition or someone has reloaded the system
+    // if (exists === false) {
+    //
+    //   //Untangle group
+    //   const center = groupCoords.reduce(calculateCentroid, {
+    //     lat: 0,
+    //     lng: 0
+    //   });
+    //
+    //   const angles = groupCoords.map(({
+    //     lat,
+    //     lng,
+    //     id,
+    //     ready,
+    //     currentTimestamp,
+    //     connectTimestamp
+    //   }) => {
+    //     return {
+    //       lat,
+    //       lng,
+    //       id,
+    //       ready,
+    //       currentTimestamp,
+    //       connectTimestamp,
+    //       angle: Math.atan2(lat - center.lat, lng - center.lng) * 180 / Math.PI
+    //     };
+    //   });
+    //
+    //   // let groupCoordsSorted = angles.sort(sortByAngle);
+    //   groupCoords = angles.sort(sortByAngle);
+    //
+    //   //closing the loop - not needed any more
+    //   // groupCoordsSorted.push(groupCoordsSorted[0]);
+    //   // groupCoords.push(groupCoords[0]);
+    //
+    //   console.log("new addition")
+    //   console.log(groupCoords.length);
+    //   console.log(groupCoords);
+    //
+    // }
 
     //Sending coordinates on an interval timer
     // io.emit("receive-group-coordinates", groupCoords)
@@ -553,22 +723,26 @@ function saveFile(data) {
 }
 
 function sendGroupCoordinates() {
-  // if (coordinatesChanged) {
-  coordinatesChanged = false;
-  io.emit("receive-group-coordinates", groupCoords)
-  // console.log("coord array length : ", groupCoords.length)
-  if (recordCoords) {
-    // groupCoords.timestamp = Date.now();
-    // var timestamp = {
-    //   timestamp: Date.now()
-    // };
-    // savedCoords.push(timestamp);
-    savedCoordsString += JSON.stringify(groupCoords, null, 1);
-    savedCoordsString += ",";
-    // console.log(saveCoords);
-    // savedCoords.push(saveCoords);
+  if (coordinatesChanged) {
+    coordinatesChanged = false;
+
+    for(var i = 0; i < sessions.length; i ++){
+      io.to(sessions[i].id).emit("receive-group-coordinates", sessions[i].users)
+    }
+    // io.emit("receive-group-coordinates", groupCoords)
+    // console.log("coord array length : ", groupCoords.length)
+    // if (recordCoords) {
+    //   // groupCoords.timestamp = Date.now();
+    //   // var timestamp = {
+    //   //   timestamp: Date.now()
+    //   // };
+    //   // savedCoords.push(timestamp);
+    //   savedCoordsString += JSON.stringify(groupCoords, null, 1);
+    //   savedCoordsString += ",";
+    //   // console.log(saveCoords);
+    //   // savedCoords.push(saveCoords);
+    // }
   }
-  // }
 
 }
 
