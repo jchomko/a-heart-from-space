@@ -443,6 +443,8 @@ socket.on("receive-start-status", function(currentMode) {
 
 socket.on("receive-group-coordinates", function(groupCoords) {
 
+  console.log(groupCoords);
+
   drawLines(groupCoords);
   if (showArrows) {
     drawMarkers(groupCoords);
@@ -478,6 +480,7 @@ requestTimestamp();
 
 if (queryParams.hasOwnProperty("heartid")) {
   roomId = queryParams.heartid;
+  console.log("requestion join :", queryParams.heartid);
   join(queryParams.heartid);
   hideIntroduction();
 }

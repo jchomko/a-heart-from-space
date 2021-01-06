@@ -91,10 +91,11 @@ var sessions = [];
 io.on("connection", function(socket) {
   console.log("connected", socket.id);
 
-  sessions.push({
-    id: socket.id,
-    users: [socket.id]
-  });
+  // sessions.push({
+  //   id: socket.id,
+  //   users: [socket.id]
+  // });
+
   // io.to(socket.id).emit("room-list", rooms);
 
   socket.emit(
@@ -119,47 +120,54 @@ io.on("connection", function(socket) {
     //better to do it on the frontend
     // joinRoom(newSession);
     // function joinRoom(newSession){
-    for (var i = 0; i < sessions.length; i++) {
-      // see if user is already in the list
-      var userIndex = sessions[i].users.findIndex((u) => u === socket.id);
-      //if we have an index
-      if (userIndex !== -1) {
-        //remove user from current session
-        sessions[i].users.splice(userIndex, 1);
-        //leave session
-        socket.leave(sessions[i].id, () => {
-          //join new session
-          socket.join(newSession, () => {
-            //delete old session if empty
-            if (sessions[i].users.length === 0) {
-              //probably don't need both of those
-              socket.broadcast.emit("room-delete", sessions[i].id);
-              socket.emit("room-delete", sessions[i].id);
-              //remove session from list
-              sessions.splice(i, 1);
-            }
+    console.log("requesting join :", newSession);
 
-            //add new user to the new session
-            var sessionIndex = sessions.findIndex((s) => s.id === newSession);
-            if (sessionIndex != -1) {
-              sessions[sessionIndex].users.push(socket.id);
-              console.log("joined session:", sessions[sessionIndex]);
-            } else {
-              sessions.push({
-                id: newSession,
-                users: [socket.id]
-              })
-              console.log("created new session:", newSession);
+    socket.join(newSession);
 
-            }
-            // rooms = Object.keys(socket.rooms);
-            // console.log("room joined", rooms[0]);
-            // io.to("room 237").emit("a new user has joined the room"); // broadcast to everyone in the room
-          });
-        });
-        break;
-      }
-    }
+
+    // for (var i = 0; i < sessions.length; i++) {
+    //   // see if user is already in the list
+    //   var userIndex = sessions[i].users.findIndex((u) => u === socket.id);
+    //   //if we have an index
+    //   if (userIndex !== -1) {
+    //     //remove user from current session
+    //     sessions[i].users.splice(userIndex, 1);
+    //     //leave session
+    //     socket.leave(sessions[i].id, () => {
+    //       //join new session
+    //       socket.join(newSession, () => {
+    //         //delete old session if empty
+    //         if (sessions[i].users.length === 0) {
+    //           //probably don't need both of those
+    //           socket.broadcast.emit("room-delete", sessions[i].id);
+    //           socket.emit("room-delete", sessions[i].id);
+    //           //remove session from list
+    //           sessions.splice(i, 1);
+    //         }
+    //
+    //         //add new user to the new session
+    //         // var sessionIndex = sessions.findIndex((s) => s.id === newSession);
+    //         // if (sessionIndex != -1) {
+    //         //   sessions[sessionIndex].users.push(socket.id);
+    //         //   console.log("joined session:", sessions[sessionIndex]);
+    //         // } else {
+    //         //   // sessions.push({
+    //         //   //   id: newSession,
+    //         //   //   users: [socket.id]
+    //         //   // })
+    //         //   // console.log("created new session:", newSession);
+    //         //
+    //         // }
+    //         // rooms = Object.keys(socket.rooms);
+    //         // console.log("room joined", rooms[0]);
+    //         // io.to("room 237").emit("a new user has joined the room"); // broadcast to everyone in the room
+    //       });
+    //     });
+    //     // console.log(JSON.stringify(sessions));
+    //     console.log(sessions);
+    //     break;
+    //   }
+    // }
     // }
 
   });
@@ -189,45 +197,54 @@ io.on("connection", function(socket) {
       rooms.splice(roomIndex, 1);
       socket.broadcast.emit("room-delete", this.id);
     }*/
-    console.log("disconnect", socket.id);
+    console.log("disconnect", this.id);
     for (var i = 0; i < sessions.length; i++) {
-      var userIndex = sessions[i].users.findIndex((u) => u === socket.id);
-      if (userIndex !== -1) {
-        sessions[i].users.splice(userIndex, 1);
-        if (sessions[i].users.length === 0) {
-          socket.broadcast.emit("room-delete", sessions[i].id);
-          socket.emit("room-delete", sessions[i].id);
-          sessions.splice(i, 1);
+      // var userIndex = sessions[i].users.findIndex((u) => u === this.id);
+      for (var u = 0; u < sessions[i].users.length; u++) {
+
+        if (sessions[i].users[u].id === this.id) {
+
+          sessions[i].users.splice(u, 1);
+          console.log('removed from sessions', this.id)
+
+          if (sessions[i].users.length === 0) {
+            // socket.broadcast.emit("room-delete", sessions[i].id);
+            // socket.emit("room-delete", sessions[i].id);
+            sessions.splice(i, 1);
+          }
+          break;
         }
-        break;
       }
     }
 
-    var exists = false;
-    var index = -1;
 
-    for (var i = 0; i < groupCoords.length; i++) {
-      //if we find a match
-      if (groupCoords[i].id === this.id) {
-        exists = true;
-        index = i;
-      }
-    }
-
-    //if we have a match
-    //remove that match from the list of coordinates
-    if (exists == true) {
-      // console.log("removing :" + JSON.stringify(groupCoords[index]))
-      console.log("removing ", this.id);
-
-      groupCoords.splice(index, 1)
-      // console.log("coord array length : ", groupCoords.length)
-      // coordinatesChanged = true;
-      // io.emit("clear-markers", 1) //groupCoords
-      isGroupReady();
-    } else {
-      console.log("disconnect called but id not found - already removed")
-    }
+    // var exists = false;
+    // var index = -1;
+    //
+    // for (var i = 0; i < groupCoords.length; i++) {
+    //   //if we find a match
+    //   if (groupCoords[i].id === this.id) {
+    //     exists = true;
+    //     index = i;
+    //   }
+    // }
+    //
+    // //if we have a match
+    // //remove that match from the list of coordinates
+    // if (exists == true) {
+    //   // console.log("removing :" + JSON.stringify(groupCoords[index]))
+    //   console.log("removing ", this.id);
+    //
+    //   groupCoords.splice(index, 1)
+    //   // console.log("coord array length : ", groupCoords.length)
+    //   // coordinatesChanged = true;
+    //   // io.emit("clear-markers", 1) //groupCoords
+    //   // isGroupReady();
+    // } else {
+    //   console.log("disconnect called but id not found - already removed")
+    // }
+    console.log(sessions);
+    // console.log(JSON.stringify(sessions));
   })
 
   socket.on('send-tap', function(target) {
@@ -365,7 +382,7 @@ io.on("connection", function(socket) {
   socket.on("update-coordinates", function(coords) {
     var sID = this.id;
     var formattedCoords = JSON.stringify(coords);
-    console.log("received: " + formattedCoords + ", " + sID)
+    // console.log("received: " + formattedCoords + ", " + sID)
 
     //If we don't have this ID already
     var exists = false
@@ -416,7 +433,9 @@ io.on("connection", function(socket) {
     // }
 
     if (coords.roomid != null) {
+
       var sessionIndex = sessions.findIndex((s) => s.id === coords.roomid);
+
       if (sessionIndex != -1) {
         for (var i = 0; i < sessions[sessionIndex].users.length; i++) {
           if (sessions[sessionIndex].users[i].connectTimestamp === coords.connectTimestamp) {
@@ -424,6 +443,7 @@ io.on("connection", function(socket) {
             sessions[sessionIndex].users[i].lng = coords.lng;
             sessions[sessionIndex].users[i].heading = coords.heading;
             sessions[sessionIndex].users[i].currentTimestamp = Date.now();
+            sessions[sessionIndex].users[i].id = this.id;
             exists = true;
             break;
           }
@@ -439,6 +459,7 @@ io.on("connection", function(socket) {
             heading: coords.heading,
             currentTimestamp: Date.now()
           }
+          console.log("adding person", person);
           sessions[sessionIndex].users.push(person)
 
           //we need to sort these users as well now
@@ -479,7 +500,7 @@ io.on("connection", function(socket) {
         //add new session with current user's id, and add user to the list
         sessions.push({
           id: coords.roomid,
-          users: [coords.roomid]
+          users: []
         })
 
         //find index of session (coudl just do last item in list)
@@ -496,7 +517,7 @@ io.on("connection", function(socket) {
         }
         //push user in to new session
         sessions[sessionIndex].users.push(person)
-        console.log("created new session:");
+        console.log("created new session, added:", person);
       }
 
 
@@ -719,30 +740,30 @@ function saveFile(data) {
     }
     // console.log("saved file: ", name);
   })
-
 }
 
 function sendGroupCoordinates() {
-  if (coordinatesChanged) {
-    coordinatesChanged = false;
+  // if (coordinatesChanged) {
+  // coordinatesChanged = false;
 
-    for(var i = 0; i < sessions.length; i ++){
-      io.to(sessions[i].id).emit("receive-group-coordinates", sessions[i].users)
-    }
-    // io.emit("receive-group-coordinates", groupCoords)
-    // console.log("coord array length : ", groupCoords.length)
-    // if (recordCoords) {
-    //   // groupCoords.timestamp = Date.now();
-    //   // var timestamp = {
-    //   //   timestamp: Date.now()
-    //   // };
-    //   // savedCoords.push(timestamp);
-    //   savedCoordsString += JSON.stringify(groupCoords, null, 1);
-    //   savedCoordsString += ",";
-    //   // console.log(saveCoords);
-    //   // savedCoords.push(saveCoords);
-    // }
+  for (var i = 0; i < sessions.length; i++) {
+    io.to(sessions[i].id).emit("receive-group-coordinates", sessions[i].users)
+    // console.log(sessions[i].id, sessions[i].users);
   }
+  // io.emit("receive-group-coordinates", groupCoords)
+  // console.log("coord array length : ", groupCoords.length)
+  // if (recordCoords) {
+  //   // groupCoords.timestamp = Date.now();
+  //   // var timestamp = {
+  //   //   timestamp: Date.now()
+  //   // };
+  //   // savedCoords.push(timestamp);
+  //   savedCoordsString += JSON.stringify(groupCoords, null, 1);
+  //   savedCoordsString += ",";
+  //   // console.log(saveCoords);
+  //   // savedCoords.push(saveCoords);
+  // }
+  // }
 
 }
 
