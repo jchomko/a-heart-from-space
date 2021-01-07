@@ -35,7 +35,7 @@ function drawLines(groupCoords) {
   var readyCount = 0;
   //Draw Triangles
   for (var i = 0; i < groupCoords.length; i++) {
-    if (groupCoords[i].ready === true) { //|| lastMode === 3
+    if (groupCoords[i].done === true) { //|| lastMode === 3
 
       readyCount++;
 
@@ -135,10 +135,10 @@ function drawMarkers(groupCoords) {
     });
 
     google.maps.event.addListener(marker, 'mouseup', function(event) {
-      console.log("tapping : ", this.getTitle());
-      socket.emit("send-tap", this.getTitle());
+      console.log("tapping : ", this.getTitle(), roomId);
+      // socket.emit("send-tap", {user: this.getTitle(), roomid: roomId} );
+      socket.emit("send-tap", this.getTitle() );
       drawTapResponse(this.getTitle());
-
     });
 
     groupMarkers.push(marker);

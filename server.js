@@ -118,13 +118,8 @@ io.on("connection", function(socket) {
     // socket.leave(rooms[0]);
     //can't break out this function from the socket
     //better to do it on the frontend
-    // joinRoom(newSession);
-    // function joinRoom(newSession){
-    console.log("requesting join :", newSession);
-
-    socket.join(newSession);
-
-
+    // console.log("requesting join :", newSession);
+    // socket.join(newSession);
     // for (var i = 0; i < sessions.length; i++) {
     //   // see if user is already in the list
     //   var userIndex = sessions[i].users.findIndex((u) => u === socket.id);
@@ -168,8 +163,6 @@ io.on("connection", function(socket) {
     //     break;
     //   }
     // }
-    // }
-
   });
 
   socket.on("room-check", function() {
@@ -249,13 +242,27 @@ io.on("connection", function(socket) {
 
   socket.on('send-tap', function(target) {
     console.log("send tap :", target)
-    for (var i = 0; i < groupCoords.length; i++) {
-      if (groupCoords[i].connectTimestamp == target) {
-        io.to(groupCoords[i].id).emit('receive-tap');
-        console.log("sending tap to :", groupCoords[i].connectTimestamp);
-        // groupCoords[i].done = coords.done
+    // io.to(target.roomid).emit('')
+
+    for (var i = 0; i < sessions.length; i++) {
+      // var userIndex = sessions[i].users.findIndex((u) => u === this.id);
+      for (var u = 0; u < sessions[i].users.length; u++) {
+
+        if (sessions[i].users[u].connectTimestamp == target) {
+          console.log("sending tap to :", sessions[i].users[u].id)
+          io.to(sessions[i].users[u].id).emit('receive-tap')
+          // break;
+        }
       }
     }
+
+    // for (var i = 0; i < groupCoords.length; i++) {
+    //   if (groupCoords[i].connectTimestamp == target) {
+    //     io.to(groupCoords[i].id).emit('receive-tap');
+    //     console.log("sending tap to :", groupCoords[i].connectTimestamp);
+    //     // groupCoords[i].done = coords.done
+    //   }
+    // }
 
   })
 
@@ -280,23 +287,33 @@ io.on("connection", function(socket) {
 
   socket.on("update-done-status", function(state) {
     // var sID = this.id
-    var exists = false
+    // var exists = false
 
-    for (var i = 0; i < groupCoords.length; i++) {
-      //if we find a match, we update the existing coordinate
-      if (groupCoords[i].id === this.id) {
-        // if (groupCoords[i].connectTimestamp === targetSocketId) {
-        // groupCoords[i].done = drawDone
-        groupCoords[i].ready = state;
-        exists = true
+    for (var i = 0; i < sessions.length; i++) {
+      // var userIndex = sessions[i].users.findIndex((u) => u === this.id);
+      for (var u = 0; u < sessions[i].users.length; u++) {
+        if (sessions[i].users[u].id == this.id) {
+          sessions[i].users[u].done = state;
+        }
       }
     }
 
-    coordinatesChanged = exists;
+    // for (var i = 0; i < groupCoords.length; i++) {
+    //   //if we find a match, we update the existing coordinate
+    //   if (groupCoords[i].id === this.id) {
+    //     // if (groupCoords[i].connectTimestamp === targetSocketId) {
+    //     // groupCoords[i].done = drawDone
+    //     groupCoords[i].ready = state;
+    //     exists = true
+    //   }
+    // }
+
+    // coordinatesChanged = exists;
     console.log("drawing heart for: ", this.id);
     // isGroupReady();
   })
 
+  //debug playback mode
   socket.on("start-playback", function(filename) {
 
     var fileData;
@@ -365,72 +382,40 @@ io.on("connection", function(socket) {
   // })
 
   socket.on("update-heading", function(heading) {
-    var sID = this.id
-    var exists = false
-    for (var i = 0; i < groupCoords.length; i++) {
-      //if we find a match, we update the existing coordinate
-      if (JSON.stringify(groupCoords[i].id) === JSON.stringify(this.id)) {
-        groupCoords[i].heading = heading
-        groupCoords[i].currentTimestamp = Date.now()
-        exists = true
+
+    for (var i = 0; i < sessions.length; i++) {
+      // var userIndex = sessions[i].users.findIndex((u) => u === this.id);
+      for (var u = 0; u < sessions[i].users.length; u++) {
+        if (sessions[i].users[u].id == this.id) {
+          sessions[i].users[u].heading = heading
+          sessions[i].users[u].currentTimestamp = Date.now()
+        }
       }
     }
-    coordinatesChanged = true;
+
+    // var sID = this.id
+    // var exists = false
+    // for (var i = 0; i < groupCoords.length; i++) {
+    //   //if we find a match, we update the existing coordinate
+    //   if (JSON.stringify(groupCoords[i].id) === JSON.stringify(this.id)) {
+    //     groupCoords[i].heading = heading
+    //     groupCoords[i].currentTimestamp = Date.now()
+    //     exists = true
+    //   }
+    // }
+    // coordinatesChanged = true;
   })
 
   //Receive coordinates from each participant and add them to our list
   socket.on("update-coordinates", function(coords) {
-    var sID = this.id;
-    var formattedCoords = JSON.stringify(coords);
+    // var sID = this.id;
+    // var formattedCoords = JSON.stringify(coords);
     // console.log("received: " + formattedCoords + ", " + sID)
 
     //If we don't have this ID already
     var exists = false
-    var existsInDisconnected = false
-    var inactiveIds = []
-
-
-    // for (var i = 0; i < sessions.length; i++) {
-    //   // see if user is already in the list
-    //   var userIndex = sessions[i].users.findIndex((u) => u === socket.id);
-    //   //if we have an index
-    //   if (userIndex !== -1) {
-    //     //remove user from current session
-    //     sessions[i].users.splice(userIndex, 1);
-    //     //leave session
-    //     socket.leave(sessions[i].id, () => {
-    //       //join new session
-    //       socket.join(newSession, () => {
-    //         //delete old session if empty
-    //         if (sessions[i].users.length === 0) {
-    //           //probably don't need both of those
-    //           socket.broadcast.emit("room-delete", sessions[i].id);
-    //           socket.emit("room-delete", sessions[i].id);
-    //           //remove session from list
-    //           sessions.splice(i, 1);
-    //         }
-    //
-    //         //add new user to the new session
-    //         var sessionIndex = sessions.findIndex((s) => s.id === newSession);
-    //         if (sessionIndex != -1) {
-    //           sessions[sessionIndex].users.push(socket.id);
-    //           console.log("joined session:", sessions[sessionIndex]);
-    //         } else {
-    //           sessions.push({
-    //             id: newSession,
-    //             users: [socket.id]
-    //           })
-    //           console.log("created new session:", newSession);
-    //
-    //         }
-    //         // rooms = Object.keys(socket.rooms);
-    //         // console.log("room joined", rooms[0]);
-    //         // io.to("room 237").emit("a new user has joined the room"); // broadcast to everyone in the room
-    //       });
-    //     });
-    //     break;
-    //   }
-    // }
+    // var existsInDisconnected = false
+    // var inactiveIds = []
 
     if (coords.roomid != null) {
 
@@ -438,7 +423,8 @@ io.on("connection", function(socket) {
 
       if (sessionIndex != -1) {
         for (var i = 0; i < sessions[sessionIndex].users.length; i++) {
-          if (sessions[sessionIndex].users[i].connectTimestamp === coords.connectTimestamp) {
+          if (JSON.stringify(sessions[sessionIndex].users[i].connectTimestamp) === JSON.stringify(coords.connectTimestamp)) {
+          // if (sessions[sessionIndex].users[i].connectTimestamp === coords.connectTimestamp) {
             sessions[sessionIndex].users[i].lat = coords.lat;
             sessions[sessionIndex].users[i].lng = coords.lng;
             sessions[sessionIndex].users[i].heading = coords.heading;
@@ -459,9 +445,10 @@ io.on("connection", function(socket) {
             heading: coords.heading,
             currentTimestamp: Date.now()
           }
-          console.log("adding person", person);
+          console.log("adding person", sessions);
           sessions[sessionIndex].users.push(person)
 
+          socket.join(coords.roomid)
           //we need to sort these users as well now
           //Untangle group
           const center = sessions[sessionIndex].users.reduce(calculateCentroid, {
@@ -519,8 +506,6 @@ io.on("connection", function(socket) {
         sessions[sessionIndex].users.push(person)
         console.log("created new session, added:", person);
       }
-
-
 
     }
 

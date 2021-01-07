@@ -186,7 +186,7 @@ function initMap() {
   });
 
   homeMarker.setMap(map);
-
+  
 }
 
 function centerMap() {

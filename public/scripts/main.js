@@ -33,11 +33,13 @@ var roomId = null;
 
 const queryParamsString = window.location.search.substr(1);
 console.log(queryParamsString);
+
 const queryParams = queryParamsString.split('&').reduce((accumulator, singleQueryParam) => {
   const [key, value] = singleQueryParam.split('=');
   accumulator[key] = value;
   return accumulator;
 }, {})
+
 console.log(queryParams.heartid);
 if (queryParams.hasOwnProperty("heartid")) {
   roomId = queryParams.heartid;
@@ -102,14 +104,12 @@ function showDoneIntro() {
 
 function hideIntroduction() {
   $("#introduction").css("display", "none");
-  centerMap();
 }
 
 function skipIntro() {
   $("#introduction").css("display", "none");
   setup();
   centerMap();
-
 }
 //Utility Functions
 
@@ -367,59 +367,64 @@ function showDialogue(currentMode) {
 
 
 socket.on("connect", function() {
+
   sessionID = socket.id;
   console.log("connected", socket.connected, sessionID);
   socket.emit("new-client", "mobile");
   tryGeolocation();
   requestDeviceOrientation();
+
   if (currLatLng != null) {
     socket.emit("update-coordinates", currLatLng);
   }
+
 });
 
-var rooms = [];
 
-function displayRooms() {
-  $("#rooms-list").html(
-    rooms.map((id) =>
-      sessionID === id ?
-      `<div>${id}</div><div></div>` :
-      `<div>${id}</div><button onclick="join('${id}')">Join</button>`
-    )
-    .join("")
-  );
-}
 
-function join(id) {
-  socket.emit("room-join", id);
-  sessionID = id;
-  displayRooms();
-}
-
-function check() {
-  socket.emit("room-check");
-}
-
-socket.on("room-msg", function() {
-  console.log("room-msg");
-});
-
-socket.on("room-list", function(list) {
-  rooms = list;
-  displayRooms();
-});
-
-socket.on("room-add", function(room) {
-  console.log("room-add", room);
-  rooms.push(room);
-  displayRooms();
-});
-
-socket.on("room-delete", function(room) {
-  console.log("room-delete", room);
-  rooms = rooms.filter((r) => r !== room);
-  displayRooms();
-});
+// var rooms = [];
+//
+// function displayRooms() {
+//   $("#rooms-list").html(
+//     rooms.map((id) =>
+//       sessionID === id ?
+//       `<div>${id}</div><div></div>` :
+//       `<div>${id}</div><button onclick="join('${id}')">Join</button>`
+//     )
+//     .join("")
+//   );
+// }
+//
+// function join(id) {
+//   socket.emit("room-join", id);
+//   sessionID = id;
+//   // displayRooms();
+// }
+//
+// function check() {
+//   socket.emit("room-check");
+// }
+//
+// socket.on("room-msg", function() {
+//   console.log("room-msg");
+// });
+//
+// socket.on("room-list", function(list) {
+//   rooms = list;
+//   displayRooms();
+// });
+//
+// socket.on("room-add", function(room) {
+//   console.log("room-add", room);
+//   rooms.push(room);
+//   displayRooms();
+// });
+//
+// socket.on("room-delete", function(room) {
+//   console.log("room-delete", room);
+//   rooms = rooms.filter((r) => r !== room);
+//   displayRooms();
+// });
 
 
 
@@ -443,7 +448,7 @@ socket.on("receive-start-status", function(currentMode) {
 
 socket.on("receive-group-coordinates", function(groupCoords) {
 
-  console.log(groupCoords);
+  // console.log(groupCoords);
 
   drawLines(groupCoords);
   if (showArrows) {
@@ -481,7 +486,7 @@ requestTimestamp();
 if (queryParams.hasOwnProperty("heartid")) {
   roomId = queryParams.heartid;
   console.log("requestion join :", queryParams.heartid);
-  join(queryParams.heartid);
+  // join(queryParams.heartid);
   hideIntroduction();
 }
 //Call these only when we have done the tutorial
