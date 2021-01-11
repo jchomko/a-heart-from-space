@@ -16,16 +16,63 @@ body {
 }
 
 #introduction {
-  background-color: rgb(245, 246, 245);
+
   display: inline;
   position: absolute;
   top: 0;
   left: 0;
+  opacity:1;
   height: 100%;
   width: 100%;
   overflow: hidden;
   z-index: 10;
 }
+
+.introduction-blank{
+  background-color: rgb(245, 246, 245);
+  /* background-image: url("../images/tutorial_compass.png"); */
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.introduction-compass {
+  background-image: url("../images/tutorial_compass.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  display: inline;
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity:1;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  z-index: 10;
+}
+
+.introduction-buttons {
+  background-image: url("../images/tutorial_buttons.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  display: inline;
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity:1;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  z-index: 10;
+}
+
+#introtext {
+  position: relative;
+  margin: 5%;
+  /* font: sans-serif; */
+  font-family: sans-serif;
+  height: 100%;
+}
+
 
 #welcome {
   /* display: inline; */
@@ -35,6 +82,12 @@ body {
   height: 100%;
   width: 100%;
   overflow: hidden;
+}
+
+#dottext{
+  visibility: hidden;
+  /* position: absolute;
+  top: 60%; */
 }
 
 #sensor-setup {
@@ -57,12 +110,6 @@ body {
   overflow: hidden;
 }
 
-#introtext {
-  position: relative;
-  margin: 5%;
-  /* font: sans-serif; */
-  font-family: sans-serif;
-}
 
 #sensor-gps {
   position: absolute;
@@ -99,23 +146,29 @@ body {
   height: 20%;
 }
 
-#join-heart {
-  /* position: absolute;
-  bottom: 20px;
-  left: 70%;
-  transform: translate(-50%, 0);
-  width: 30%;
-  height: 50px;
-  background-color: rgb(220, 220, 220); */
-  position: absolute;
+.heart-start-join {
+  position: relative;
+  display: inline-block;
   /* margin: 5%; */
   left: 50%;
   transform: translate(-50%, 0);
   width: 90%;
-  height: 10%;
-  bottom: 5%;
-  background-color: rgb(220, 220, 220);
+  height: 60px;
+  margin-bottom: 2%;
+  font-size: 12pt;
+  font-family: sans-serif;
+  text-decoration: none;
+  text-align: center;
+  line-height: 60px;
+  padding: 3px 5px;
+  border: 1px solid #000;
+  color: black;
+  /* font-size: 14pt; */
+  /* bottom: 0%; */
+  /* background-color: rgb(220, 220, 220) */
 }
+
+
 
 #skip-intro {
   position: absolute;

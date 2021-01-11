@@ -419,9 +419,11 @@ io.on("connection", function(socket) {
 
     if (coords.roomid != null) {
 
-      var sessionIndex = sessions.findIndex((s) => s.id === coords.roomid);
+      var sessionIndex = sessions.findIndex((session) => session.id === coords.roomid);
 
+      //if we find the session index in our list
       if (sessionIndex != -1) {
+        //then find the user and update that user
         for (var i = 0; i < sessions[sessionIndex].users.length; i++) {
           if (JSON.stringify(sessions[sessionIndex].users[i].connectTimestamp) === JSON.stringify(coords.connectTimestamp)) {
           // if (sessions[sessionIndex].users[i].connectTimestamp === coords.connectTimestamp) {
@@ -435,8 +437,9 @@ io.on("connection", function(socket) {
           }
         }
 
-        //add new element to session
+        //if the user isn't in any sessions
         if (exists === false && typeof coords.connectTimestamp != "undefined") {
+          //create a new user
           var person = {
             id: this.id,
             lat: coords.lat,
@@ -445,12 +448,15 @@ io.on("connection", function(socket) {
             heading: coords.heading,
             currentTimestamp: Date.now()
           }
-          console.log("adding person", sessions);
-          sessions[sessionIndex].users.push(person)
+          console.log("adding user: ", this.id, "to room: ", coords.roomid);
+          console.log(sessions);
 
+          //add user to the session
+          sessions[sessionIndex].users.push(person)
+          //join them to the group
           socket.join(coords.roomid)
-          //we need to sort these users as well now
-          //Untangle group
+
+          //sort the group around its centroid
           const center = sessions[sessionIndex].users.reduce(calculateCentroid, {
             lat: 0,
             lng: 0
@@ -481,19 +487,19 @@ io.on("connection", function(socket) {
           sessions[sessionIndex].users = angles.sort(sortByAngle);
         }
 
-        //If we haven't found the room in our list of sessions
+        //There no session in the list that matches our roomid
       } else {
 
-        //add new session with current user's id, and add user to the list
+        //add new session with the room id
         sessions.push({
           id: coords.roomid,
           users: []
         })
 
-        //find index of session (coudl just do last item in list)
-        var sessionIndex = sessions.findIndex((s) => s.id === coords.roomid);
+        //find index of session we just added (could just do last item in list)
+        var sessionIndex = sessions.findIndex((session) => session.id === coords.roomid);
 
-        //add user to new session
+        //create user
         var person = {
           id: this.id,
           lat: coords.lat,
@@ -502,9 +508,13 @@ io.on("connection", function(socket) {
           heading: coords.heading,
           currentTimestamp: Date.now()
         }
-        //push user in to new session
+
+        //add user to the session
         sessions[sessionIndex].users.push(person)
-        console.log("created new session, added:", person);
+        socket.join(coords.roomid)
+
+        console.log("created new session: ", coords.roomid);
+        console.log("added user: ", person);
       }
 
     }

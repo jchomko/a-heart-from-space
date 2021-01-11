@@ -1,7 +1,14 @@
 //Function called by async script call at bottom of index.html
 function initMap() {
+  //having a center to start on makes things better
+  var myLatLng = {
+    lat: 43.6222102,
+    lng: -79.6694881
+  };
+
   map = new google.maps.Map(document.getElementById("map"), {
     zoom: 18,
+    center: myLatLng,
     disableDefaultUI: true,
     mapTypeId: 'roadmap',
     styles: [{
@@ -186,7 +193,7 @@ function initMap() {
   });
 
   homeMarker.setMap(map);
-  
+
 }
 
 function centerMap() {

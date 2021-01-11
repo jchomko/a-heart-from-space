@@ -27,20 +27,35 @@
     <div id="welcome">
       <div id="introtext">
         <p>
-          <b>A Heart from Space</b> is a website that enables a group of people to draw together using their GPS positions. <br><br>
-          Each participant holds a point of the drawing and moves with the group to create a heart. <br><br>
-          <!-- <b>Instructions</b><br> -->
-          When you click start, you'll be asked to share some sensor permissions - these allow the website to access your GPS position and compass sensor.<br><br>
+          <b>A Heart from Space</b> is an experiment in collective creation, allowing a group of people to draw shapes together. Each person's GPS location creates one point on the line, allowing them to adjust one section of the drawing by moving in space. <br><br>
+          The website will request access to your GPS location and compass, and will share this data with your group only; no data is stored.
+          For the best results, a group of six to eight people is required, but smaller groups also work. <br><br>
 
-          <div id="rooms-list"></div>
+
+
+
+<!--
+          You can either join someone else's heart, or start your own. You'll need at least four people to make something heart-like, though six to eight people is best! <br><br>
+          Sending this link to other people will allow them to make a heart with you: if someone else wants you to join their heart, they'll need to send you their link.<br><br> -->
+
+          <!-- <div id="rooms-list"></div> -->
           <!-- When you're happy with the shape of the heart, tap the heart button on the bottom right of the screen to fill your section. When the heart is full of colour, the heart is ready.<br><br> -->
 
         </p>
 
       </div>
+      <!-- <button id="heart-start-join" onclick="startNew()"><b>Start New Heart</b></button><br> -->
+      <a class="heart-start-join" href="/newheart.html">Start New Heart</a>
+      <div id="introtext">
+      <p>
+        To join a heart that someone has started, ask them to send you the link to their heart. Opening the link will connect you directly to their heart.
+      <p>
+      </div>
+      <!-- <button id="heart-start-join" onclick="startSession()"><b>Join Heart</b></button> -->
+      <!-- <a class="heart-start-join" href="/joinheart.html">Join Heart</a> -->
       <!-- <img id='heart-photo' src='images/heart-photo.png'> -->
       <!-- <button id="start-new-heart" onclick="startNewHeart()">Start New Heart</button> -->
-      <button id="join-heart" onclick="startSession()">Start New Session</button>
+      <!-- <button id="join-heart" onclick="startSession()">Start New Session</button> -->
 
       <!-- <div class="rooms">
         <button onclick="check()">Check</button>
@@ -78,17 +93,14 @@
   <script src="/socket.io/socket.io.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.1.1/howler.core.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/curve-matcher@1.1.1/dist/index.umd.js"></script>
-  <script src="/scripts/main.js">
-  </script>
-  <script src="/scripts/sensors.js">
-  </script>
-  <script src="/scripts/drawing.js">
-  </script>
-  <script src="/scripts/map.js">
-  </script>
+  <!-- <script src="/scripts/landing.js"></script> -->
 
-  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBsTwTesuZp5Gh_ydqQY5VDNpPlSZLtt-M&callback=initMap">
-  </script>
+  <script src="/scripts/sensors.js"></script>
+  <script src="/scripts/drawing.js"></script>
+  <script src="/scripts/map.js"></script>
+  <script src="/scripts/main.js"></script>
+
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBsTwTesuZp5Gh_ydqQY5VDNpPlSZLtt-M&callback=initMap"></script>
 
 </body>
 

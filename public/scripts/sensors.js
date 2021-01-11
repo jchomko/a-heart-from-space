@@ -61,6 +61,12 @@ var browserGeolocationSuccess = function(position) {
   // if we have a high accuracy reading
   // if using simulated position the accuracy will be fixed at 150
   if (position.coords.accuracy < bestAccuracy + 10) { //|| position.coords.accuracy === 150
+    var firstCoords = false;
+
+    if(currLatLng === null){
+      firstCoords = true;
+    }
+
     currLatLng = {
       lat: position.coords.latitude,
       lng: position.coords.longitude,
@@ -69,7 +75,11 @@ var browserGeolocationSuccess = function(position) {
       roomid: roomId
       // done: drawDone
     };
+
     updateHomeMarkerPosition(position);
+    if(firstCoords){
+      centerMap();
+    }
     // console.log("accurate coordinates: " + JSON.stringify(myLatLng))
     if(firstConnectTimestamp != null){
       //Send coordinates to server

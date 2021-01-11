@@ -23,10 +23,48 @@
     <p id="dialog-content"> </p>
   </div>
 
+  <div id="introduction" class="introduction-blank">
+    <div id="welcome">
+      <div id="introtext">
+        <p>Before we get started, let's switch on your GPS and compass sensor. Tap this button to begin sensor activation.</p>
+        <p id="dottext">This dot rotates as you move your phone, to help you orient yourself with the group. The map is fixed in a north orientation.</p>
+        <button class="heart-start-join" onclick="activateSensors()">Activate Sensors</button><br>
 
 
+      </div>
+
+      <!-- <a class="heart-start-join" href="/newheart.html">Start New Heart</a> -->
+      <!-- <button id="heart-start-join" onclick="startSession()"><b>Join Heart</b></button> -->
+      <!-- <a class="heart-start-join" href="/joinheart.html">Join Heart</a> -->
+      <!-- <img id='heart-photo' src='images/heart-photo.png'> -->
+      <!-- <button id="start-new-heart" onclick="startNewHeart()">Start New Heart</button> -->
+      <!-- <button id="join-heart" onclick="startSession()">Start New Session</button> -->
+
+      <!-- <div class="rooms">
+        <button onclick="check()">Check</button>
+        <div><b>Rooms</b></div>
+        <div id="rooms-list"></div>
+      </div> -->
+
+      <!-- <button id="skip-intro" onclick="skipIntro()">Skip Intro</button> -->
+    </div>
 
 
+    <!-- <div id="sensor-setup">
+      <div id="introtext">
+        Let's get your sensors set up!
+      </div>
+      <button id="sensor-gps" onclick="tryGeolocation()">Start GPS</button>
+      <button id="sensor-compass" onclick="requestDeviceOrientation()">Start Compass</button>
+    </div>
+    <div id="done-button-intro">
+      <div id="introtext">
+        When you're satisfied with how the heart looks, press this button and it will fill your heart with colour. When the heart is full of colour, the group is declaring they are happy with the shape of their heart.
+      </div>
+      <button id="sensor-gps" onclick="hideIntroduction()">OK, lets go!</button>
+
+    </div> -->
+  </div>
 
 
   <script src="https://code.jquery.com/jquery-1.11.1.js" type='text/javascript'></script>
@@ -34,17 +72,14 @@
   <script src="/socket.io/socket.io.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.1.1/howler.core.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/curve-matcher@1.1.1/dist/index.umd.js"></script>
-  <script src="/scripts/main.js">
-  </script>
-  <script src="/scripts/sensors.js">
-  </script>
-  <script src="/scripts/drawing.js">
-  </script>
-  <script src="/scripts/map.js">
-  </script>
+  <!-- <script src="/scripts/landing.js"></script> -->
 
-  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBsTwTesuZp5Gh_ydqQY5VDNpPlSZLtt-M&callback=initMap">
-  </script>
+  <script src="/scripts/sensors.js"></script>
+  <script src="/scripts/drawing.js"></script>
+  <script src="/scripts/map.js"></script>
+  <script src="/scripts/main.js"></script>
+
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBsTwTesuZp5Gh_ydqQY5VDNpPlSZLtt-M&callback=initMap"></script>
 
 </body>
 
