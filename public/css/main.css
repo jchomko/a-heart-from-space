@@ -16,7 +16,10 @@ body {
 }
 
 #introduction {
-
+  background-color: rgb(245, 246, 245);
+  /* background-image: url("../images/tutorial_compass.png"); */
+  background-repeat: no-repeat;
+  background-size: cover;
   display: inline;
   position: absolute;
   top: 0;
