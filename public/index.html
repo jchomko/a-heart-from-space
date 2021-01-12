@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+</head>
+
+<body>
+  <!-- <button onclick="tryGeolocation()">Try It</button> -->
+  <!-- <div id="compassInfo"> </div> -->
+  <div id="map"></div>
+  <!-- <button id="toggleArrows" onclick="togArrows()">Arrows Off</button> Center Map <img src="/images/center.png", width="20px" height="20px">-->
+  <button id="centerMap" onclick="centerMap()"><img class="map-button" src="/images/center-map-outline.png" > </button>
+  <button id="doneSection" onclick="toggleDone()"><img class="map-button" id="doneIcon" src="/images/heart-button-blank-trans.png" ></button>
+  <!-- <button id="readyButton" onclick="readyToStart()">Start</button> -->
+  <!-- <button id="activateSensors" onclick="toggleSensorsButton()">Activate Sensors</button> -->
+  <!-- <button id="activateGPS" onclick="toggleGPSButton()">Activate GPS</button> -->
+
+  <div id="dialog-message" title="Info">
+    <p id="dialog-content"> </p>
+  </div>
+
+  <div id="introduction">
+    <div id="welcome">
+      <div id="introtext">
+        <p>
+          <b>A Heart from Space</b> is an experiment in collective creation, enabling a group of people to draw shapes together. Each person's GPS location is one point on a line, allowing the group to collectively draw together by moving in space. <br><br>
+
+          You can either join someone else's heart, or start your own. You'll need at least four people to make something heart-like, though six to eight people is best! <br><br>
+          Your heart can be found at the link below; share the link to others to invite them to your heart. To join a group, ask them to send the link to their heart.<br><br>
+
+          <div id="rooms-list"></div>
+        <!-- </p>
+        <p><b>About </a>
+        </p> -->
+      </div>
+      <!-- <button id="heart-start-join" onclick="startNew()"><b>Start New Heart</b></button><br>
+      <a class="heart-start-join" href="/newheart.html">Start New Heart</a> -->
+      <!-- <div id="introtext">
+      <p>
+        To join a heart that someone has started, ask them to send you the link to their heart. Opening the link will connect you directly to their heart.
+      <p>
+      </div> -->
+      <!-- <button id="heart-start-join" onclick="startSession()"><b>Join Heart</b></button> -->
+      <!-- <a class="heart-start-join" href="/joinheart.html">Join Heart</a> -->
+      <!-- <img id='heart-photo' src='images/heart-photo.png'> -->
+      <!-- <button id="start-new-heart" onclick="startNewHeart()">Start New Heart</button> -->
+      <!-- <button id="join-heart" onclick="startSession()">Start New Session</button> -->
+
+      <!-- <div class="rooms">
+        <button onclick="check()">Check</button>
+        <div><b>Rooms</b></div>
+        <div id="rooms-list"></div>
+      </div> -->
+
+      <!-- <button id="skip-intro" onclick="skipIntro()">Skip Intro</button> -->
+    </div>
+
+
+    <!-- <div id="sensor-setup">
+      <div id="introtext">
+        Let's get your sensors set up!
+      </div>
+      <button id="sensor-gps" onclick="tryGeolocation()">Start GPS</button>
+      <button id="sensor-compass" onclick="requestDeviceOrientation()">Start Compass</button>
+    </div>
+    <div id="done-button-intro">
+      <div id="introtext">
+        When you're satisfied with how the heart looks, press this button and it will fill your heart with colour. When the heart is full of colour, the group is declaring they are happy with the shape of their heart.
+      </div>
+      <button id="sensor-gps" onclick="hideIntroduction()">OK, lets go!</button>
+
+    </div> -->
+  </div>
+
+
+
+
+
+
+  <script src="https://code.jquery.com/jquery-1.11.1.js" type='text/javascript'></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.1.1/howler.core.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/curve-matcher@1.1.1/dist/index.umd.js"></script>
+  <!-- <script src="/scripts/landing.js"></script> -->
+
+  <script src="/scripts/sensors.js"></script>
+  <script src="/scripts/drawing.js"></script>
+  <script src="/scripts/map.js"></script>
+  <script src="/scripts/main.js"></script>
+
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBsTwTesuZp5Gh_ydqQY5VDNpPlSZLtt-M&callback=initMap"></script>
+
+</body>
+
+</html>

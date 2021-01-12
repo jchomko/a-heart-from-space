@@ -1,5 +1,6 @@
 #map {
   height: 100%;
+  overflow: auto !important;
   /* zoom: 200%; */
   /* height: 400%;
     top: -100%;
@@ -15,24 +16,227 @@ body {
   background-color: lightgray;
 }
 
-#introtext{
-  position: absolute;
-  margin: 20px;
-  /* font: sans-serif; */
-  font-family: sans-serif;
+#infopanel{
+  visibility: visible;
+  background-color: rgb(213,213,213);
+  /* background-image: url("../images/tutorial_compass.png"); */
+  background-repeat: no-repeat;
+  background-size: cover;
+  /* display: inline-grid; */
+  position: fixed;
+  top: 0;
+  /* left: 0; */
+  margin: 5%;
+  opacity: 1;
+  height: 95%;
+  border-radius: 10px;
+  border-color:black;
+  /* width: 100%; */
+  /* overflow: scroll; */
+
+
+  z-index: 10;
 }
 
-#start-intro{
+#introduction {
+  background-color: rgb(245, 246, 245);
+  /* background-image: url("../images/tutorial_compass.png"); */
+  background-repeat: no-repeat;
+  background-size: cover;
+  display: inline;
   position: absolute;
-  bottom: 20px;
-  left:50%;
-  transform:translate(-50%,0);
-  width: 90px;
+  top: 0;
+  left: 0;
+  opacity:1;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  z-index: 10;
+}
+
+#sensor-start{
+  background-color: rgb(213,213,213);
+  border-radius: 10px;
+  border-color:black;
+  border-width: thin;
+  /* background-image: url("../images/tutorial_compass.png"); */
+  background-repeat: no-repeat;
+  background-size: cover;
+  display: inline;
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin:5%;
+  opacity:1;
+  height: auto;
+  width: 90%;
+  overflow: hidden;
+  z-index: 10;
+}
+
+.introduction-blank{
+  background-color: rgb(245, 246, 245);
+  /* background-image: url("../images/tutorial_compass.png"); */
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.introduction-compass {
+  background-image: url("../images/tutorial_compass.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  display: inline;
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity:1;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  z-index: 10;
+}
+
+.introduction-buttons {
+  background-image: url("../images/tutorial_buttons.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  display: inline;
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity:1;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  z-index: 10;
+}
+
+#introtext {
+  position: relative;
+  margin: 5%;
+  /* font: sans-serif; */
+  font-family: sans-serif;
+  height: 100%;
+}
+
+#infotext{
+  position: relative;
+  margin: 5%;
+  /* font: sans-serif; */
+  font-family: sans-serif;
+  height: 90%;
+  overflow: scroll;
+  /* overflow: scroll; */
+}
+
+
+#welcome {
+  /* display: inline; */
+  position: relative;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+#dottext{
+  visibility: hidden;
+  /* position: absolute;
+  top: 60%; */
+}
+
+#sensor-setup {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+#done-button-intro {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+
+#sensor-gps {
+  position: absolute;
+  bottom: 50%;
+  left: 70%;
+  transform: translate(-50%, -50%);
+  width: 30%;
   height: 50px;
   background-color: rgb(220, 220, 220);
 }
 
-#compassInfo{
+#sensor-compass {
+  position: absolute;
+  bottom: 50%;
+  left: 30%;
+  transform: translate(-50%, -50%);
+  width: 30%;
+  height: 50px;
+  background-color: rgb(220, 220, 220);
+}
+
+#start-new-heart {
+  position: absolute;
+  bottom: 20px;
+  left: 30%;
+  transform: translate(-50%, 0);
+  width: 30%;
+  height: 50px;
+  background-color: rgb(220, 220, 220);
+}
+
+#heart-photo{
+  position: relative;
+  height: 20%;
+}
+
+.heart-start-join {
+  position: relative;
+  display: inline-block;
+  /* margin: 5%; */
+  left: 50%;
+  transform: translate(-50%, 0);
+  width: 90%;
+  height: 60px;
+  margin-bottom: 2%;
+  font-size: 12pt;
+  font-family: sans-serif;
+  text-decoration: none;
+  text-align: center;
+  line-height: 60px;
+  padding: 3px 5px;
+  border: 1px solid #000;
+  color: black;
+  /* font-size: 14pt; */
+  /* bottom: 0%; */
+  /* background-color: rgb(220, 220, 220) */
+}
+
+
+
+#skip-intro {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  /* transform:translate(-50%,0); */
+  width: 30%;
+  height: 30px;
+  background-color: rgb(220, 220, 220);
+}
+
+#compassInfo {
   z-index: 10;
   position: absolute;
   bottom: 0;
@@ -47,43 +251,75 @@ body {
   height: 40px;
 }
 
+.map-button {
+  width: 60px;
+  height: 60px;
+}
+
+#aboutButton{
+  position: absolute;
+  top:0px;
+  right:0px;
+  border: none;
+  z-index: 11;
+}
+
+#closeButton{
+  position: absolute;
+  right:30px;
+  top:30px;
+  border:none;
+  z-index: 11;
+}
+
 #centerMap {
   position: absolute;
-  bottom: 0px;
+  bottom: 20px;
   right: 0px;
-  width: 80px;
-  height: 50px;
+  border: none;
+  /* width: 5%; */
+  /* background-color: rgb(220, 220, 220); */
+  /* background-image: url("/public/images/center.png");
+  background: no-repeat top left;
+  background-size: cover; */
+  /* background-size: auto; */
+}
+
+#doneSection {
+  position: absolute;
+  bottom: 90px;
+  right: 0px;
+  border: none;
+  z-index: 10;
+  /* width: 5%; */
+  /* position: absolute;
+  top: 4%;
+  left: 50%;
+  width: 50%;
+  transform: translate(-50%, 0);
+  height: 7%;
   background-color: rgb(220, 220, 220);
-  /* background-image: "images/center.png"; */
+  border-radius: 18px;
+  font-size: 16px; */
 }
 
 #readyButton {
   position: absolute;
   top: 0;
-  left: 80px;
+  left: 50%;
+  transform: translate(-50%, 0);
   height: 50px;
   background-color: rgb(220, 220, 220);
   width: 80px;
 }
 
-#toggleRecord{
+#toggleRecord {
   position: absolute;
   top: 0;
   left: 0px;
   height: 50px;
   background-color: rgb(220, 220, 220);
   width: 80px;
-}
-
-#doneSection {
-  position: absolute;
-  /* bottom:0; */
-  /* left: 0; */
-  top: 0;
-  left: 0;
-  width: 80px;
-  height: 50px;
-  background-color: rgb(220, 220, 220);
 }
 
 #activateSensors {
@@ -124,6 +360,7 @@ body {
   /* background: #fdf7f3ed */
 }
 
+
 .rooms {
   position: absolute;
   bottom: 10px;
@@ -137,4 +374,41 @@ body {
   grid-row-gap: 5px;
   grid-column-gap: 5px;
   align-items: center;
+
+/* Desktop */
+
+html, body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  background-color: whitesmoke;
+  /* background-color: red; /* same colour of container */
+}
+
+*, *:before, *:after {
+  box-sizing: border-box;
+}
+
+.desktop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  height: 100%;
+  width: 100%;
+  /* background-color: rgb(230, 230, 255); /* same colour of container */
+}
+
+#desktop-text {
+  position: absolute;
+  top: 10%;
+  left: 10%;
+  margin-bottom: 30%;
+  height: 100%;
+  margin-right: 10%;
+  max-width: 800px;
+  font-family: sans-serif;
+  background-color: whitesmoke;
+  /* same colour of container */
+
 }

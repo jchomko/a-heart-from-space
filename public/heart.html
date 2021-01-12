@@ -1,69 +1,115 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-    <meta charset="utf-8" />
-    <link rel="stylesheet" href="css/main.css" />
-    <link
-      rel="stylesheet"
-      href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"
-    />
-  </head>
 
-  <body>
-    <!-- <button onclick="tryGeolocation()">Try It</button> -->
-    <div id="compassInfo"></div>
-    <div id="map"></div>
-    <!-- <button id="toggleArrows" onclick="togArrows()">Arrows Off</button> Center Map <img src="/images/center.png", width="20px" height="20px">-->
-    <button id="centerMap" onclick="center()">Center Map</button>
-    <button id="doneSection" onclick="doneSection()">Activate Fill</button>
-    <!-- <button id="readyButton" onclick="readyToStart()">Start</button> -->
-    <button id="activateSensors" onclick="activateSensors()">
-      Activate Sensors
-    </button>
-    <button id="activateGPS" onclick="activateGPS()">Activate GPS</button>
+<head>
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+</head>
 
 <body>
-  <!-- <button onclick="tryGeolocation()">Try It</button> -->
-  <!-- <div id="compassInfo"> </div> -->
   <div id="map"></div>
-  <!-- <button id="toggleArrows" onclick="togArrows()">Arrows Off</button> Center Map <img src="/images/center.png", width="20px" height="20px">-->
-  <button id="centerMap" onclick="centerMap()">Center Map</button>
-  <button id="doneSection" onclick="toggleSection()">Done?</button>
-  <!-- <button id="readyButton" onclick="readyToStart()">Start</button> -->
-  <button id="activateSensors" onclick="activateSensors()">Activate Sensors</button>
-  <button id="activateGPS" onclick="activateGPS()">Activate GPS</button>
+
+  <button id="centerMap" onclick="centerMap()"><img class="map-button" src="/images/center-map-outline.png" > </button>
+  <button id="doneSection" onclick="toggleDone()"><img class="map-button" id="doneIcon" src="/images/heart-button-blank-trans.png" ></button>
+  <button id="aboutButton" onclick="toggleAbout()"><img class="map-button" id="aboutIcon" src="/images/close_dot.png"></button>
 
   <div id="dialog-message" title="Info">
     <p id="dialog-content"> </p>
   </div>
 
+  <!-- <div id="sensor-start">
+    <div id="welcome">
+      <div id="introtext">
+        <p>Tap this button to enable your sensors</p>
+        <button class="heart-start-join" onclick="activateSensors()">Activate Sensors</button><br>
+      </div>
+    </div>
+  </div> -->
+
+
+  <div id="infopanel">
+  <div id="infotext">
+  <b>Setup</b>
+  <p>1) Perform a compass calibration, by moving your phone in a figure eight <br>
+    2) Turn on your phone's audio, and turn up the volume <br>
+    3) Activate your GPS and compass sensors:</p>
+  <button class="heart-start-join" onclick="activateSensors()">Activate Sensors</button><br><br>
+
+  <b>Information</b>
+  <p>You are the blue teardrop; your dot rotates as you move your phone, indicating which direction you're pointing relative to the map. The map doesn't rotate, so this rotation can help you figure out where you need to move relative to your group. Your dot may not always make sense in terms of where you are in the real world; this is because GPS is not always accurate, and each user's phone might have an error in a different direction. Prioritize the digital representation, rather than the real world appearance of the shape.</p>
+
+  <b>Communication</b>
+  <p>You can tap a user's dot to send them a nudge. Their dot will jump on their screen, and play a sound.
+  Be sure to turn on your sound, so that you can also receive messages.</p>
+
+  <b>Ending</b>
+  <p>When you're happy with the shape you've made together, tap the heart button, and your section will fill with colour. When the whole shape is full, the group has decided that it is complete. Take a screenshot and come back together.</p>
+  <br>
+  <b>Troubleshooting</b><br>
+  <p>
+  <i>Not seeing any other dots</i><br>
+  Make sure you're on the same link as everyone else, and that your sensors are activated<br>
+  <i>Blue dot isn't rotating</i><br>
+  Make sure your sensors are activated - try pressing the activate sensors button again. If you're on iOS, you may need to ensure that Motion and Orientation Access is on. To access this, open Settings, scroll down to Safari, where you'll find the Motion and Orientation Access toggle.<br>
+  <i>Blue dot isn't moving when I move</i><br>
+  Make sure GPS is activated for your browser - open Settings, go to Privacy, tap on Location Services, and scroll down to Safari. Select 'While Using'. Reload the website and re-activate your sensors.<br>
+  <i>Anything else</i><br>
+  For most issues, reloading the browser seems to work; just make sure you're on the same link as everyone else.<br>
+</p>
+
+  <b>About</b><br>
+  This project was created by Jonathan Chomko, inspired by a conversation with Yo-Yo Ma.<br>
+  Many thanks to everyone who has tested the project.<br>
+  </div>
+  </div>
+
+  <!-- <button id="closeButton" onclick="toggleAbout()"><img class="map-button"  src="/images/close_dot.png"></button> -->
 
   <script src="https://code.jquery.com/jquery-1.11.1.js" type='text/javascript'></script>
   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
   <script src="/socket.io/socket.io.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.1.1/howler.core.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/curve-matcher@1.1.1/dist/index.umd.js"></script>
-  <script src="/scripts/heart.js"> </script>
-  <script src="/scripts/main.js"> </script>
-  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBsTwTesuZp5Gh_ydqQY5VDNpPlSZLtt-M&callback=initMap">
-  </script>
+  <!-- <script src="/scripts/landing.js"></script> -->
+
+  <script src="/scripts/sensors.js"></script>
+  <script src="/scripts/drawing.js"></script>
+  <script src="/scripts/map.js"></script>
+  <script src="/scripts/main.js"></script>
+
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBsTwTesuZp5Gh_ydqQY5VDNpPlSZLtt-M&callback=initMap"></script>
+
 </body>
 
-    <script
-      src="https://code.jquery.com/jquery-1.11.1.js"
-      type="text/javascript"
-    ></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.1.1/howler.core.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/curve-matcher@1.1.1/dist/index.umd.js"></script>
-    <script src="/scripts/heart.js"></script>
-    <script src="/scripts/main.js"></script>
-    <script
-      async
-      defer
-      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBsTwTesuZp5Gh_ydqQY5VDNpPlSZLtt-M&callback=initMap"
-    ></script>
-  </body>
 </html>
+
+<!-- <a class="heart-start-join" href="/newheart.html">Start New Heart</a> -->
+<!-- <button id="heart-start-join" onclick="startSession()"><b>Join Heart</b></button> -->
+<!-- <a class="heart-start-join" href="/joinheart.html">Join Heart</a> -->
+<!-- <img id='heart-photo' src='images/heart-photo.png'> -->
+<!-- <button id="start-new-heart" onclick="startNewHeart()">Start New Heart</button> -->
+<!-- <button id="join-heart" onclick="startSession()">Start New Session</button> -->
+
+<!-- <div class="rooms">
+  <button onclick="check()">Check</button>
+  <div><b>Rooms</b></div>
+  <div id="rooms-list"></div>
+</div> -->
+
+<!-- <button id="skip-intro" onclick="skipIntro()">Skip Intro</button> -->
+<!-- <div id="sensor-setup">
+  <div id="introtext">
+    Let's get your sensors set up!
+  </div>
+  <button id="sensor-gps" onclick="tryGeolocation()">Start GPS</button>
+  <button id="sensor-compass" onclick="requestDeviceOrientation()">Start Compass</button>
+</div>
+<div id="done-button-intro">
+  <div id="introtext">
+    When you're satisfied with how the heart looks, press this button and it will fill your heart with colour. When the heart is full of colour, the group is declaring they are happy with the shape of their heart.
+  </div>
+  <button id="sensor-gps" onclick="hideIntroduction()">OK, lets go!</button>
+
+</div> -->
