@@ -1,5 +1,6 @@
 #map {
   height: 100%;
+  overflow: auto !important;
   /* zoom: 200%; */
   /* height: 400%;
     top: -100%;
@@ -15,6 +16,28 @@ body {
   background-color: lightgray;
 }
 
+#infopanel{
+  visibility: visible;
+  background-color: rgb(213,213,213);
+  /* background-image: url("../images/tutorial_compass.png"); */
+  background-repeat: no-repeat;
+  background-size: cover;
+  /* display: inline-grid; */
+  position: fixed;
+  top: 0;
+  /* left: 0; */
+  margin: 5%;
+  opacity: 1;
+  height: 95%;
+  border-radius: 10px;
+  border-color:black;
+  /* width: 100%; */
+  /* overflow: scroll; */
+
+
+  z-index: 10;
+}
+
 #introduction {
   background-color: rgb(245, 246, 245);
   /* background-image: url("../images/tutorial_compass.png"); */
@@ -27,6 +50,26 @@ body {
   opacity:1;
   height: 100%;
   width: 100%;
+  overflow: hidden;
+  z-index: 10;
+}
+
+#sensor-start{
+  background-color: rgb(213,213,213);
+  border-radius: 10px;
+  border-color:black;
+  border-width: thin;
+  /* background-image: url("../images/tutorial_compass.png"); */
+  background-repeat: no-repeat;
+  background-size: cover;
+  display: inline;
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin:5%;
+  opacity:1;
+  height: auto;
+  width: 90%;
   overflow: hidden;
   z-index: 10;
 }
@@ -74,6 +117,16 @@ body {
   /* font: sans-serif; */
   font-family: sans-serif;
   height: 100%;
+}
+
+#infotext{
+  position: relative;
+  margin: 5%;
+  /* font: sans-serif; */
+  font-family: sans-serif;
+  height: 90%;
+  overflow: scroll;
+  /* overflow: scroll; */
 }
 
 
@@ -201,6 +254,22 @@ body {
 .map-button {
   width: 60px;
   height: 60px;
+}
+
+#aboutButton{
+  position: absolute;
+  top:0px;
+  right:0px;
+  border: none;
+  z-index: 11;
+}
+
+#closeButton{
+  position: absolute;
+  right:30px;
+  top:30px;
+  border:none;
+  z-index: 11;
 }
 
 #centerMap {

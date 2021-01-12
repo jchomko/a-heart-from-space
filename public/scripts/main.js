@@ -30,6 +30,7 @@ var lastMode = null;
 var sessionID;
 var firstConnectTimestamp;
 var roomId = null;
+var showInfoPanel = false;
 
 const queryParamsString = window.location.search.substr(1);
 console.log(queryParamsString);
@@ -503,12 +504,27 @@ if (queryParams.hasOwnProperty("heartid")) {
   // hideIntroduction();
 }
 
+function toggleAbout(){
+  showInfoPanel = !showInfoPanel;
+  if(showInfoPanel){
+    $("#infopanel").css("overflow", "scroll");
+    $("#infopanel").css("visibility", "visible");
+    $("#aboutIcon").attr("src", "/images/close_dot.png");
+  }else{
+    $("#infopanel").css("overflow", "auto");
+    $("#infopanel").css("visibility", "hidden");
+    $("#aboutIcon").attr("src", "/images/about_dot.png");
+
+  }
+}
+
 function activateSensors(){
   //Call these only when we have done the tutorial
   tryGeolocation();
   //Call this before tutorial to check if it's necessary
   requestDeviceOrientation();
   hideIntroduction();
+  $("#sensor-start").css("visibility","hidden");
 }
 
 //Call these only when we have done the tutorial
