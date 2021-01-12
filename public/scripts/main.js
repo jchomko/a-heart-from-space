@@ -30,7 +30,7 @@ var lastMode = null;
 var sessionID;
 var firstConnectTimestamp;
 var roomId = null;
-var showInfoPanel = false;
+var showInfoPanel = true;
 
 const queryParamsString = window.location.search.substr(1);
 console.log(queryParamsString);
