@@ -10,10 +10,11 @@
 
 html,
 body {
+  background-color: rgb(245, 246, 245);
   height: 100%;
   margin: 0;
   padding: 0;
-  background-color: lightgray;
+  /* background-color: lightgray; */
 }
 
 #infopanel{
@@ -37,6 +38,33 @@ body {
 
   z-index: 10;
 }
+
+#landing {
+
+  /* background-image: url("../images/tutorial_compass.png"); */
+  /* background-repeat: no-repeat; */
+  /* background-size: cover; */
+  /* display: inline; */
+  /* position: absolute; */
+  /* top: 0; */
+  /* left: 0; */
+  /* opacity:1; */
+  /* height: 100%; */
+  width: 90%;
+  /* overflow: hidden; */
+  /* z-index: 10; */
+  /* position: relative; */
+  margin-top: 5%;
+  margin-left: 5%;
+  /* margin-right:5%; */
+  margin-bottom:5%;
+  /* font: sans-serif; */
+  font-family: sans-serif;
+  /* height: 90%; */
+  /* width:  */
+  /* overflow: scroll; */
+}
+
 
 #introduction {
   background-color: rgb(245, 246, 245);

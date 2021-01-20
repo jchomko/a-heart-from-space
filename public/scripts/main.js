@@ -372,8 +372,8 @@ socket.on("connect", function() {
   sessionID = socket.id;
   console.log("connected", socket.connected, sessionID);
   socket.emit("new-client", "mobile");
-  tryGeolocation();
-  requestDeviceOrientation();
+  // tryGeolocation();
+  // requestDeviceOrientation();
 
   var url = window.location.origin;
   $("#rooms-list").html("<a href="+url+"/heart.html?heartid="+sessionID+">"+url+"/heart.html?heartid="+sessionID+"</a>")
