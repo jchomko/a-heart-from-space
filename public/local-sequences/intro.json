@@ -1,0 +1,27 @@
+[
+  {
+    "engtext": "Tap this button to activate your sensors.",
+    "buttontext": "Activate",
+    "buttonfunction":"activateSensors",
+    "frtext": "Bienvenue. Cette expérience vous guidera à travers une suite de gestes et de mouvements."
+  },
+  {
+    "engtext": "The blue teardrop is your location. It points towards the direction your phone is pointing, to help you orient yourself on the map.<br><br>The compass button on the bottom right corner will center your dot if you ever get lost.",
+    "buttontext": "Next",
+    "buttonfunction":"advanceIntro",
+    "frtext": "Bienvenue. Cette expérience vous guidera à travers une suite de gestes et de mouvements."
+  },
+  {
+    "engtext": "If you think another participant should move, you can tap their dot to send them a nudge. <br><br> Tap this button to test your sound: <button id='soundtest' onclick='drawHomeTap()'>Sound Test</button>.",
+    "buttontext": "Next",
+    "buttonfunction":"testSound",
+    "frtext": "Bienvenue. Cette expérience vous guidera à travers une suite de gestes et de mouvements."
+  },
+  {
+    "engtext": "When you're making a shape you can get far away from each other. To signal that you're happy with the shape of the heart, tap the heart button in the bottom right corner. This will fill your section of the heart. <br><br> When the whole heart is full, take a screenshot and come back together!",
+    "buttontext": "Start!",
+    "buttonfunction":"closeIntro",
+    "frtext": "Bienvenue. Cette expérience vous guidera à travers une suite de gestes et de mouvements."
+  }
+
+]

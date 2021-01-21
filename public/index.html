@@ -9,87 +9,38 @@
 </head>
 
 <body>
-  <!-- <button onclick="tryGeolocation()">Try It</button> -->
-  <!-- <div id="compassInfo"> </div> -->
-  <!-- <div id="map"></div> -->
-  <!-- <button id="toggleArrows" onclick="togArrows()">Arrows Off</button> Center Map <img src="/images/center.png", width="20px" height="20px">-->
-  <!-- <button id="centerMap" onclick="centerMap()"><img class="map-button" src="/images/center-map-outline.png" > </button> -->
-  <!-- <button id="doneSection" onclick="toggleDone()"><img class="map-button" id="doneIcon" src="/images/heart-button-blank-trans.png" ></button> -->
-  <!-- <button id="readyButton" onclick="readyToStart()">Start</button> -->
-  <!-- <button id="activateSensors" onclick="toggleSensorsButton()">Activate Sensors</button> -->
-  <!-- <button id="activateGPS" onclick="toggleGPSButton()">Activate GPS</button> -->
-
-  <!-- <div id="dialog-message" title="Info">
-    <p id="dialog-content"> </p>
-  </div> -->
-
-  <!-- <div id="introduction"> -->
-    <!-- <div id="welcome"> -->
       <div id="landing">
         <p>
-          <b>A Heart from Space</b> is a tool for drawing together using GPS. By moving in space, each member of a group adjusts one point of a drawing, enabling the group to collectively determine the shape they want to hold. 
+          <b>A Heart from Space</b> is a tool for drawing together using GPS. Each participant adjusts one point of the drawing, enabling the group to collectively determine the shape they want to hold.
         </p>
 
           <iframe width="100%" height=auto src="https://player.vimeo.com/video/473022183" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe><br><br>
           <b>New Heart</b> <br>
-          <p>To start a heart, share this link with your group: <div id="rooms-list"></div></p>
+          <p>To start a heart, share this link with your group: <span id="rooms-list"></span> </p>
 
           <b>Join Heart</b> <br>
           <p>
-          To join a heart, ask the organiser of the group to send you their link.
+          To join a heart, ask the organiser of the group to send you the link to their heart.
           </p>
 
         <b>About</b> <br>
           <p>
-          The project stems from a conversation with Yo-Yo Ma around a previous project titled <a href="http://www.grindruberairbnb.exposed/"> www.grindruberairbnb.exposed</a>. This work gives each participant a series of commands to perform, which when performed together create a synchronized choreography. Mr Ma wondering if the system might be used to guide hundreds of thousands of people all across the midwest to create a giant heart that would be visible from space, as a symbol of solidarity and collectivity. <br><br>
-          A Heart from Space is a scaled down version of this vision, with a focus on the spatial negotiations that the group performs in creating the heart. The combined hurdles of technical complexity and the dynamics of group behaviour make this task sometimes challenging, and the hearts that are created are not always perfect. But this incompleteness echos the difficulty that collaboration entails, and provides a grounding to the optimism of the project. <br><br>
+          The project was created by artist Jonathan Chomko, inspired by a conversation with Yo-Yo Ma. Chomko and Ma met in 2018 during a performance of Chomko's work <a href="http://www.grindruberairbnb.exposed/"> www.grindruberairbnb.exposed</a>, which leads participants in to perform and gesture together via their smartphones. Afer explaining the operation of the project to Mr Ma, he then asked if the system might be able to support the coordination of hundreds of thousands of people all across the midwest to form a heart that would be visible from space. <br><br>
+          A Heart from Space is a scaled down version of this vision, allowing smaller groups to explore moving together via the network. By scaling down the experience, the experience becomes one of negotiation and collaboration, through the internet. This experience de-centers the individual, placing them instead in relation to the group, and challenging them to achieve a shared task.
+          <br><br>
+          The combined hurdles of technical complexity and the dynamics of group behaviour make this task sometimes challenging, and the hearts that are created reflect this challenge. The incompleteness of the shapes speaks to the difficulty that collaboration entails, and provides a grounding to the optimism of the project. <br><br>
+
           To perform the work, visit this website on a mobile phone. A simple heart can be made with 4 people, but best results are with groups of 8-10 people. When you've created a heart, share a screenshot of it with #aheartfromspace!
+          <br><br>
           <p>
         </div>
-      <!-- <button id="heart-start-join" onclick="startNew()"><b>Start New Heart</b></button><br>
-      <a class="heart-start-join" href="/newheart.html">Start New Heart</a> -->
-      <!-- <div id="introtext">
-      <p>
-        To join a heart that someone has started, ask them to send you the link to their heart. Opening the link will connect you directly to their heart.
-      <p>
-      </div> -->
-      <!-- <button id="heart-start-join" onclick="startSession()"><b>Join Heart</b></button> -->
-      <!-- <a class="heart-start-join" href="/joinheart.html">Join Heart</a> -->
-      <!-- <img id='heart-photo' src='images/heart-photo.png'> -->
-      <!-- <button id="start-new-heart" onclick="startNewHeart()">Start New Heart</button> -->
-      <!-- <button id="join-heart" onclick="startSession()">Start New Session</button> -->
 
-      <!-- <div class="rooms">
-        <button onclick="check()">Check</button>
-        <div><b>Rooms</b></div>
-        <div id="rooms-list"></div>
-      </div> -->
-
-      <!-- <button id="skip-intro" onclick="skipIntro()">Skip Intro</button> -->
-    <!-- </div> -->
-
-
-    <!-- <div id="sensor-setup">
-      <div id="introtext">
-        Let's get your sensors set up!
-      </div>
-      <button id="sensor-gps" onclick="tryGeolocation()">Start GPS</button>
-      <button id="sensor-compass" onclick="requestDeviceOrientation()">Start Compass</button>
-    </div>
-    <div id="done-button-intro">
-      <div id="introtext">
-        When you're satisfied with how the heart looks, press this button and it will fill your heart with colour. When the heart is full of colour, the group is declaring they are happy with the shape of their heart.
-      </div>
-      <button id="sensor-gps" onclick="hideIntroduction()">OK, lets go!</button>
-
-    </div> -->
-  <!-- </div> -->
 
   <script src="https://code.jquery.com/jquery-1.11.1.js" type='text/javascript'></script>
-  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-  <script src="/socket.io/socket.io.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.1.1/howler.core.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/curve-matcher@1.1.1/dist/index.umd.js"></script>
+  <!-- <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script> -->
+  <!-- <script src="/socket.io/socket.io.js"></script> -->
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.1.1/howler.core.min.js"></script> -->
+  <!-- <script src="https://cdn.jsdelivr.net/npm/curve-matcher@1.1.1/dist/index.umd.js"></script> -->
   <!-- <script src="/scripts/landing.js"></script> -->
 
   <!-- <script src="/scripts/sensors.js"></script> -->

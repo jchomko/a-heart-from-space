@@ -1,6 +1,7 @@
 #map {
   height: 100%;
   overflow: auto !important;
+  z-index: 1;
   /* zoom: 200%; */
   /* height: 400%;
     top: -100%;
@@ -17,28 +18,7 @@ body {
   /* background-color: lightgray; */
 }
 
-#infopanel{
-  visibility: visible;
-  background-color: rgb(213,213,213);
-  /* background-image: url("../images/tutorial_compass.png"); */
-  background-repeat: no-repeat;
-  background-size: cover;
-  /* display: inline-grid; */
-  position: fixed;
-  top: 0;
-  /* left: 0; */
-  margin: 5%;
-  opacity: 1;
-  height: 95%;
-  border-radius: 10px;
-  border-color:black;
-  /* width: 100%; */
-  /* overflow: scroll; */
-
-
-  z-index: 10;
-}
-
+/* landing page text */
 #landing {
 
   /* background-image: url("../images/tutorial_compass.png"); */
@@ -65,9 +45,65 @@ body {
   /* overflow: scroll; */
 }
 
+/* popup intro */
+#infopanel{
+  display: block;
+  /* visibility: visible; */
+  background-color: rgb(255, 227, 227);
+  /* background-image: url("../images/tutorial_compass.png"); */
+  background-repeat: no-repeat;
+  background-size: cover;
+  /* display: inline-grid; */
+  position: absolute;
+  top: 0;
+  /* left: 0; */
+  margin: 5%;
+  opacity: 1;
+  /* height: 95%; */
+  width: 90%;
 
-#introduction {
-  background-color: rgb(245, 246, 245);
+  border-radius: 30px;
+  border: 1px solid black;
+  /* width: 100%; */
+  /* overflow: scroll; */
+  z-index: 10;
+  box-shadow: 10px 10px 5px grey;:
+}
+
+#infotext{
+  position: relative;
+  margin: 5%;
+  text-align: center;
+  /* font: sans-serif; */
+  font-family: sans-serif;
+  /* height: 90%; */
+  /* overflow: scroll; */
+  /* overflow: scroll; */
+}
+
+#introbutton{
+  position: relative;
+  display: inline-block;
+  /* margin: 5%; */
+  left: 50%;
+  transform: translate(-50%, 0);
+  width: 80px;
+  height: 60px;
+  margin-bottom: 7%;
+  font-size: 12pt;
+  font-family: sans-serif;
+  text-decoration: none;
+  text-align: center;
+  padding: 3px 5px;
+  border: 1px solid #000;
+  color: black;
+  border-radius: 75px;
+  box-shadow: 3px 4px 5px grey;
+}
+
+
+#helppanel {
+  background-color: rgb(255, 227, 227);
   /* background-image: url("../images/tutorial_compass.png"); */
   background-repeat: no-repeat;
   background-size: cover;
@@ -78,9 +114,18 @@ body {
   opacity:1;
   height: 100%;
   width: 100%;
-  overflow: hidden;
+  overflow: scroll;
   z-index: 10;
 }
+
+#helptext{
+  position: relative;
+  margin: 5%;
+  text-align: left;
+  /* font: sans-serif; */
+  font-family: sans-serif;
+}
+
 
 #sensor-start{
   background-color: rgb(213,213,213);
@@ -144,17 +189,7 @@ body {
   margin: 5%;
   /* font: sans-serif; */
   font-family: sans-serif;
-  height: 100%;
-}
-
-#infotext{
-  position: relative;
-  margin: 5%;
-  /* font: sans-serif; */
-  font-family: sans-serif;
-  height: 90%;
-  overflow: scroll;
-  /* overflow: scroll; */
+  /* height: 100%; */
 }
 
 
@@ -286,7 +321,7 @@ body {
 
 #aboutButton{
   position: absolute;
-  top:0px;
+  top:10px;
   right:0px;
   border: none;
   z-index: 11;
@@ -305,6 +340,7 @@ body {
   bottom: 20px;
   right: 0px;
   border: none;
+  z-index: 10;
   /* width: 5%; */
   /* background-color: rgb(220, 220, 220); */
   /* background-image: url("/public/images/center.png");
@@ -350,27 +386,6 @@ body {
   width: 80px;
 }
 
-#activateSensors {
-  position: absolute;
-  /* bottom:0; */
-  /* left: 0; */
-  top: 0;
-  right: 0px;
-  width: 80px;
-  height: 50px;
-  background-color: rgb(220, 220, 220);
-}
-
-#activateGPS {
-  position: absolute;
-  /* bottom:0; */
-  /* left: 0; */
-  top: 0;
-  right: 80px;
-  width: 80px;
-  height: 50px;
-  background-color: rgb(220, 220, 220);
-}
 
 #dialog-message {
   display: none;
@@ -396,15 +411,17 @@ body {
 }
 
 #rooms-list {
-  display: grid;
+  display: inline;
+  /* display: grid;
   /*grid-auto-flow: row;*/
-  grid-template-columns: auto auto;
-  grid-row-gap: 5px;
-  grid-column-gap: 5px;
-  align-items: center;
+  /* grid-template-columns: auto auto; */
+  /* grid-row-gap: 5px; */
+  /* grid-column-gap: 5px; */
+  /* align-items: center; */
+
+}
 
 /* Desktop */
-
 html, body {
   height: 100%;
   width: 100%;

@@ -32,6 +32,10 @@ var firstConnectTimestamp;
 var roomId = null;
 var showInfoPanel = true;
 
+var introData = null;
+var introIndex = 0;
+
+// Get room id from URL
 const queryParamsString = window.location.search.substr(1);
 console.log(queryParamsString);
 
@@ -70,48 +74,50 @@ var spriteSound = new Howl({
   // }
 });
 
+
 var hasDoneIntro = getCookie("intro-done");
 console.log("had done intro: ", hasDoneIntro);
 
 //Frontend Functions
 //Start function
-function startSession() {
 
-  $("#introduction").css("display", "none");
-  setup();
-
-  setCookie("intro-done", true, 1)
-
-  centerMap();
-
-  // $("#welcome").css("display", "none")
-  // $("#sensor-setup").css("display", "inline")
-  //
-  // //Hide gps button if we already have access
-  // if(gpsActive){
-  //   $("#sensor-gps").css("display", "none")
-  // }
-  //
-  // if(hasSensorAccess){
-  //   $("#sensor-compass").css("display", "none")
-  // }
-}
-
-function showDoneIntro() {
-  $("#introduction").css("z-index", "1");
-  $("#sensor-setup").css("display", "none");
-  $("#done-button-intro").css("display", "inline");
-}
-
+// function startSession() {
+//
+//   $("#introduction").css("display", "none");
+//   setup();
+//
+//   setCookie("intro-done", true, 1)
+//
+//   centerMap();
+//
+//   // $("#welcome").css("display", "none")
+//   // $("#sensor-setup").css("display", "inline")
+//   //
+//   // //Hide gps button if we already have access
+//   // if(gpsActive){
+//   //   $("#sensor-gps").css("display", "none")
+//   // }
+//   //
+//   // if(hasSensorAccess){
+//   //   $("#sensor-compass").css("display", "none")
+//   // }
+// }
+//
+// function showDoneIntro() {
+//   $("#introduction").css("z-index", "1");
+//   $("#sensor-setup").css("display", "none");
+//   $("#done-button-intro").css("display", "inline");
+// }
+//
 function hideIntroduction() {
-  $("#introduction").css("display", "none");
+  $("#infopanel").css("display", "none");
 }
-
-function skipIntro() {
-  $("#introduction").css("display", "none");
-  setup();
-  centerMap();
-}
+//
+// function skipIntro() {
+//   $("#introduction").css("display", "none");
+//   setup();
+//   centerMap();
+// }
 //Utility Functions
 
 //Set cookie
@@ -151,6 +157,57 @@ function requestTimestamp() {
     firstConnectTimestamp = Date.now();
     setCookie("timestamp", firstConnectTimestamp, 1)
     console.log("saving timestamp : ", firstConnectTimestamp);
+  }
+}
+
+
+function loadIntroData(){
+  $.getJSON('../local-sequences/intro.json', function(obj) {
+    // console.log(obj)
+    introData = obj
+    console.log("Succesfully read intro sequence - n instructions: " + obj.length)
+
+    advanceIntro();
+
+  });
+
+}
+
+function processClick(){
+  if(introData[introIndex-1].buttonfunction === "activateSensors"){
+    activateSensors();
+    advanceIntro();
+    console.log("activating sensors");
+  }else if(introData[introIndex-1].buttonfunction === "advanceIntro"){
+    advanceIntro();
+    console.log("advanceIntro");
+  }else if(introData[introIndex-1].buttonfunction === "testSound"){
+    // drawHomeTap();
+    advanceIntro();
+    console.log("testSound");
+  }else if(introData[introIndex-1].buttonfunction === "closeIntro"){
+    $("#infopanel").css("display", "none");
+    advanceIntro();
+    console.log("close");
+  }
+}
+
+function advanceIntro(){
+
+  if(introIndex < introData.length){
+
+  console.log(introData[introIndex].engtext);
+  $("#infotext").html(introData[introIndex].engtext);
+  $("#introbutton").html(introData[introIndex].buttontext);
+
+  introIndex += 1;
+  if(introIndex > introData.length){
+    introIndex = 0;
+  }
+  // introIndex += 1;
+  // if(introIndex > introData.length){
+  //   introIndex = 0;
+  // }
   }
 }
 
@@ -374,6 +431,7 @@ socket.on("connect", function() {
   socket.emit("new-client", "mobile");
   // tryGeolocation();
   // requestDeviceOrientation();
+  loadIntroData();
 
   var url = window.location.origin;
   $("#rooms-list").html("<a href="+url+"/heart.html?heartid="+sessionID+">"+url+"/heart.html?heartid="+sessionID+"</a>")
@@ -507,12 +565,12 @@ if (queryParams.hasOwnProperty("heartid")) {
 function toggleAbout(){
   showInfoPanel = !showInfoPanel;
   if(showInfoPanel){
-    $("#infopanel").css("overflow", "scroll");
-    $("#infopanel").css("visibility", "visible");
+    // $("#helppanel").css("overflow", "scroll");
+    $("#helppanel").css("display", "block");
     $("#aboutIcon").attr("src", "/images/close_dot.png");
   }else{
-    $("#infopanel").css("overflow", "auto");
-    $("#infopanel").css("visibility", "hidden");
+    // $("#infopanel").css("overflow", "auto");
+    $("#helppanel").css("display", "none");
     $("#aboutIcon").attr("src", "/images/about_dot.png");
 
   }
@@ -523,8 +581,8 @@ function activateSensors(){
   tryGeolocation();
   //Call this before tutorial to check if it's necessary
   requestDeviceOrientation();
-  hideIntroduction();
-  $("#sensor-start").css("visibility","hidden");
+  // hideIntroduction();
+  // $("#sensor-start").css("visibility","hidden");
 }
 
 //Call these only when we have done the tutorial
