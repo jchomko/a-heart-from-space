@@ -30,7 +30,7 @@ var lastMode = null;
 var sessionID;
 var firstConnectTimestamp;
 var roomId = null;
-var showInfoPanel = true;
+var showInfoPanel = false;
 
 var introData = null;
 var introIndex = 0;
@@ -110,7 +110,7 @@ console.log("had done intro: ", hasDoneIntro);
 // }
 //
 function hideIntroduction() {
-  $("#infopanel").css("display", "none");
+  $("#intropanel").css("display", "none");
 }
 //
 // function skipIntro() {
@@ -186,7 +186,7 @@ function processClick(){
     advanceIntro();
     console.log("testSound");
   }else if(introData[introIndex-1].buttonfunction === "closeIntro"){
-    $("#infopanel").css("display", "none");
+    hideIntroduction();
     advanceIntro();
     console.log("close");
   }
@@ -197,7 +197,7 @@ function advanceIntro(){
   if(introIndex < introData.length){
 
   console.log(introData[introIndex].engtext);
-  $("#infotext").html(introData[introIndex].engtext);
+  $("#introtext").html(introData[introIndex].engtext);
   $("#introbutton").html(introData[introIndex].buttontext);
 
   introIndex += 1;
@@ -254,33 +254,33 @@ function createDialogue(dialogueText) {
 // }
 
 //Activate Compass
-function toggleSensorsButton() {
-  if (!sensorsActive) {
-    requestDeviceOrientation();
-    $("#activateSensors").html("Sensors On");
-  }
-  // else{
-  //   $("#activateSensors").html("Activate Sensors");
-  // }
-  // sensorsActive = !sensorsActive;
-  sensorsActive = true;
-}
-
-//Activate GPS
-function toggleGPSButton() {
-  if (!gpsActive) {
-    tryGeolocation();
-    $("#activateGPS").html("GPS On");
-    centerMap();
-    gpsActive = true;
-
-    showDoneIntro();
-  }
-  // else{
-  //   $("#activateGPS").html("Activate GPS");
-  // }
-  // gpsActive = !gpsActive;
-}
+// function toggleSensorsButton() {
+//   if (!sensorsActive) {
+//     requestDeviceOrientation();
+//     $("#activateSensors").html("Sensors On");
+//   }
+//   // else{
+//   //   $("#activateSensors").html("Activate Sensors");
+//   // }
+//   // sensorsActive = !sensorsActive;
+//   sensorsActive = true;
+// }
+//
+// //Activate GPS
+// function toggleGPSButton() {
+//   if (!gpsActive) {
+//     tryGeolocation();
+//     $("#activateGPS").html("GPS On");
+//     centerMap();
+//     gpsActive = true;
+//
+//     showDoneIntro();
+//   }
+//   // else{
+//   //   $("#activateGPS").html("Activate GPS");
+//   // }
+//   // gpsActive = !gpsActive;
+// }
 
 //Done button - triggers triangle drawing when done.
 function toggleDone() {
@@ -562,7 +562,7 @@ if (queryParams.hasOwnProperty("heartid")) {
   // hideIntroduction();
 }
 
-function toggleAbout(){
+function toggleHelp(){
   showInfoPanel = !showInfoPanel;
   if(showInfoPanel){
     // $("#helppanel").css("overflow", "scroll");
@@ -571,7 +571,7 @@ function toggleAbout(){
   }else{
     // $("#infopanel").css("overflow", "auto");
     $("#helppanel").css("display", "none");
-    $("#aboutIcon").attr("src", "/images/about_dot.png");
+    $("#aboutIcon").attr("src", "/images/help_dot.png");
 
   }
 }

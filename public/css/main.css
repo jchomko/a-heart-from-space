@@ -46,7 +46,7 @@ body {
 }
 
 /* popup intro */
-#infopanel{
+#intropanel{
   display: block;
   /* visibility: visible; */
   background-color: rgb(255, 227, 227);
@@ -66,11 +66,24 @@ body {
   border: 1px solid black;
   /* width: 100%; */
   /* overflow: scroll; */
-  z-index: 10;
+  z-index: 12;
   box-shadow: 10px 10px 5px grey;:
 }
 
-#infotext{
+#closebutton {
+  background-color: rgb(255, 227, 227);
+  position: absolute;
+  top: -15px;
+  right: -6px;
+  width: 40px;
+  height: 40px;
+  font-size: 12px;
+  border: 1px solid #000;
+  border-radius: 20px;
+}
+
+
+#introtext{
   position: relative;
   margin: 5%;
   text-align: center;
@@ -82,14 +95,30 @@ body {
 }
 
 #introbutton{
-  position: relative;
+  /* position: relative;
   display: inline-block;
-  /* margin: 5%; */
   left: 50%;
   transform: translate(-50%, 0);
   width: 80px;
   height: 60px;
   margin-bottom: 7%;
+  font-size: 12pt;
+  font-family: sans-serif;
+  text-decoration: none;
+  text-align: center;
+  padding: 3px 5px;
+  border: 1px solid #000;
+  color: black;
+  border-radius: 75px;
+  box-shadow: 3px 4px 5px grey; */
+  background-color: rgb(255, 227, 227);
+  position: absolute;
+  margin-top: -5%;
+  left: 50%;
+  transform: translate(-50%, 0);
+  width: 80px;
+  height: 60px;
+  /* margin-bottom: 7%; */
   font-size: 12pt;
   font-family: sans-serif;
   text-decoration: none;
@@ -107,7 +136,7 @@ body {
   /* background-image: url("../images/tutorial_compass.png"); */
   background-repeat: no-repeat;
   background-size: cover;
-  display: inline;
+  display: none;
   position: absolute;
   top: 0;
   left: 0;
@@ -127,12 +156,23 @@ body {
 }
 
 
+#aboutButton{
+  position: absolute;
+  top:20px;
+  right:5px;
+  border: none;
+  z-index: 11;
+  font-family: sans-serif;
+  font-size: 12pt;
+}
+
+/*
 #sensor-start{
   background-color: rgb(213,213,213);
   border-radius: 10px;
   border-color:black;
   border-width: thin;
-  /* background-image: url("../images/tutorial_compass.png"); */
+
   background-repeat: no-repeat;
   background-size: cover;
   display: inline;
@@ -149,7 +189,7 @@ body {
 
 .introduction-blank{
   background-color: rgb(245, 246, 245);
-  /* background-image: url("../images/tutorial_compass.png"); */
+
   background-repeat: no-repeat;
   background-size: cover;
 }
@@ -182,7 +222,7 @@ body {
   width: 100%;
   overflow: hidden;
   z-index: 10;
-}
+} */
 
 #introtext {
   position: relative;
@@ -319,13 +359,6 @@ body {
   height: 60px;
 }
 
-#aboutButton{
-  position: absolute;
-  top:10px;
-  right:0px;
-  border: none;
-  z-index: 11;
-}
 
 #closeButton{
   position: absolute;

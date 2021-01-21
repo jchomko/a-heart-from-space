@@ -13,7 +13,7 @@
 
   <button id="centerMap" onclick="centerMap()"><img class="map-button" src="/images/center-map-outline.png" > </button>
   <button id="doneSection" onclick="toggleDone()"><img class="map-button" id="doneIcon" src="/images/heart-button-blank-trans.png" ></button>
-  <button id="aboutButton" onclick="toggleAbout()"><img class="map-button" id="aboutIcon" src="/images/close_dot.png"></button>
+  <button id="aboutButton" onclick="toggleHelp()"><img class="map-button" id="aboutIcon" src="/images/help_dot.png"></button>
 
   <div id="dialog-message" title="Info">
     <p id="dialog-content"> </p>
@@ -29,24 +29,19 @@
   </div> -->
 
 
-  <div id="infopanel">
-  <div id="infotext"></div>
+  <div id="intropanel">
+  <button id="closebutton" onclick="hideIntroduction()">X</button>
+  <div id="introtext"></div>
 
-  <button id="closebutton" onclick="hideIntroduction()">Close</button>
+
   <button id="introbutton" onclick="processClick()">Next</button>
   </div>
 
   <div id="helppanel">
     <div id="helptext">
-    <b>Setup</b>
 
-    <p>1) Perform a compass calibration, by moving your phone in a figure eight <br>
-      2) Turn on your phone's audio, and turn up the volume <br>
-      3) Activate your GPS and compass sensors:</p>
-    <button class="heart-start-join" onclick="activateSensors()">Activate Sensors</button><br><br>
-
-    <b>Information</b>
-    <p>You are the blue teardrop; your dot rotates as you move your phone, indicating which direction you're pointing relative to the map. The map doesn't rotate, so this rotation can help you figure out where you need to move relative to your group. Your dot may not always make sense in terms of where you are in the real world; this is because GPS is not always accurate, and each user's phone might have an error in a different direction. Prioritize the digital representation, rather than the real world appearance of the shape.</p>
+    <b>GPS</b>
+    <p>Your blue dot rotates as you move your phone, indicating which direction you're pointing relative to the map. Your dot may not always make sense in terms of where you are in the real world; this is because GPS is not always accurate, and each user's phone might have an error in a different direction. Prioritize the digital representation, rather than the real world appearance of the shape.</p>
 
     <b>Communication</b>
     <p>You can tap a user's dot to send them a nudge. Their dot will jump on their screen, and play a sound.
@@ -54,21 +49,26 @@
 
     <b>Ending</b>
     <p>When you're happy with the shape you've made together, tap the heart button, and your section will fill with colour. When the whole shape is full, the group has decided that it is complete. Take a screenshot and come back together.</p>
-    <br>
+
+    <b>Restart Introduction</b>
+    <p>If you missed any of the introduction you can run it again</p>
+    <button class="heart-start-join" onclick="restartIntro()">Restart Introduction</button><br><br>
+
     <b>Troubleshooting</b><br>
     <p>
     <i>Not seeing any other dots</i><br>
     Make sure you're on the same link as everyone else, and that your sensors are activated<br>
     <i>Blue dot isn't rotating</i><br>
-    Make sure your sensors are activated - try pressing the activate sensors button again. If you're on iOS, you may need to ensure that Motion and Orientation Access is on. To access this, open Settings, scroll down to Safari, where you'll find the Motion and Orientation Access toggle.<br>
+    If you're on iOS, you may need to ensure that Motion and Orientation Access is on. To access this, open Settings, scroll down to Safari, where you'll find the Motion and Orientation Access toggle. You may need to run through the introduction again.<br>
     <i>Blue dot isn't moving when I move</i><br>
-    Make sure GPS is activated for your browser - open Settings, go to Privacy, tap on Location Services, and scroll down to Safari. Select 'While Using'. Reload the website and re-activate your sensors.<br>
+    Make sure GPS is enabled for your browser - open Settings, go to Privacy, tap on Location Services, and scroll down to Safari. Select 'While Using'. Reload the website and re-activate your sensors. You may need to run through the introduction again.<br>
     <i>Anything else</i><br>
-    For most issues, reloading the browser seems to work; just make sure you're on the same link as everyone else.<br>
+    For most issues, reloading the browser seems to work. Tapping the reload icon on your browser will reload the page, keeping you in the same heart.<br>
     </p>
 
     <b>About</b><br>
-    This project was inspired by Yo-Yo Ma and created by Jonathan Chomko.<br>
+    Created by <a href="www.jonathanchomko.com"> Jonathan Chomko </a><br>
+    Inspired by <a href="https://www.yo-yoma.com/"> Yo-Yo Ma </a><br>
     </div>
   </div>
 
