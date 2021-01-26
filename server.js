@@ -57,8 +57,20 @@ if (process.env.NODE_ENV != 'production') {
 app.set("view engine", "pug");
 app.set("views", path.join(__dirname, "views"));
 app.use(express.static("public"));
+// app.use('/', express.static(path.join(__dirname, 'public')))
+
 
 app.get("/", function(request, response) {
+  if (request.useragent.isMobile) {
+    response.sendFile("/public/mobile.html", {
+      root: __dirname,
+    })
+
+  } else {
+    response.sendFile('/public/desktop.html', {
+      "root": __dirname
+    })
+  }
 
   // const queryObject = url.parse(request.url,true).query;
   // console.log(queryObject);
@@ -77,9 +89,9 @@ app.get("/", function(request, response) {
   //   }
   // }
 
-  response.sendFile("/public/index.html", {
-    root: __dirname,
-  });
+  // response.sendFile("/public/index.html", {
+  //   root: __dirname,
+  // });
   // response.redirect('/index.html')
 
 });

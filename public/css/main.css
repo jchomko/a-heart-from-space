@@ -49,7 +49,7 @@ body {
 #intropanel{
   display: block;
   /* visibility: visible; */
-  background-color: rgb(255, 227, 227);
+  background-color: rgb(255, 255, 255);
   /* background-image: url("../images/tutorial_compass.png"); */
   background-repeat: no-repeat;
   background-size: cover;
@@ -62,19 +62,19 @@ body {
   /* height: 95%; */
   width: 90%;
 
-  border-radius: 30px;
+  /* border-radius: 30px; */
   border: 1px solid black;
   /* width: 100%; */
   /* overflow: scroll; */
   z-index: 12;
-  box-shadow: 10px 10px 5px grey;:
+  box-shadow: 5px 5px 0px grey;
 }
 
 #closebutton {
-  background-color: rgb(255, 227, 227);
+  background-color: rgb(255, 255, 255);
   position: absolute;
   top: -15px;
-  right: -6px;
+  right: -16px;
   width: 40px;
   height: 40px;
   font-size: 12px;
@@ -85,7 +85,7 @@ body {
 
 #introtext{
   position: relative;
-  margin: 5%;
+  margin: 13%;
   text-align: center;
   /* font: sans-serif; */
   font-family: sans-serif;
@@ -94,26 +94,10 @@ body {
   /* overflow: scroll; */
 }
 
-#introbutton{
-  /* position: relative;
-  display: inline-block;
-  left: 50%;
-  transform: translate(-50%, 0);
-  width: 80px;
-  height: 60px;
-  margin-bottom: 7%;
-  font-size: 12pt;
-  font-family: sans-serif;
-  text-decoration: none;
-  text-align: center;
-  padding: 3px 5px;
-  border: 1px solid #000;
-  color: black;
-  border-radius: 75px;
-  box-shadow: 3px 4px 5px grey; */
-  background-color: rgb(255, 227, 227);
+.introbutton{
+  background-color: rgb(255, 255, 255);
   position: absolute;
-  margin-top: -5%;
+  margin-top: -8%;
   left: 50%;
   transform: translate(-50%, 0);
   width: 80px;
@@ -127,24 +111,26 @@ body {
   border: 1px solid #000;
   color: black;
   border-radius: 75px;
-  box-shadow: 3px 4px 5px grey;
 }
 
 
 #helppanel {
-  background-color: rgb(255, 227, 227);
+  background-color: rgb(255, 255, 255);
   /* background-image: url("../images/tutorial_compass.png"); */
   background-repeat: no-repeat;
   background-size: cover;
   display: none;
   position: absolute;
-  top: 0;
-  left: 0;
+  top: 5%;
+  left: 5%;
   opacity:1;
-  height: 100%;
-  width: 100%;
+  height: 90%;
+  width: 90%;
   overflow: scroll;
   z-index: 10;
+  border: 1px solid #000;
+
+  box-shadow: 5px 5px 1px grey;
 }
 
 #helptext{
@@ -226,7 +212,7 @@ body {
 
 #introtext {
   position: relative;
-  margin: 5%;
+  margin: 13%;
   /* font: sans-serif; */
   font-family: sans-serif;
   /* height: 100%; */
@@ -305,10 +291,9 @@ body {
   height: 20%;
 }
 
-.heart-start-join {
-  position: relative;
-  display: inline-block;
-  /* margin: 5%; */
+#heart-start {
+  z-index: 20;
+  /* position: relative;
   left: 50%;
   transform: translate(-50%, 0);
   width: 90%;
@@ -321,7 +306,7 @@ body {
   line-height: 60px;
   padding: 3px 5px;
   border: 1px solid #000;
-  color: black;
+  color: black; */
   /* font-size: 14pt; */
   /* bottom: 0%; */
   /* background-color: rgb(220, 220, 220) */

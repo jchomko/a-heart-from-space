@@ -1,6 +1,12 @@
 [
   {
-    "engtext": "Hello! This guide will introduce you to A Heart From Space. To start, tap the button to activate your sensors.",
+    "engtext": "First, share your link with your group so they can join your heart. You can find your link in the info panel if you need to share it later on.",
+    "buttontext": "Share",
+    "buttonfunction":"shareLink",
+    "frtext": "Bienvenue. Cette expérience vous guidera à travers une suite de gestes et de mouvements."
+  },
+  {
+    "engtext": "Welcome! To start, tap the button to activate your sensors.",
     "buttontext": "Activate",
     "buttonfunction":"activateSensors",
     "frtext": "Bienvenue. Cette expérience vous guidera à travers une suite de gestes et de mouvements."
@@ -17,6 +23,7 @@
     "buttonfunction":"advanceIntro",
     "frtext": "Bienvenue. Cette expérience vous guidera à travers une suite de gestes et de mouvements."
   },
+
   {
     "engtext": "If you think another participant should move, you can tap their dot to send them a nudge. Turn on your phone's sound and test it out: <button id='soundtest' onclick='drawHomeTap()'>Sound Test</button>.",
     "buttontext": "Next",
@@ -24,7 +31,7 @@
     "frtext": "Bienvenue. Cette expérience vous guidera à travers une suite de gestes et de mouvements."
   },
   {
-    "engtext": "To signal that you're happy with the shape of the heart, tap the heart button in the bottom right corner. This will fill your section of the heart. <br><br> When the whole heart is full, take a screenshot and come back together!",
+    "engtext": "When the heart is done, tap the button in the bottom right corner to fill your section of the heart with colour. <br><br> When the whole heart is full, take a screenshot and share it with #aheartfromspace!",
     "buttontext": "Start",
     "buttonfunction":"closeIntro",
     "frtext": "Bienvenue. Cette expérience vous guidera à travers une suite de gestes et de mouvements."

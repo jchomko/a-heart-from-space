@@ -35,6 +35,16 @@ var showInfoPanel = false;
 var introData = null;
 var introIndex = 0;
 
+
+// var generatedId = Date.now() + Math.random().toString().slice(2);
+
+// $("#rooms-list").html("<a href="+url+"/heart.html?heartid="+generatedId+">"+url+"/heart.html?heartid="+generatedId+"</a>")
+// var urltoshare = url+"/heart.html?heartid="+generatedId
+// var desturl = "location.href='"+url+"/heart.html?heartid="+generatedId+"';"
+
+// $("#room-id").html("<a href="+url+"/heart.html?heartid="+generatedId+">"+url+"/heart.html?heartid="+generatedId+"</a>")
+
+var url = window.location.origin;
 // Get room id from URL
 const queryParamsString = window.location.search.substr(1);
 console.log(queryParamsString);
@@ -48,6 +58,7 @@ const queryParams = queryParamsString.split('&').reduce((accumulator, singleQuer
 console.log(queryParams.heartid);
 if (queryParams.hasOwnProperty("heartid")) {
   roomId = queryParams.heartid;
+  // introIndex = 1;
 }
 
 
@@ -174,7 +185,18 @@ function loadIntroData(){
 }
 
 function processClick(){
-  if(introData[introIndex-1].buttonfunction === "activateSensors"){
+  if(introData[introIndex-1].buttonfunction === "shareLink"){
+    // activateSensors();
+    //open share dialog
+    const shareData = {
+      title: 'Heart from Space',
+      text: 'Join My Heart from Space!',
+      url: window.location.href
+    }
+    const sharePromise = navigator.share(shareData);
+    advanceIntro();
+    console.log("sharing link");
+  }else if(introData[introIndex-1].buttonfunction === "activateSensors"){
     activateSensors();
     advanceIntro();
     console.log("activating sensors");

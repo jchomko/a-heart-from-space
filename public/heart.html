@@ -11,7 +11,7 @@
 <body>
   <div id="map"></div>
 
-  <button id="centerMap" onclick="centerMap()"><img class="map-button" src="/images/center-map-outline.png" > </button>
+  <button id="centerMap" onclick="centerMap()"><img class="map-button" src="/images/center-map-target.png" > </button>
   <button id="doneSection" onclick="toggleDone()"><img class="map-button" id="doneIcon" src="/images/heart-button-blank-trans.png" ></button>
   <button id="aboutButton" onclick="toggleHelp()"><img class="map-button" id="aboutIcon" src="/images/help_dot.png"></button>
 
@@ -33,8 +33,8 @@
   <button id="closebutton" onclick="hideIntroduction()">X</button>
   <div id="introtext"></div>
 
-
-  <button id="introbutton" onclick="processClick()">Next</button>
+  <span id="room-id"></span>
+  <button class="introbutton" onclick="processClick()">Next</button>
   </div>
 
   <div id="helppanel">
