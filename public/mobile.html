@@ -9,23 +9,27 @@
 </head>
 
 <body>
-      <div id="landingpanel">
+      <div id="landingpanel" style="z-index: 10">
         <div id="landingtext">
-          <b>A Heart from Space</b> is a tool for drawing together using GPS.
+          <b>A Heart from Space</b> is a tool for collective GPS drawing.
           </div>
           <!-- Each participant adjusts one point of the drawing, enabling the group to collectively determine the shape they want to hold. -->
 
 
           <!-- <iframe width="100%" height=auto src="https://player.vimeo.com/video/473022183" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe><br><br> -->
-          <button id="heart-start" class="introbutton">Start</button>
+
           <!-- <p>To start a heart, share this link with your group: <span id="rooms-list"></span> </p> -->
+          <button id="heart-start" class="introbutton">Start</button>
         </div>
+
 
         <div id="landingpanel">
           <div id="landingtext">
-              A website for moving and creating together; a way of being online that makes clear that we are connected.
+              The website draws a line between the GPS positions of the online users in your group. The participants collectively determine the shape of the heart, adjusting their positions relative to the group.
                 <iframe width="100%" height=auto src="https://player.vimeo.com/video/473022183" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe><br><br>
+                The project is an exploration of the ability for the internet to support collective action. The independent actions of each user in response to the view of the collective refines the image, creating a metaphor of independent actors working together to achieve collective aims through interfaces that help them understand their interconnect nature.
               </div>
+
             <!-- Each participant adjusts one point of the drawing, enabling the group to collectively determine the shape they want to hold. -->
 
 
@@ -65,6 +69,14 @@
 
 
   <script src="https://code.jquery.com/jquery-1.11.1.js" type='text/javascript'></script>
+
+  <script>
+    var url = window.location.origin;
+    var desturl = "location.href='"+url+"/share.html';"
+    $("#heart-start").attr("onclick", desturl);
+
+  </script>
+
   <!-- <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script> -->
   <!-- <script src="/socket.io/socket.io.js"></script> -->
   <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.1.1/howler.core.min.js"></script> -->
@@ -74,7 +86,7 @@
   <!-- <script src="/scripts/sensors.js"></script> -->
   <!-- <script src="/scripts/drawing.js"></script> -->
   <!-- <script src="/scripts/map.js"></script> -->
-  <script src="/scripts/landing.js"></script>
+  <!-- <script src="/scripts/landing.js"></script> -->
   <!-- <script src="/scripts/start.js"></script> -->
 
   <!-- <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBsTwTesuZp5Gh_ydqQY5VDNpPlSZLtt-M&callback=initMap"></script> -->

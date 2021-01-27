@@ -72,27 +72,29 @@ body {
 
 #landingpanel{
   display: block;
-  /* visibility: visible; */
   background-color: rgb(255, 255, 255);
-  /* background-image: url("../images/tutorial_compass.png"); */
-  background-repeat: no-repeat;
-  background-size: cover;
-  /* display: inline-grid; */
   position: relative;
   top: 0;
-  /* left: 0; */
   margin: 5%;
   opacity: 1;
-  /* height: 95%; */
   width: 90%;
-
-  /* border-radius: 30px; */
   border: 1px solid black;
-  /* width: 100%; */
-  /* overflow: scroll; */
-  z-index: 12;
+  /* z-index: 12; */
   box-shadow: 5px 5px 0px grey;
+  margin-bottom: 10%;
 }
+
+#landingtext{
+  position: relative;
+  margin: 10%;
+  text-align: left;
+  /* font: sans-serif; */
+  font-family: sans-serif;
+  /* height: 90%; */
+  /* overflow: scroll; */
+  /* overflow: scroll; */
+}
+
 
 #closebutton {
   background-color: rgb(255, 255, 255);
@@ -118,16 +120,6 @@ body {
   /* overflow: scroll; */
 }
 
-#landingtext{
-  position: relative;
-  margin: 13%;
-  text-align: center;
-  /* font: sans-serif; */
-  font-family: sans-serif;
-  /* height: 90%; */
-  /* overflow: scroll; */
-  /* overflow: scroll; */
-}
 
 .introbutton{
   background-color: rgb(255, 255, 255);

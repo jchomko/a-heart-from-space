@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+</head>
+
+<body>
+      <div id="landingpanel" style="z-index: 10">
+        <div id="landingtext">
+          First, share your link with your group so they can join your heart. You can find your link in the info panel if you need to share it later on.
+          </div>
+          <button id="heart-start" class="introbutton" onclick="shareLink()">Start</button>
+        </div>
+
+  <script src="https://code.jquery.com/jquery-1.11.1.js" type='text/javascript'></script>
+  <!-- <script src="/scripts/landing.js"></script> -->
+  <!-- <script src="/scripts/start.js"></script> -->
+  <script>
+
+
+
+    function shareLink(){
+
+      var generatedId = Date.now() + Math.random().toString().slice(2);
+      var url = window.location.origin;
+      var desturl = url+"/heart.html?heartid="+generatedId+"';" //"location.href='"+
+
+      // console.log(desturl)
+      // $("#heart-start").attr("onclick", desturl);
+      const shareData = {
+        title: 'Heart from Space',
+        text: 'Join My Heart from Space!',
+        url: desturl
+      }
+      //share url
+      const sharePromise = navigator.share(shareData);
+      //load url
+      window.location.href = desturl;
+
+
+    }
+
+  </script>
+
+</body>
+
+</html>

@@ -1,10 +1,5 @@
 [
-  {
-    "engtext": "First, share your link with your group so they can join your heart. You can find your link in the info panel if you need to share it later on.",
-    "buttontext": "Share",
-    "buttonfunction":"shareLink",
-    "frtext": "Bienvenue. Cette expérience vous guidera à travers une suite de gestes et de mouvements."
-  },
+
   {
     "engtext": "Welcome! To start, tap the button to activate your sensors.",
     "buttontext": "Activate",
