@@ -12,7 +12,7 @@
     "express-force-https": "^1.0.0",
     "express-useragent": "^1.0.12",
     "heroku-ssl-redirect": "0.0.4",
-    "pug": "^3.0.0",
+    "pug": "^3.0.1",
     "socket.io": "^2.4.0"
   },
   "engines": {
